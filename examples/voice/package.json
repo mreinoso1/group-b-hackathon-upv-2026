@@ -1,0 +1,9 @@
+{
+  "name": "voice-example",
+  "private": true,
+  "type": "module",
+  "description": "Talk to a realtime model about a case, through a small backend that keeps the team key",
+  "engines": { "node": ">=20" },
+  "scripts": { "start": "node server.mjs" },
+  "dependencies": { "ws": "^8.18.0" }
+}

@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Voice example</title>
+<style>
+  :root { --bg: #f6f7f9; --card: #fff; --ink: #1d2330; --muted: #6b7385; --line: #e3e6ec; --accent: #2f6fed; --user: #eef3ff; --bot: #f1f7ef; --warn: #b4540a; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 15px/1.45 system-ui, -apple-system, Segoe UI, sans-serif; background: var(--bg); color: var(--ink); }
+  main { max-width: 900px; margin: 0 auto; padding: 20px 16px 40px; }
+  h1 { font-size: 20px; margin: 0 0 4px; }
+  .sub { color: var(--muted); margin: 0 0 16px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 14px; margin-bottom: 14px; }
+  .row { display: flex; flex-wrap: wrap; gap: 12px; align-items: end; }
+  label { display: flex; flex-direction: column; gap: 4px; font-size: 13px; color: var(--muted); }
+  select, input, textarea { font: inherit; color: var(--ink); border: 1px solid var(--line); border-radius: 7px; padding: 6px 8px; background: #fff; }
+  textarea { width: 100%; min-height: 64px; resize: vertical; }
+  button { font: inherit; border: 0; border-radius: 8px; padding: 9px 16px; cursor: pointer; background: var(--accent); color: #fff; }
+  button.secondary { background: #e9edf5; color: var(--ink); }
+  button:disabled { opacity: .5; cursor: default; }
+  #ptt { width: 100%; padding: 18px; font-size: 16px; display: none; user-select: none; }
+  #ptt.down { background: #1a4fc2; }
+  .status { display: flex; gap: 16px; flex-wrap: wrap; font-size: 14px; color: var(--muted); }
+  .status b { color: var(--ink); font-weight: 600; }
+  .meter { width: 140px; height: 8px; background: #e9edf5; border-radius: 4px; overflow: hidden; align-self: center; }
+  .meter i { display: block; height: 100%; width: 0; background: #34a853; transition: width 60ms linear; }
+  #chat { display: flex; flex-direction: column; gap: 8px; max-height: 46vh; overflow-y: auto; }
+  .msg { padding: 8px 11px; border-radius: 9px; max-width: 85%; white-space: pre-wrap; }
+  .msg.user { background: var(--user); align-self: flex-end; }
+  .msg.bot { background: var(--bot); align-self: flex-start; }
+  .msg .meta { display: block; font-size: 12px; color: var(--muted); margin-top: 3px; }
+  .msg.cut .meta { color: var(--warn); }
+  details { font-size: 13px; }
+  #log { font: 12px/1.4 ui-monospace, Menlo, monospace; max-height: 30vh; overflow-y: auto; white-space: pre-wrap; color: var(--muted); }
+  .hint { font-size: 13px; color: var(--muted); margin: 8px 0 0; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Voice example</h1>
+  <p class="sub">Talk to a realtime model about one of the families, with your own microphone. Your team key and the case data stay on the local server, not in this page.</p>
+  <div class="card">
+    <div class="row">
+      <label>Family
+        <select id="case"><option value="">None</option></select>
+      </label>
+      <label>Model
+        <select id="model">
+          <option value="gpt-realtime-2.1-mini">gpt-realtime-2.1-mini</option>
+          <option value="gpt-realtime-2.1">gpt-realtime-2.1</option>
+          <option value="gemini-3.8-live">gemini-3.8-live</option>
+        </select>
+      </label>
+      <label>Mode
+        <select id="mode">
+          <option value="open">Open mic (the server detects turns)</option>
+          <option value="ptt">Push to talk</option>
+        </select>
+      </label>
+      <label>End of turn (OpenAI only)
+        <select id="vad">
+          <option value="server_vad">After a silence (server_vad)</option>
+          <option value="semantic_vad">When you finish the thought (semantic_vad)</option>
+        </select>
+      </label>
+      <label>Silence that ends a turn (ms)
+        <input id="silence" type="number" value="500" min="200" max="3000" step="100" style="width:110px">
+      </label>
+      <button id="connect">Connect</button>
+      <button id="hangup" class="secondary" disabled>Hang up</button>
+    </div>
+    <label style="margin-top:12px">Instructions for the model
+      <textarea id="instructions">You are a friendly guide who helps a family understand their financial plan. Speak in short, natural sentences, in the language the family uses. If they interrupt you, stop and answer what they asked.</textarea>
+    </label>
+    <p class="hint">Use headphones: if the speaker leaks into the microphone, the model interrupts itself.</p>
+  </div>
+  <div class="card">
+    <div class="status">
+      <span>Status: <b id="state">disconnected</b></span>
+      <span>Mic <span class="meter"><i id="level"></i></span></span>
+      <span>Last reply: <b id="latency">–</b></span>
+      <span>Turns: <b id="turns">0</b></span>
+      <span>Interruptions: <b id="cuts">0</b></span>
+    </div>
+    <button id="ptt" style="margin-top:12px">Hold (or hold the space bar) to talk</button>
+  </div>
+  <div class="card"><div id="chat"></div></div>
+  <div class="card">
+    <details><summary>Events</summary><div id="log"></div></details>
+  </div>
+</main>
+<script>
+const $ = (id) => document.getElementById(id);
+let ws = null, ctx = null, micStream = null, micNode = null;
+let playHead = 0, playing = [], current = null, lastReply = null, userBubble = null, cutPending = false;
+let lastVoiceAt = 0, pttDown = false, turns = 0, cuts = 0;
+const OPENAI = (m) => m.startsWith("gpt-");
+
+fetch("/cases").then((r) => r.json()).then((cases) => {
+  for (const c of cases) $("case").add(new Option(c.label, c.id));
+  if (cases.length) $("case").value = cases[0].id;
+}).catch(() => {});
+
+function log(line) {
+  const el = $("log");
+  el.textContent += `${new Date().toLocaleTimeString()}  ${line}\n`;
+  if (el.textContent.length > 40000) el.textContent = el.textContent.slice(-30000);
+  el.scrollTop = el.scrollHeight;
+}
+function setState(s) { $("state").textContent = s; }
+function bubble(kind, text = "") {
+  const d = document.createElement("div");
+  d.className = `msg ${kind}`;
+  d.innerHTML = `<span class="text"></span><span class="meta"></span>`;
+  d.querySelector(".text").textContent = text;
+  $("chat").appendChild(d);
+  $("chat").scrollTop = $("chat").scrollHeight;
+  return d;
+}
+const b64 = (buf) => { let s = ""; const u = new Uint8Array(buf); for (let i = 0; i < u.length; i += 0x8000) s += String.fromCharCode(...u.subarray(i, i + 0x8000)); return btoa(s); };
+
+// Audio from the model is base64 PCM16 at 24 kHz. Each chunk is queued right after the previous one.
+function play(base64) {
+  const bin = atob(base64), n = bin.length >> 1, pcm = new Float32Array(n);
+  for (let i = 0; i < n; i++) { let v = bin.charCodeAt(2 * i) | (bin.charCodeAt(2 * i + 1) << 8); if (v >= 0x8000) v -= 0x10000; pcm[i] = v / 0x8000; }
+  const buf = ctx.createBuffer(1, n, 24000); buf.copyToChannel(pcm, 0);
+  const src = ctx.createBufferSource(); src.buffer = buf; src.connect(ctx.destination);
+  playHead = Math.max(playHead, ctx.currentTime + 0.05); const startAt = playHead; src.start(playHead); playHead += buf.duration;
+  playing.push(src); src.onended = () => { playing = playing.filter((s) => s !== src); };
+  return { startAt, seconds: buf.duration };
+}
+function stopPlayback() { for (const s of playing) { try { s.stop(); } catch {} } playing = []; playHead = ctx?.currentTime ?? 0; }
+const audioPending = () => ctx && playHead > ctx.currentTime + 0.02;
+
+// Stops the reply that is playing and says so in its bubble. Realtime models send audio much faster
+// than it plays, so when a reply is cut most of its audio (and all its text) has already arrived.
+function cutReply(reason) {
+  const r = lastReply;
+  if (!r || r.cut || !audioPending()) return;
+  r.cut = true;
+  const played = Math.max(0, Math.min(r.seconds, ctx.currentTime - r.startAt));
+  stopPlayback(); cuts++; $("cuts").textContent = cuts; cutPending = true;
+  r.el.classList.add("cut");
+  r.el.querySelector(".meta").textContent += `  cut at ${played.toFixed(1)} s of ${r.seconds.toFixed(1)} s: ${reason}`;
+  // Tell OpenAI what the user actually heard, so the model does not assume they heard it all.
+  if (r.openai && r.itemId) ws?.send(JSON.stringify({ type: "conversation.item.truncate", item_id: r.itemId, content_index: 0, audio_end_ms: Math.floor(played * 1000) }));
+}
+
+function sessionUpdate() {
+  const model = $("model").value, ptt = $("mode").value === "ptt";
+  const input = { format: { type: "audio/pcm", rate: 24000 },
+    turn_detection: ptt ? null
+      : OPENAI(model) && $("vad").value === "semantic_vad" ? { type: "semantic_vad" }
+      : { type: "server_vad", silence_duration_ms: Number($("silence").value) || 500 } };
+  if (OPENAI(model)) input.transcription = { model: "gpt-4o-mini-transcribe" };
+  const output = { format: { type: "audio/pcm", rate: 24000 } };
+  if (OPENAI(model)) output.voice = "marin";
+  // The server adds the chosen family's plan to these instructions before they reach the model.
+  return { type: "session.update", session: { type: "realtime", instructions: $("instructions").value, audio: { input, output } } };
+}
+
+function onEvent(ev) {
+  const t = ev.type ?? "?";
+  if (!t.includes("delta")) log(t + (ev.transcript ? `  "${ev.transcript}"` : "") + (ev.error ? `  ${JSON.stringify(ev.error)}` : ""));
+  if (t === "error") { setState("error: " + (ev.error?.message ?? "")); return; }
+  if (t === "session.created" || t === "session.updated") setState("connected, talk whenever you like");
+  if (t === "input_audio_buffer.speech_started") cutReply("voice detected on the mic");
+  // OpenAI's transcript of the user arrives after the reply has started: hold its place in the chat.
+  if (t === "input_audio_buffer.committed" && OPENAI($("model").value) && !userBubble) userBubble = bubble("user", "…");
+  if (t.includes("input_audio_transcription")) {
+    const text = ev.delta ?? ev.transcript ?? "";
+    if (!userBubble) userBubble = bubble("user");
+    const el = userBubble.querySelector(".text");
+    if (el.textContent === "…") el.textContent = "";
+    el.textContent = t.endsWith("completed") ? (ev.transcript ?? el.textContent) : el.textContent + text;
+    if (t.endsWith("completed")) {
+      // An interruption with no words in it was noise or the speaker's echo, not the user.
+      if (cutPending && !el.textContent.trim()) userBubble.querySelector(".meta").textContent = "no words: noise or speaker echo?";
+      cutPending = false; userBubble = null;
+    }
+  }
+  if (t === "response.created") {
+    current = { audioDone: false, first: null, el: bubble("bot") };
+    lastReply = { el: current.el, openai: OPENAI($("model").value), itemId: null, startAt: 0, seconds: 0, cut: false };
+    turns++; $("turns").textContent = turns;
+  }
+  if ((t === "response.output_audio.delta" || t === "response.audio.delta") && ev.delta) {
+    if (current && current.first === null) {
+      current.first = performance.now();
+      const since = lastVoiceAt ? Math.round(current.first - lastVoiceAt) : null;
+      if (since !== null && since < 15000) { $("latency").textContent = `${since} ms after you stopped talking`; current.el.querySelector(".meta").textContent = `started talking after ${since} ms`; }
+    }
+    const chunk = play(ev.delta);
+    if (lastReply) { if (!lastReply.seconds) lastReply.startAt = chunk.startAt; lastReply.seconds += chunk.seconds; lastReply.itemId ??= ev.item_id ?? null; }
+  }
+  if ((t === "response.output_audio_transcript.delta" || t === "response.audio_transcript.delta") && current) {
+    current.el.querySelector(".text").textContent += ev.delta ?? "";
+  }
+  if (t === "response.output_audio.done" || t === "response.audio.done") { if (current) current.audioDone = true; }
+  if (t === "response.done" && current) {
+    // Gemini through the proxy: a reply cut short by the user ends without output_audio.done.
+    if (!current.audioDone && current.first !== null) cutReply("Gemini heard your voice");
+    current = null;
+  }
+}
+
+async function connect() {
+  $("connect").disabled = true; setState("asking for the mic…");
+  try {
+    ctx = new AudioContext({ sampleRate: 24000 }); // the browser resamples the mic to 24 kHz for us
+    micStream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true, channelCount: 1 } });
+    await ctx.audioWorklet.addModule("/mic-worklet.js");
+    const srcNode = ctx.createMediaStreamSource(micStream);
+    micNode = new AudioWorkletNode(ctx, "mic-frames");
+    srcNode.connect(micNode);
+  } catch (e) { setState("no mic: " + e.message); $("connect").disabled = false; return; }
+  const model = $("model").value, ptt = $("mode").value === "ptt";
+  const q = new URLSearchParams({ model, case: $("case").value });
+  ws = new WebSocket(`${location.origin.replace(/^http/, "ws")}/voice?${q}`);
+  ws.onopen = () => { ws.send(JSON.stringify(sessionUpdate())); setState("connecting…"); };
+  ws.onmessage = (m) => { try { onEvent(JSON.parse(m.data)); } catch (e) { log("bad event " + e.message); } };
+  ws.onclose = () => { setState("disconnected"); cleanup(); };
+  micNode.port.onmessage = (e) => {
+    const frame = new Int16Array(e.data);
+    let sum = 0; for (let i = 0; i < frame.length; i++) sum += frame[i] * frame[i];
+    const rms = Math.sqrt(sum / frame.length) / 32768;
+    $("level").style.width = `${Math.min(100, rms * 600)}%`;
+    if (rms > 0.015) lastVoiceAt = performance.now();
+    if (ws?.readyState !== 1) return;
+    if (ptt && !pttDown) return; // push to talk: nothing is sent while the button is up
+    ws.send(JSON.stringify({ type: "input_audio_buffer.append", audio: b64(e.data) }));
+  };
+  $("ptt").style.display = ptt ? "block" : "none";
+  $("hangup").disabled = false;
+  ["case", "model", "mode", "vad", "silence", "instructions"].forEach((id) => ($(id).disabled = true));
+}
+function cleanup() {
+  stopPlayback();
+  micStream?.getTracks().forEach((t) => t.stop()); micStream = null;
+  ctx?.close(); ctx = null; ws = null; current = null; lastReply = null; cutPending = false;
+  $("connect").disabled = false; $("hangup").disabled = true; $("ptt").style.display = "none";
+  ["case", "model", "mode", "vad", "silence", "instructions"].forEach((id) => ($(id).disabled = false));
+}
+function pttPress(down) {
+  if (!ws || $("mode").value !== "ptt" || pttDown === down) return;
+  pttDown = down; $("ptt").classList.toggle("down", down);
+  if (down) { stopPlayback(); return; }
+  ws.send(JSON.stringify({ type: "input_audio_buffer.commit" }));
+  ws.send(JSON.stringify({ type: "response.create" })); // OpenAI needs it with turn detection off; the proxy drops it for Gemini
+}
+$("connect").onclick = connect;
+$("hangup").onclick = () => ws?.close();
+$("ptt").onpointerdown = () => pttPress(true);
+$("ptt").onpointerup = $("ptt").onpointerleave = () => pttPress(false);
+addEventListener("keydown", (e) => { if (e.code === "Space" && e.target.tagName !== "TEXTAREA") { e.preventDefault(); pttPress(true); } });
+addEventListener("keyup", (e) => { if (e.code === "Space" && e.target.tagName !== "TEXTAREA") pttPress(false); });
+</script>
+</body>
+</html>

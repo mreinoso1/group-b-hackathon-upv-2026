@@ -1,0 +1,3526 @@
+{
+  "schema_version": 2,
+  "part": "financial-health",
+  "case": {
+    "slug": "timothy-melanie-weah",
+    "household": [
+      {
+        "first_name": "Timothy",
+        "role": "client",
+        "age": 40,
+        "retirement_age": 62,
+        "employment": "EMPLOYED",
+        "risk_profile": "Growth"
+      },
+      {
+        "first_name": "Melanie",
+        "role": "co-client",
+        "age": 38,
+        "retirement_age": 60,
+        "employment": "EMPLOYED",
+        "risk_profile": "Moderate"
+      },
+      {
+        "first_name": "Liam",
+        "role": "child",
+        "age": 6
+      },
+      {
+        "first_name": "Josh",
+        "role": "child",
+        "age": 3
+      }
+    ],
+    "city": "San Francisco",
+    "state": "CA",
+    "zip_code": "94110",
+    "tax_filing_status": "MARRIED_JOINTLY",
+    "synthetic": true
+  },
+  "score": {
+    "published_score": 60,
+    "scale": "0 to 100",
+    "band": "stable",
+    "colour": "yellow",
+    "message": "Your score of 60 suggests that while you manage to get by, you aren't thriving financially, often leading to stress and financial disorganization. Enhancing your financial health and creating a strategic plan could unlock your money's potential and help you gain control of your desired life.",
+    "pillars": [
+      {
+        "pillar": "Savings and cash flow",
+        "score": 86,
+        "points_shown_in_app": "26/30"
+      },
+      {
+        "pillar": "Debt",
+        "score": 58,
+        "points_shown_in_app": "12/20"
+      },
+      {
+        "pillar": "Investments",
+        "score": 56,
+        "points_shown_in_app": "8/15"
+      },
+      {
+        "pillar": "Liquidity and emergency fund",
+        "score": 100,
+        "points_shown_in_app": "15/15"
+      },
+      {
+        "pillar": "Insurance and protection",
+        "score": 37,
+        "points_shown_in_app": "7/20"
+      }
+    ],
+    "caps_applied": [
+      {
+        "reason": "High revolving balance with high APR",
+        "score_capped_at": 60
+      },
+      {
+        "reason": "Mortality coverage ratio below threshold with dependents",
+        "score_capped_at": 62
+      }
+    ],
+    "top_moves": [
+      {
+        "title": "Pay down revolving card",
+        "action": "Pay $6,800 on the 18% card from cash to remove high revolving exposure and clear the gate",
+        "effort": "medium",
+        "target_amount": 11200,
+        "score_before": 60,
+        "score_after": 62,
+        "lifts_a_cap": true
+      },
+      {
+        "title": "Add life cover",
+        "action": "Add $235,000 of life cover to raise the mortality ratio and clear the gate",
+        "effort": "low",
+        "target_amount": 485000,
+        "score_before": 60,
+        "score_after": 60,
+        "lifts_a_cap": true
+      },
+      {
+        "title": "Add umbrella cover",
+        "action": "Add $1M of umbrella to raise the liability shield",
+        "effort": "low",
+        "target_amount": 1000000,
+        "score_before": 60,
+        "score_after": 60,
+        "lifts_a_cap": false
+      }
+    ],
+    "combined_moves": [
+      {
+        "moves": [
+          "Pay down revolving card",
+          "Add life cover",
+          "Add umbrella cover"
+        ],
+        "score_after": 78,
+        "note": "After the card paydown, life cover must reach $491,800 to keep the mortality ratio at the gate line."
+      },
+      {
+        "moves": [
+          "Pay down revolving card",
+          "Add life cover"
+        ],
+        "score_after": 73,
+        "note": "After the card paydown, life cover must reach $491,800 to keep the mortality ratio at the gate line."
+      },
+      {
+        "moves": [
+          "Pay down revolving card",
+          "Add umbrella cover"
+        ],
+        "score_after": 62,
+        "note": "Together they raise the published score more than either move alone."
+      },
+      {
+        "moves": [
+          "Add life cover",
+          "Add umbrella cover"
+        ],
+        "score_after": 60,
+        "note": "Together they raise the published score more than either move alone."
+      }
+    ],
+    "explainer": "## Key takeaways\n- Liquidity is a clear strength, and retirement saving is steady. Cash flow and cash reserves are doing their job for the household.\n- Two limits hold the published score at 60: an 18% revolving card balance and a life-cover gap, with a 33% mortality ratio and dependents.\n- Without those limits, the score before the limit would be about 68. The published score stays at 60 until both are addressed.\n- The first move is paying $6,800 on the 18% card from cash. The published score moves from 60 to 62, leaving $11,200 total after the move.\n\n## Cash flow\n- Retirement saving is about 14% of income, and the savings pattern is a solid part of the score.\n- Fixed obligations are a manageable share of income, which leaves the household room to act on the card.\n\n## Debt\n- The card balance is the main drag: revolving use is 80% at an 18% rate, and it caps the published score.\n- Paying $6,800 from cash clears that limit and lifts the published score from 60 to 62.\n- Other debt measures, such as the debt-service load, are comfortable and are not what holds the score back.\n\n## Protection\n- Protection is the pillar holding the score back most. The mortality ratio is 33%, with dependents in the household.\n- Adding $235,000 of life cover brings the total to $485,000. On its own, it leaves the published score at 60 while the card limit remains.\n- Once the card is paid down, life cover must reach $491,800 in total. Clearing both lifts the published score from 60 to 73.\n- An umbrella policy of $1M would add liability protection. The household has none now.\n\n## Liquidity\n- Cash covers about 16 months of spending, and total liquid assets cover about 18 months. This is the strongest area.\n- Paying $6,800 toward the card from cash still leaves a very large reserve.\n\n## Investing\n- Investing is a middle area. The largest single position, VTI, is about 16% of investable assets.\n- Growth is a large share of the portfolio's value, which weighs on this area more than concentration does.\n- Some holdings, including JNK, are tax-inefficient. They sit mostly in tax-advantaged accounts, which is a smaller issue."
+  },
+  "goals": {
+    "goalsSummary": [
+      {
+        "goalType": "RETIREMENT",
+        "value": "Both Timothy and Melanie want to retire in 2048 at ages 62 and 60."
+      },
+      {
+        "amount": 6000,
+        "goalType": "VACATION",
+        "value": "Going on a $6,000 vacation every year."
+      },
+      {
+        "amount": 45000,
+        "goalType": "COLLEGE",
+        "value": "Finance education for 2 children ($45,000 in total for each child)."
+      },
+      {
+        "amount": 600000,
+        "goalType": "PURCHASE",
+        "subType": "REAL_ESTATE_PURCHASE",
+        "value": "Plan to purchase a home for $600,000 in 2030."
+      },
+      {
+        "amount": 45000,
+        "goalType": "PURCHASE",
+        "subType": "VEHICLE_PURCHASE",
+        "value": "Plan to purchase a vehicle for $45,000 in 2028."
+      }
+    ],
+    "chartGoals": [
+      {
+        "date": "2027-01-01T00:00:00.000Z",
+        "goalType": "VACATION",
+        "name": "Go on vacation",
+        "termDate": "2048-04-01T00:00:00.000Z"
+      },
+      {
+        "date": "2028-07-01T00:00:00.000Z",
+        "goalType": "PURCHASE",
+        "name": "Purchase a vehicle",
+        "subType": "VEHICLE_PURCHASE",
+        "termDate": "2079-03-01T00:00:00.000Z"
+      },
+      {
+        "date": "2030-01-01T00:00:00.000Z",
+        "goalType": "PURCHASE",
+        "name": "Purchase a home",
+        "subType": "REAL_ESTATE_PURCHASE",
+        "termDate": "2030-01-01T00:00:00.000Z"
+      },
+      {
+        "date": "2038-08-01T00:00:00.000Z",
+        "goalType": "COLLEGE",
+        "name": "College Liam",
+        "termDate": "2042-01-01T00:00:00.000Z"
+      },
+      {
+        "date": "2041-08-01T00:00:00.000Z",
+        "goalType": "COLLEGE",
+        "name": "College Josh",
+        "termDate": "2045-01-01T00:00:00.000Z"
+      },
+      {
+        "date": "2048-03-01T00:00:00.000Z",
+        "goalType": "RETIREMENT",
+        "name": "Melanie's Retirement"
+      },
+      {
+        "date": "2048-04-01T00:00:00.000Z",
+        "goalType": "RETIREMENT",
+        "name": "Timothy's Retirement"
+      }
+    ]
+  },
+  "profile": {
+    "incomes": [
+      {
+        "name": "Co-client's income annuity",
+        "type": "ANNUITY_INCOME",
+        "yearly": 300000,
+        "owner": [
+          "Melanie"
+        ],
+        "starts": 2053,
+        "ends": 2079
+      },
+      {
+        "name": "Co-client's income salary",
+        "type": "SALARY_AND_WAGES",
+        "yearly": 120000,
+        "owner": [
+          "Melanie"
+        ],
+        "starts": 2026,
+        "ends": 2048
+      },
+      {
+        "name": "Client's income salary",
+        "type": "SALARY_AND_WAGES",
+        "yearly": 150000,
+        "owner": [
+          "Timothy"
+        ],
+        "starts": 2026,
+        "ends": 2048
+      },
+      {
+        "name": "Survivor Benefit of Melanie",
+        "type": "SOCIAL_SECURITY_SURVIVOR_BENEFIT",
+        "yearly": 19114.55,
+        "owner": [
+          "Melanie"
+        ],
+        "starts": 2077,
+        "ends": 2079
+      },
+      {
+        "name": "Social Security for Melanie",
+        "type": "SOCIAL_SECURITY",
+        "yearly": 85874.38,
+        "owner": [
+          "Melanie"
+        ],
+        "starts": 2055,
+        "ends": 2079
+      },
+      {
+        "name": "Social Security for Timothy",
+        "type": "SOCIAL_SECURITY",
+        "yearly": 89390.51,
+        "owner": [
+          "Timothy"
+        ],
+        "starts": 2053,
+        "ends": 2077
+      }
+    ],
+    "expenses": [
+      {
+        "name": "Essentials",
+        "type": "LIVING_EXPENSES",
+        "yearly": 72000,
+        "monthly": 6000
+      },
+      {
+        "name": "Primary home HO insurance",
+        "type": "HOME_INSURANCE_PREMIUM",
+        "yearly": 1750,
+        "monthly": 145.83
+      },
+      {
+        "name": "Primary home property taxes",
+        "type": "PROPERTY_TAXES",
+        "yearly": 3500,
+        "monthly": 291.67
+      }
+    ],
+    "accounts": [
+      {
+        "name": "Cash account",
+        "account_type": "Checking account",
+        "tax_treatment": "TAXABLE",
+        "balance": 150000,
+        "yearly_contribution_total": 7500,
+        "yearly_contribution_client": 7500,
+        "yearly_employer_match": 0,
+        "owner": [
+          "Melanie"
+        ]
+      },
+      {
+        "name": "401k - Melanie",
+        "account_type": "401k - Traditional",
+        "tax_treatment": "TAX_DEFERRED",
+        "balance": 55000,
+        "yearly_contribution_total": 17000,
+        "yearly_contribution_client": 11000,
+        "yearly_employer_match": 6000,
+        "owner": [
+          "Melanie"
+        ]
+      },
+      {
+        "name": "Brokerage account",
+        "account_type": "Brokerage account",
+        "tax_treatment": "TAXABLE",
+        "balance": 40000,
+        "yearly_contribution_total": 15000,
+        "yearly_contribution_client": 15000,
+        "yearly_employer_match": 0,
+        "owner": [
+          "Melanie"
+        ]
+      },
+      {
+        "name": "IRA - Roth Melanie",
+        "account_type": "401k - Roth",
+        "tax_treatment": "TAX_FREE",
+        "balance": 20000,
+        "yearly_contribution_total": 0,
+        "yearly_contribution_client": 0,
+        "yearly_employer_match": 0,
+        "owner": [
+          "Melanie"
+        ]
+      },
+      {
+        "name": "401(k) - Timothy",
+        "account_type": "401k - Traditional",
+        "tax_treatment": "TAX_DEFERRED",
+        "balance": 70000,
+        "yearly_contribution_total": 22000,
+        "yearly_contribution_client": 14000,
+        "yearly_employer_match": 8000,
+        "owner": [
+          "Timothy"
+        ]
+      },
+      {
+        "name": "IRA - Roth Timothy",
+        "account_type": "401k - Roth",
+        "tax_treatment": "TAX_FREE",
+        "balance": 25000,
+        "yearly_contribution_total": 0,
+        "yearly_contribution_client": 0,
+        "yearly_employer_match": 0,
+        "owner": [
+          "Timothy"
+        ]
+      }
+    ],
+    "other_assets": [
+      {
+        "name": "Jewelry",
+        "type": "OTHER",
+        "value": 20000,
+        "owner": [
+          "Timothy"
+        ]
+      },
+      {
+        "name": "Primary home",
+        "type": "PRIMARY_HOME",
+        "value": 350000,
+        "owner": [
+          "Timothy"
+        ]
+      },
+      {
+        "name": "Ford",
+        "type": "CAR",
+        "value": 28500,
+        "owner": [
+          "Timothy"
+        ]
+      },
+      {
+        "name": "Tesla",
+        "type": "CAR",
+        "value": 30000,
+        "owner": [
+          "Timothy"
+        ]
+      }
+    ],
+    "liabilities": [
+      {
+        "name": "Chase CC",
+        "type": "PERSONAL_CREDIT_CARD",
+        "balance": 18000,
+        "interest_rate": 0.18,
+        "monthly_payment": 300,
+        "owner": [
+          "Timothy"
+        ]
+      },
+      {
+        "name": "Melanie's student loan",
+        "type": "STUDENT_LOAN_FEDERAL_UNSUBSIDIZED",
+        "balance": 15000,
+        "interest_rate": 0.055,
+        "monthly_payment": 260,
+        "owner": [
+          "Timothy"
+        ]
+      },
+      {
+        "name": "Primary home mortgage",
+        "type": "PRIMARY_MORTGAGE",
+        "balance": 50000,
+        "interest_rate": 0.06,
+        "monthly_payment": 2000,
+        "owner": [
+          "Timothy"
+        ]
+      },
+      {
+        "name": "Tesla loan",
+        "type": "AUTO_LOAN",
+        "balance": 10000,
+        "interest_rate": 0.045,
+        "monthly_payment": 400,
+        "owner": [
+          "Timothy"
+        ]
+      }
+    ],
+    "insurance": [
+      {
+        "name": "Melanie's disability insurance",
+        "type": "LONG_TERM_DI",
+        "owner": [
+          "Melanie"
+        ],
+        "coverage": "in place, amount not recorded"
+      },
+      {
+        "name": "Melanie's life insurance",
+        "type": "WHOLE_LIFE",
+        "owner": [
+          "Melanie"
+        ],
+        "coverage": 110000
+      },
+      {
+        "name": "Your disability insurance",
+        "type": "LONG_TERM_DI",
+        "owner": [
+          "Timothy"
+        ],
+        "coverage": "in place, amount not recorded"
+      },
+      {
+        "name": "Your life insurance",
+        "type": "WHOLE_LIFE",
+        "owner": [
+          "Timothy"
+        ],
+        "coverage": 140000
+      },
+      {
+        "name": "Primary home insurance",
+        "type": "HOMEOWNERS_INSURANCE",
+        "owner": [
+          "Timothy"
+        ],
+        "coverage": "in place, amount not recorded"
+      },
+      {
+        "name": "Car - 2 insurance",
+        "type": "VEHICLE_INSURANCE",
+        "owner": [
+          "Timothy"
+        ],
+        "coverage": "in place, amount not recorded"
+      },
+      {
+        "name": "Car - 1 insurance",
+        "type": "VEHICLE_INSURANCE",
+        "owner": [
+          "Timothy"
+        ],
+        "coverage": "in place, amount not recorded"
+      }
+    ],
+    "goals": [
+      {
+        "name": "Retirement",
+        "type": "RETIREMENT",
+        "yearly_costs": [
+          {
+            "name": "Retirement health costs of Melanie",
+            "yearly": 10189.64,
+            "from_year": 2048,
+            "to_year": 2079
+          },
+          {
+            "name": "Retirement health costs of Timothy",
+            "yearly": 10232.1,
+            "from_year": 2048,
+            "to_year": 2077
+          }
+        ]
+      },
+      {
+        "name": "Go on vacation",
+        "type": "VACATION",
+        "amount": 6000,
+        "frequency": "ANNUAL",
+        "yearly_costs": [
+          {
+            "name": "Go on vacation",
+            "yearly": 6000,
+            "from_year": 2026,
+            "to_year": 2048
+          }
+        ]
+      },
+      {
+        "name": "College Liam",
+        "type": "EDUCATION",
+        "amount": 11250,
+        "start_year": 2038,
+        "end_year": 2042,
+        "yearly_costs": [
+          {
+            "name": "College Liam",
+            "yearly": 20203.38,
+            "from_year": 2038,
+            "to_year": 2042
+          }
+        ]
+      },
+      {
+        "name": "College Josh",
+        "type": "EDUCATION",
+        "amount": 11250,
+        "start_year": 2041,
+        "end_year": 2045,
+        "yearly_costs": [
+          {
+            "name": "College Josh",
+            "yearly": 23387.94,
+            "from_year": 2041,
+            "to_year": 2045
+          }
+        ]
+      },
+      {
+        "name": "Purchase a home",
+        "type": "REAL_ESTATE_PURCHASE",
+        "amount": 600000,
+        "start_year": 2030,
+        "frequency": "ONE_TIME",
+        "planned_purchase": {
+          "value_at_purchase": 675305.29,
+          "year": 2030
+        },
+        "planned_loan": {
+          "amount": 540244.23,
+          "interest_rate": 0.07,
+          "monthly_payment": 3594.26,
+          "years": 30
+        },
+        "yearly_costs": [
+          {
+            "name": "Purchase a home downpayment",
+            "yearly": 135061.06,
+            "from_year": 2030,
+            "to_year": 2030
+          },
+          {
+            "name": "Purchase a home insurance",
+            "yearly": 3376.53,
+            "from_year": 2030,
+            "to_year": 2079
+          },
+          {
+            "name": "Purchase a home property taxes",
+            "yearly": 6753.05,
+            "from_year": 2030,
+            "to_year": 2079
+          },
+          {
+            "name": "Purchase a home closing costs",
+            "yearly": 11204.88,
+            "from_year": 2030,
+            "to_year": 2030
+          }
+        ]
+      },
+      {
+        "name": "Purchase a vehicle",
+        "type": "VEHICLE_PURCHASE",
+        "amount": 45000,
+        "start_year": 2028,
+        "frequency": "ONE_TIME",
+        "planned_purchase": {
+          "value_at_purchase": 47740.5,
+          "year": 2028
+        },
+        "planned_loan": {
+          "amount": 38192.4,
+          "interest_rate": 0.07,
+          "monthly_payment": 756.26,
+          "years": 5
+        },
+        "yearly_costs": [
+          {
+            "name": "Purchase a vehicle registration fees",
+            "yearly": 265.22,
+            "from_year": 2028,
+            "to_year": 2079
+          },
+          {
+            "name": "Purchase a vehicle gas",
+            "yearly": 1060.9,
+            "from_year": 2028,
+            "to_year": 2079
+          },
+          {
+            "name": "Purchase a vehicle auto insurance",
+            "yearly": 2387.03,
+            "from_year": 2028,
+            "to_year": 2079
+          },
+          {
+            "name": "Purchase a vehicle closing costs",
+            "yearly": 763.85,
+            "from_year": 2028,
+            "to_year": 2028
+          },
+          {
+            "name": "Purchase a vehicle downpayment",
+            "yearly": 9548.1,
+            "from_year": 2028,
+            "to_year": 2028
+          },
+          {
+            "name": "Purchase a vehicle maintenance",
+            "yearly": 477.41,
+            "from_year": 2028,
+            "to_year": 2079
+          }
+        ]
+      }
+    ]
+  },
+  "narrative": {
+    "summary_main": "- You earn $270,000 a year together and have $728,500 in equity, yet only $210,000 is in investable assets. Another $150,000 sits in cash, and your home makes up 44% of your total assets.\n- Your retirement plan is a real strength. As a projection to age 91, income covers 93% of your yearly spending need, you capture both full employer matches, and your savings never run out in the plan.\n- Your cash is also a strength: $150,800 covers about 16 months of essentials, against the 8 to 9 months recommended. About $60,223 sits above that reserve and your near-term goals.\n- The central tension is that this spare cash sits idle while protection is open. Timothy has $140,000 of life insurance against a $750,000 recommended minimum. Melanie has $110,000 against $600,000. You have no umbrella policy, a $1,000,000 gap, and an $18,000 card balance at 18%.\n- Education is the other open need. You have $0 in 529s, and about $113,509 of college funding is still needed, or roughly $4,609 more saved each year. Liam starts college in 2038 and Josh in 2041. Your invested mix is about 81% stocks, and Timothy and Melanie have different comfort levels with risk.\n- A realistic direction is to decide together how to use the spare cash and your yearly cash flow across life insurance, an umbrella policy, the card and education saving. They compete for the same dollars, so the order is your choice. Keep the retirement plan and employer matches as they are.",
+    "summary_recommendations": "- Put part of the cash you hold above your emergency reserve and near-term goals to work on the open protection gaps, starting with life insurance for both of you, since two young children rely on both incomes.\n- Consider an umbrella policy, because a liability claim could reach well beyond what you currently have covered.\n- Look at paying off the high-rate credit card balance with some of that same cash, since it is your most expensive debt and your cash comfortably exceeds what you need to hold.\n- Decide how college saving for Liam and Josh should share your cash flow with the other priorities, since nothing is set aside for it yet.\n- Revisit your invested mix together so it sits where both of you are comfortable, given that your risk comfort levels differ.",
+    "retirement_short_observations": "- Your retirement plan looks well supported as a projection: income is projected to cover 93% of the $184,303.51 you would need each year, averaged over 31 retirement years, and your money doesn't run out before age 91.\n- Almost all of that coverage comes from guaranteed income (Social Security and annuities, $171,055.83 per year on average), while other income covers only 0.2%. The plan's strength therefore rests on those guaranteed sources holding up as projected.\n- Your savings are projected to cover only about $12,852.82 per year of spending on average, and the average draw is 1.0% of savings at the start of retirement. Savings and investments of $2,371,900.89 (today's dollars) are projected to remain at the end of the plan, which leaves a cushion if things come in worse than expected.\n- Cash flow is projected to turn negative in several years, including 2030, 2041 and 2048 to 2053. Given the large projected savings, this matters less than the overall picture, but it shows spending will not be smooth year to year. No long-term care cost is included, and you have other goals after retirement totaling $673,481.06.\n- Timothy's Growth and Melanie's Moderate risk profiles differ, and the portfolio is about 77% equity against a 60% Moderate target. That could add growth over the 21 years before retirement but also brings larger swings, so agreeing on how much swing you both can accept is worth considering. Your spending picture is also low confidence, so the projection is only as firm as those expense figures.",
+    "retirement_what_to_look_into": "**We should look into**: how reliable the guaranteed income from Social Security and annuities is, since it carries most of the plan, how the plan pays for the years when cash flow turns negative, and confirming actual spending so the projection rests on firm figures.",
+    "assets_short_observations": "- Your wealth sits mostly in your home: real estate is $350,000, or 44.4% of your $788,500 in total assets. That is a large share in one asset you can't easily spend, though you hold $300,000 of equity in it, with only a $50,000 mortgage (85.7% equity).\n- You hold $150,000 in cash against $210,000 in invested savings. Since invested savings are what retirement mostly rests on, this means a large part of your liquid wealth isn't set up to grow over the long term. The cash does give you a flexible cushion.\n- Your invested savings are 81.2% in stocks, against a 98.0% target. Timothy's risk profile is Growth and Melanie's is Moderate, so one household mix may fit each of you differently.\n- You are saving toward retirement steadily: both employer matches are fully captured, worth $8,000 and $6,000 a year, so no match is being left behind.",
+    "assets_what_to_look_into": "**We should look into**: how the $150,000 of cash fits alongside your invested savings, whether IRAs and an HSA could suit you given the limits you could contribute up to, and how the 81.2% stock mix compares with each person's risk profile, once the current mix per person is confirmed.",
+    "debt_short_observations": "- Your debt is manageable overall: $93,000 in total, with debt payments equal to 13.2% of your $270,000 income. The one costly exception is the $18,000 Chase card at 18%, while your mortgage, student loan and vehicle loan carry lower rates of 6%, 5.5% and 4.5%.\n- Counting housing costs too, your obligations take 15.1% of income, well under the 36% level lenders often watch first. Your debt load isn't what limits you right now.\n- The card is paid at $300 a month, which is close to the $270 a year of interest it generates. That is a small slice of the payment, but it means the 18% rate is the part of your debt most worth understanding.\n- If the $300 payment holds, the card is projected to be paid off in September 2039, about 12 years out. That is a projection, and it could shift because your monthly spending may be understated in the data.\n- You hold $150,800 in accessible cash, above the $75,180 to $84,577.50 reserve of 8 to 9 months of essential expenses. About $60,222.50 sits above the reserve and near-term goals. Weighing that cash against the 18% balance is the main trade-off, and keeping a healthy reserve matters more than the debt ratios.",
+    "debt_what_to_look_into": "**We should look into**: how the credit card balance compares with the cash held above your reserve, the card's payoff timeline at the current payment, and confirming your monthly spending, since expense figures may be understated.",
+    "savings_short_observations": "- You save $61,500 a year, 22.8% of your $270,000 income, and both employer matches are fully captured. Your retirement saving is on track, with no extra needed.\n- Your cash flow shows $36,960.75 a year left over (13.7%), but this figure is low confidence and spending may be understated. It matters because every other goal draws on the same uncertain surplus.\n- You hold $150,800 in cash, above the 8 to 9 months of essential expenses ($75,180 to $84,577.50) that would cover emergencies. About $60,222.50 sits beyond that reserve and your $6,000 vacation goal, so safety is well covered.\n- Education is your main unfunded goal: $0 is in 529 accounts, and meeting it would take about $4,609.22 more per year, a first-year projection that rises each year. That is 1.7% of your income, small next to the idle cash but dependent on your real spending.\n- Your Roth IRAs have $0 contributed so far. You could each contribute up to $5,250.10, though this competes with education for the same surplus.",
+    "savings_what_to_look_into": "**We should look into**: confirming your actual day-to-day spending, how the cash you hold above your reserve could support education saving and the 18% card, and whether Roth IRA contributions fit your plans.",
+    "protection_intro": "With Liam and Josh relying on both of your incomes, protection is where your picture is most uneven: your emergency fund is a real strength, giving you a solid cushion if something unexpected happens. Life insurance and umbrella coverage are where your household is more exposed, and the sections below explain each of these three areas in plain terms.",
+    "protection_emergency_fund_short_observations": "- Your $150,801 in accessible cash covers about 16 months of essential expenses, well above the 8 to 9 months recommended for a household with two young children and two incomes. There is no shortfall, so your cash cushion is a clear strength, and it still covers about 15.4 months after your $6,000 vacation payment.\n- Cash above the emergency reserve and your near-term goals comes to $60,223. That is a resource you have available as you look at the other protection gaps.",
+    "protection_life_insurance_short_observations": "- Timothy has $140,000 of life insurance against a recommended range of $750,000 to $1,500,000, a shortfall of $610,000. Melanie has $110,000 against a range of $600,000 to $1,200,000, a shortfall of $490,000. Neither of you has any excess, and both of you do hold some coverage. With Liam (6) and Josh (3) depending on both incomes, these gaps matter for your household.\n- Your household relies on two incomes, $150,000 from Timothy and $120,000 from Melanie. Losing either one would be hard for two young children to absorb.\n- Obligations would remain if one of you were gone: you have $93,000 of listed debt, including an 18% credit card of $18,000, and you still need $113,509 for college beyond current 529 balances.",
+    "protection_umbrella_short_observations": "- You have no umbrella policy, against a recommended minimum of $1,000,000, so the full $1,000,000 is uncovered. A liability claim could reach your net worth of $695,500, which makes this a real exposure rather than a prediction.\n- Your home and both vehicles are insured, but that cover is separate from umbrella liability protection and doesn't fill this gap.\n- A claim could reach $428,500 of assets ($368,500 of equity), and your $360,000 in liquid assets would be within reach too. That is the savings you are building for Liam and Josh.\n- Your cash cushion is a genuine strength, but it would be the money exposed in a claim, not a substitute for liability cover. The study has no policy quote or other liability exposure, so the cost and the right amount of cover remain open questions."
+  },
+  "key_metrics": {
+    "facts": {
+      "cash": {
+        "monthsCovered": {
+          "unit": "months",
+          "basis": "n/a",
+          "label": "Months of essential expenses accessible cash covers",
+          "value": "16",
+          "period": "today, before near-term goals",
+          "replaces": [
+            "ratios.emergencyFund.emergencyFundMonths (capped at \"+12\")",
+            "savingsAndExpenses.liquidityContext.emergencyFundInMonths",
+            "protection.emergencyFund.emergencyFundCoverageEvaluation.monthsCovered"
+          ],
+          "notToBeConfusedWith": [
+            "the recommended number of months"
+          ]
+        },
+        "nearTermGoals": [
+          {
+            "note": "A goal payment, not a down payment unless the goal is a purchase.",
+            "unit": "USD",
+            "basis": "as entered",
+            "label": "Go on vacation: cash to hold for its next payment",
+            "value": 6000,
+            "period": "next payment January 2027, then every year",
+            "replaces": [
+              "extraCashOutflows[].downpayment (holds any goal payment)"
+            ]
+          }
+        ],
+        "accessibleCash": {
+          "unit": "USD",
+          "basis": "today's dollars at the plan date",
+          "label": "Accessible cash (bank accounts plus taxable money market)",
+          "value": 150800,
+          "period": "balance today",
+          "notToBeConfusedWith": [
+            "bank cash alone (excludes money market)",
+            "cash inside retirement accounts, which is not accessible"
+          ]
+        },
+        "totalCashNeeded": {
+          "max": 90577.5,
+          "min": 81180,
+          "note": "Never call this the emergency reserve.",
+          "unit": "USD",
+          "basis": "today's dollars at the plan date",
+          "label": "Cash target: emergency reserve plus near-term goals",
+          "period": "target balance today",
+          "replaces": [
+            "ratios.emergencyFund.adjustedRecommendedMin/MaxAmount",
+            "savingsAndExpenses.liquidityContext.min/maxEmergencyFundTargetAndShortTermNeeds",
+            "cashNeeds.cashTarget"
+          ],
+          "notToBeConfusedWith": [
+            "emergencyReserve"
+          ]
+        },
+        "cashAboveReserve": {
+          "unit": "USD",
+          "basis": "today's dollars at the plan date",
+          "label": "Cash above the top of the emergency reserve, before near-term goals",
+          "value": 66222.5,
+          "period": "today",
+          "notToBeConfusedWith": [
+            "cashAboveTotalNeeded"
+          ]
+        },
+        "emergencyReserve": {
+          "max": 84577.5,
+          "min": 75180,
+          "note": "Excludes near-term goals. This alone is the emergency reserve.",
+          "unit": "USD",
+          "basis": "today's dollars at the plan date",
+          "label": "Recommended emergency reserve (8–9 months of essential expenses)",
+          "period": "target balance today",
+          "replaces": [
+            "ratios.emergencyFund.min/maxRecommendedEmergencyFund",
+            "savingsAndExpenses.liquidityContext.min/maxEmergencyFundTargetInCash",
+            "protection.emergencyFund.recommendedEmergencyFundLevels.minimum/maximumAmountRecommended",
+            "cashNeeds.emergencyFund"
+          ],
+          "notToBeConfusedWith": [
+            "totalCashNeeded"
+          ]
+        },
+        "cashAboveTotalNeeded": {
+          "note": "This is the cash that is free after the reserve and the near-term goals. Say it is above both; never call it the amount above the reserve or the reserve target.",
+          "unit": "USD",
+          "basis": "today's dollars at the plan date",
+          "label": "Cash above the emergency reserve and near-term goals",
+          "value": 60222.5,
+          "period": "today",
+          "replaces": [
+            "ratios.emergencyFund.excessOverAdjustedMax",
+            "ratios.emergencyFund.extraCashAboveMaxEmergencyFundPlusStg",
+            "savingsAndExpenses.liquidityContext.excessWithRecommendedMaxEmergencyFundAndShortTermNeeds",
+            "protection.emergencyFund.emergencyFundCoverageEvaluation.adjustedEmergencyFundExcessAfterShortTermCashNeeds",
+            "cashNeeds.accessibleCashExcess"
+          ],
+          "notToBeConfusedWith": [
+            "cashAboveReserve"
+          ]
+        },
+        "monthsCoveredAfterNearTermGoals": {
+          "unit": "months",
+          "basis": "n/a",
+          "label": "Months of essential expenses covered after setting aside near-term goals",
+          "value": "15.4",
+          "period": "today",
+          "replaces": [
+            "ratios.emergencyFund.adjustedMonthsCoveredAfterShortTermCashNeeds"
+          ]
+        }
+      },
+      "rules": [
+        "These facts are the only figures to quote for these concepts. Quote the label's meaning with the number; never relabel a fact as another one.",
+        "Each fact names the facts it must not be confused with. Never call one by the other's name.",
+        "Keep the unit: a USD/yr figure is always said per year, a lump sum never is.",
+        "Do not add, subtract or compare two facts unless a fact says how they relate.",
+        "Never quote a date that is before the plan date.",
+        "Write a date as month and year (August 2039), never as an ISO date (2039-08-01).",
+        "Write a ratio or rate as a percentage (55%), never as a decimal (0.551).",
+        "A fact's `replaces` lists key-metric fields that hold the same or a confusable figure under a misleading name. When you see one of those fields in your other inputs, quote the fact with its label instead. Field names are never labels."
+      ],
+      "education": {
+        "fundingGap": {
+          "note": "Not the amount to invest today and not the goal. It is larger than the total cost because college costs are inflated to the years they are paid.",
+          "unit": "USD",
+          "basis": "engine estimate: inflated college costs valued at college start, restated in today's dollars",
+          "label": "College funding still needed beyond current 529 balances",
+          "value": 113508.6,
+          "period": "one lump sum for all college years",
+          "notToBeConfusedWith": [
+            "totalCostAllGoals",
+            "combinedAnnualCost"
+          ]
+        },
+        "totalCostPerGoal": [
+          {
+            "unit": "USD",
+            "basis": "today's dollars at the plan date, before education inflation",
+            "label": "College Liam: total college cost, whole program",
+            "value": 45000,
+            "period": "4 years of college",
+            "notToBeConfusedWith": [
+              "annualCostPerGoal"
+            ]
+          },
+          {
+            "unit": "USD",
+            "basis": "today's dollars at the plan date, before education inflation",
+            "label": "College Josh: total college cost, whole program",
+            "value": 45000,
+            "period": "4 years of college",
+            "notToBeConfusedWith": [
+              "annualCostPerGoal"
+            ]
+          }
+        ],
+        "annualCostPerGoal": [
+          {
+            "unit": "USD/yr",
+            "basis": "today's dollars at the plan date",
+            "label": "College Liam: yearly college cost",
+            "value": 11250,
+            "period": "each year of college, 2038–2041 (4 payments); college starts August 2038, about 12 years from now",
+            "replaces": [
+              "listOfChildrenAndEducationGoals column \"Years to uni\" (rounded down)",
+              "listOfChildrenAndEducationGoals column \"Education goal ($)\" (a yearly cost)",
+              "protection.lifeInsurance.educationGoal column \"Total cost\" (a yearly cost)"
+            ],
+            "notToBeConfusedWith": [
+              "totalCostPerGoal",
+              "fundingGap"
+            ]
+          },
+          {
+            "unit": "USD/yr",
+            "basis": "today's dollars at the plan date",
+            "label": "College Josh: yearly college cost",
+            "value": 11250,
+            "period": "each year of college, 2041–2044 (4 payments); college starts August 2041, about 15 years from now",
+            "replaces": [
+              "listOfChildrenAndEducationGoals column \"Years to uni\" (rounded down)",
+              "listOfChildrenAndEducationGoals column \"Education goal ($)\" (a yearly cost)",
+              "protection.lifeInsurance.educationGoal column \"Total cost\" (a yearly cost)"
+            ],
+            "notToBeConfusedWith": [
+              "totalCostPerGoal",
+              "fundingGap"
+            ]
+          }
+        ],
+        "extraYearlySaving": {
+          "unit": "USD/yr",
+          "basis": "engine estimate",
+          "label": "Extra yearly saving needed for college (first year)",
+          "value": 4609.22,
+          "period": "per year from now until each child starts college, rising each year",
+          "notToBeConfusedWith": [
+            "annualCostPerGoal"
+          ]
+        },
+        "totalCostAllGoals": {
+          "note": "This is the education goal when one total is needed.",
+          "unit": "USD",
+          "basis": "today's dollars at the plan date, before education inflation",
+          "label": "Total college cost, all children, whole programs",
+          "value": 90000,
+          "period": "all college years",
+          "notToBeConfusedWith": [
+            "fundingGap",
+            "combinedAnnualCost"
+          ]
+        },
+        "combinedAnnualCost": {
+          "note": "Not the education goal and not a yearly household bill. Prefer per-child yearly costs; for one total use totalCostAllGoals.",
+          "unit": "USD/yr",
+          "basis": "today's dollars at the plan date",
+          "label": "Sum of each child's yearly college cost",
+          "value": 22500,
+          "period": "one year per child added together; their college years do not overlap",
+          "replaces": [
+            "assetsAndInvestments.educationGoalNeeds.educationGoalAmount",
+            "savingsAndExpenses.goals.totalEducationGoalRequiredAmount",
+            "ratios.educationSavings.totalEducationGoalsAmount"
+          ]
+        }
+      },
+      "retirement": {
+        "spendingGap": {
+          "note": "Savings, cash and required IRA withdrawals included, pay this each year on average. It is what the plan asks of savings.",
+          "unit": "USD/yr",
+          "basis": "today's dollars at the plan date",
+          "label": "Yearly retirement spending that income does not cover, paid from savings",
+          "value": 12852.82,
+          "period": "average over the 31 years of retirement",
+          "notToBeConfusedWith": [
+            "averagePortfolioDraw"
+          ]
+        },
+        "spendingNeed": {
+          "note": "Includes taxes, debt payments and goals after retirement; do not add those on top. annualTotalIncomeNeeded adds an estimated long-term care cost: do not quote it.",
+          "unit": "USD/yr",
+          "basis": "today's dollars at the plan date",
+          "label": "Yearly retirement spending need (excluding estimated long-term care)",
+          "value": 184303.51,
+          "period": "average over the 31 years of retirement",
+          "replaces": [
+            "retirementAndOtherGoals.incomeNeedsAndWithdrawals.annualTotalIncomeNeeded (adds estimated long-term care)"
+          ]
+        },
+        "guaranteedIncome": {
+          "unit": "USD/yr",
+          "basis": "today's dollars at the plan date",
+          "label": "Guaranteed income in retirement (Social Security, annuities, pensions)",
+          "value": 171055.83,
+          "period": "average over the 31 years of retirement; years before a benefit starts count as zero"
+        },
+        "incomeShareOfNeed": {
+          "unit": "percent",
+          "basis": "today's dollars at the plan date",
+          "label": "Share of the yearly retirement spending need that income covers (guaranteed and other income)",
+          "value": "93%",
+          "period": "average over the 31 years of retirement",
+          "replaces": [
+            "retirementAndOtherGoals.incomeVsIncomeNeeds.allIncomesVsIncomeNeededExLtcCosts",
+            "ratios.guaranteedIncomeRatio.allIncomesVsIncomeNeededExLtcCosts"
+          ]
+        },
+        "netCashFlowThisYear": {
+          "note": "The outflow table counts the employer 401(k) match of 14000 as household savings; the employer pays it, so this figure does not subtract it. Income 270000 minus outflows 247039.25 is 22960.75: never present that subtraction as this figure.",
+          "unit": "USD/yr",
+          "basis": "today's dollars at the plan date",
+          "label": "Net cash flow this year",
+          "value": 36960.75,
+          "period": "the plan year",
+          "notToBeConfusedWith": [
+            "averagePortfolioDraw",
+            "withdrawalRateThisYear",
+            "savingsCapacity"
+          ]
+        },
+        "averagePortfolioDraw": {
+          "note": "Counts only the months when spending exceeds every inflow. Required IRA withdrawals and other inflows drawn from savings are not in it, so savings pay more than this. Draws are concentrated in fewer years and are larger in those years. It is not the spending gap: never present it as filling that gap, and never use it to say the plan leans little on savings.",
+          "unit": "USD/yr",
+          "basis": "today's dollars at the plan date",
+          "label": "Average yearly draw from savings in retirement",
+          "value": 20687.67,
+          "period": "average over the 31 years of retirement, counting years with no draw as zero",
+          "replaces": [
+            "retirementAndOtherGoals.withdrawals.supplementalAnnualWithdrawals"
+          ],
+          "notToBeConfusedWith": [
+            "spendingGap"
+          ]
+        },
+        "savingsLeftAtPlanEnd": {
+          "unit": "USD",
+          "basis": "today's dollars at the plan date",
+          "label": "Savings and investments left at the end of the plan",
+          "value": 2371900.89,
+          "period": "end of plan",
+          "replaces": [
+            "assetDepletion.liquidAssetsAtEndOfPlan",
+            "capacity.liquidAssetsAtEndOfPlan"
+          ]
+        },
+        "withdrawalRateAverage": {
+          "note": "A lifetime average. Do not compare it with the 4% sustainable rate.",
+          "unit": "percent",
+          "basis": "today's dollars at the plan date",
+          "label": "Average yearly draw as a share of savings at the start of retirement",
+          "value": "1.0%",
+          "period": "average over the 31 years of retirement",
+          "replaces": [
+            "retirementAndOtherGoals.withdrawals.withdrawalRatio"
+          ],
+          "notToBeConfusedWith": [
+            "withdrawalRateThisYear"
+          ]
+        }
+      }
+    },
+    "ratios": {
+      "umbrella": {
+        "claim": "No coverage",
+        "color": "R",
+        "currentCoverage": 0,
+        "recommendedCoverage": 1000000
+      },
+      "currentDPD": {
+        "debtLastPayment": "2039-09-01T00:00:00.000Z",
+        "beforeRetirement": true,
+        "yearsInRetirement": 0,
+        "avgDTIInRetirement": 0,
+        "howMuchInRetirement": "Less than 5 years",
+        "avgDTIInRetirementLevel": "<10%"
+      },
+      "vehiclePRI": {
+        "vehiclesPri": 0.0178,
+        "monthlyGrossIncome": 22500,
+        "doTheyHaveAnyVehicle": true,
+        "vehiclesMonthlyPayments": 400,
+        "doTheyHaveAnyVehicleLoan": true,
+        "vehiclesPriFirstThreshold": 0.1,
+        "vehiclesPriSecondThreshold": 0.15
+      },
+      "debtToIncome": {
+        "ratio": 0.151,
+        "debtOnlyDti": 0.1316,
+        "grossIncome": 270000,
+        "rentalPayment": 0,
+        "mortgagesPayments": 24000,
+        "monthlyDebtPayments": 2960,
+        "otherHousingExpenses": 5250,
+        "totalMonthlyObligations": 3397.5,
+        "debtPaymentExcludingMortgages": 11520
+      },
+      "housingRatio": {
+        "ratio": 0.1083,
+        "grossIncome": 270000,
+        "rentalPayment": 0,
+        "housingExpenses": 29250,
+        "mortgagePayment": 24000,
+        "otherHousingExpenses": 5250
+      },
+      "indebtedness": {
+        "debt": true,
+        "housing": "own",
+        "debtBalance": 93000,
+        "monthlyDebtPayment": 2960,
+        "totalMonthlyObligations": 3397.5
+      },
+      "savingsLevel": {
+        "ratio": 0.2278,
+        "grossIncome": 270000,
+        "savingAmount": 61500
+      },
+      "emergencyFund": {
+        "claim": "Very over-reserved",
+        "color": "R",
+        "nrOfEarners": 2,
+        "emergencyFund": 150800,
+        "incomeDisparity": "Low",
+        "monthlyExpenses": 9397.5,
+        "totalCashAmount": 150000,
+        "inaccessibleCash": 3400,
+        "excessOverBaseMax": 66222.5,
+        "extraCashOutflows": [
+          {
+            "amount": 0,
+            "description": "Go on vacation",
+            "downpayment": 6000
+          }
+        ],
+        "shortfallToBaseMin": "Not applicable",
+        "emergencyFundMonths": "+12",
+        "highestEarningsLevel": "High",
+        "shortTermGoalsNeeded": [
+          {
+            "date": "2027-01-01T00:00:00.000Z",
+            "amount": 6000,
+            "description": "Go on vacation",
+            "paymentFrequency": "ANNUAL"
+          }
+        ],
+        "excessOverAdjustedMax": 60222.5,
+        "maxRecommendedEFMonths": 9,
+        "minRecommendedEFMonths": 8,
+        "shortfallToAdjustedMin": "Not applicable",
+        "totalMoneyMarketAmount": 800,
+        "deltaToMaxEmergencyFund": "Not applicable",
+        "moneyMarketFundAccounts": [
+          {
+            "accountName": "Brokerage account",
+            "accountType": "Brokerage account",
+            "cashBalance": 800
+          }
+        ],
+        "extraEmergencyFundNeeded": 6000,
+        "maxRecommendedEmergencyFund": 84577.5,
+        "maximumEmergencyFundPlusStg": 90577.5,
+        "minRecommendedEmergencyFund": 75180,
+        "adjustedRecommendedMaxAmount": 90577.5,
+        "adjustedRecommendedMinAmount": 81180,
+        "deltaToMaxEmergencyFundPlusStg": "Not applicable",
+        "extraCashAboveMaxEmergencyFund": 66222.5,
+        "extraCashAboveMinEmergencyFund": 75620,
+        "cashReservesAfterShortTermCashNeeds": 144800,
+        "extraCashAboveMaxEmergencyFundPlusStg": 60222.5,
+        "adjustedMonthsCoveredAfterShortTermCashNeeds": 15
+      },
+      "lifeInsurance": {
+        "scenario": {
+          "kids": true,
+          "earners": 2,
+          "spouses": 2,
+          "scenario": 9,
+          "debtBurden": "Low",
+          "incomeDisparity": "Low"
+        },
+        "clientEarner": {
+          "overInsured": 12,
+          "isHighEarner": true,
+          "underInsured": 0,
+          "adequatelyInsured": 5,
+          "slightlyOverInsured": 10,
+          "slightlyUnderInsured": 4
+        },
+        "clientCoverage": 140000,
+        "coClientEarner": {
+          "overInsured": 12,
+          "isHighEarner": false,
+          "underInsured": 0,
+          "adequatelyInsured": 5,
+          "slightlyOverInsured": 10,
+          "slightlyUnderInsured": 4
+        },
+        "coClientCoverage": 110000,
+        "clientCoverageKey": "Under insured",
+        "clientEarnedIncome": 150000,
+        "clientCoverageColor": "R",
+        "coClientCoverageKey": "Under insured",
+        "coClientEarnedIncome": 120000,
+        "coClientCoverageColor": "R",
+        "clientReplacementValue": 0,
+        "clientCoverageOverIncome": 0.9333,
+        "coClientReplacementValue": 0,
+        "coClientCoverageOverIncome": 0.9167,
+        "recommendedClientMaxCoverage": 1500000,
+        "recommendedClientMinCoverage": 750000,
+        "recommendedCoClientMaxCoverage": 1200000,
+        "recommendedCoClientMinCoverage": 600000,
+        "lifeInsuranceCoverageGapsAndExcess": {
+          "clientExcess": 0,
+          "coClientExcess": 0,
+          "clientShortfall": 610000,
+          "coClientShortfall": 490000
+        }
+      },
+      "creditCardDebt": {
+        "balance": 18000,
+        "hasDebt": true,
+        "ccPayoffDate": "2039-09-01T00:00:00.000Z",
+        "monthlyPayment": 300,
+        "retirementDate": "2048-03-01T00:00:00.000Z",
+        "yearsInRetirement": "Not applicable",
+        "maxCCPaymentNormal": 650.74,
+        "minCCPaymentNormal": 457.08,
+        "yearsToCcPayoffDate": 12,
+        "paymentsEqualToInterest": 270,
+        "percentageOfCCOverGrossIncome": 0.0667
+      },
+      "educationSavings": {
+        "totalGAP": 113508.6,
+        "goalsSummary": [
+          {
+            "date": "2038-08-01T00:00:00.000Z",
+            "weight": 0.5665,
+            "kidsAge": 6,
+            "goalName": "College Liam",
+            "termDate": "2042-01-01T00:00:00.000Z",
+            "totalGAP": 55117.56,
+            "goalAmount": 11250,
+            "yearsToStart": 11.75,
+            "accountBalance": 0,
+            "accountSavings": 0,
+            "requiredSavings": 2680.37,
+            "requiredExtraSavings": 2680.37,
+            "goalRequiredAmountAtToday": 55117.56,
+            "expectedCapitalizationAmount": 186.65
+          },
+          {
+            "date": "2041-08-01T00:00:00.000Z",
+            "weight": 0.4335,
+            "kidsAge": 3,
+            "goalName": "College Josh",
+            "termDate": "2045-01-01T00:00:00.000Z",
+            "totalGAP": 58391.04,
+            "goalAmount": 11250,
+            "yearsToStart": 14.75,
+            "accountBalance": 0,
+            "accountSavings": 0,
+            "requiredSavings": 1928.84,
+            "requiredExtraSavings": 1928.84,
+            "goalRequiredAmountAtToday": 58391.04,
+            "expectedCapitalizationAmount": 142.85
+          }
+        ],
+        "savingsIncrease": 0.03,
+        "expectedPerformance": 0.0753,
+        "totalRequiredSavings": 4609.22,
+        "current529AccountsBalance": 0,
+        "totalEducationGoalsAmount": 22500,
+        "totalRequiredExtraSavings": 4609.22,
+        "annualSavingsGoingTo529Accounts": 0,
+        "doTheyHaveEducationFundingGoals": true,
+        "totalEducationGoalRequiredAmountAtToday": 113508.6
+      },
+      "incomePercentile": {
+        "state": "CA",
+        "hasSpouse": true,
+        "percentile": 0.9,
+        "grossIncome": 270000
+      },
+      "realEstateEquity": {
+        "ratio": 0.8571,
+        "realEstateAssets": 350000,
+        "realEstateEquity": 300000,
+        "realEstateMortgages": 50000,
+        "realEstateEquityThreshold1": 0.2,
+        "realEstateEquityThreshold2": 0.5
+      },
+      "retirementSavings": {
+        "generalInflation": 0.03,
+        "yearsToRetirement": 21,
+        "averagePerformance": 0.0756,
+        "requiredExtraSavings": 0,
+        "planningGapAtRetirementAge": 0,
+        "supplementalTotalWithdrawals": 1316966.09,
+        "planningGapAtRetirementAgeInTodaysDollars": 0,
+        "balanceInRetirementAccountsAtRetirementAge": 2651947.59,
+        "supplementalTotalWithdrawalsInTodaysDollars": 641317.73,
+        "balanceInRetirementAccountsAtRetirementAgeInTodaysDollars": 1425552.5
+      },
+      "withdrawalRateRatio": {
+        "withdrawalRate": 0.0111,
+        "withdrawalRateToday": 0.0087,
+        "annualWithdrawalsToday": 3135.59,
+        "annualWithdrawalsOnAverage": 42482.78,
+        "withdrawalRateAtTodaysValue": 0.0102,
+        "totalWithdrawalsDuringRetirement": 1316966.09,
+        "investableAssetsAtFirstInRetireYrs": 3834317.29,
+        "investableAssetsAt2050YrsAtTodaysValue": 2018375.92,
+        "annualWithdrawalsOnAverageAtTodaysValue": 20687.67,
+        "totalWithdrawalsDuringRetirementAtTodaysValue": 641317.73
+      },
+      "investableAssetLevel": {
+        "basis": "income",
+        "ratio": 1.3333,
+        "cashBalance": 150000,
+        "grossIncome": 270000,
+        "annualExpenses": 112774,
+        "investableAssets": 210000,
+        "portfolioSustainabilityMultiple": 1.3333
+      },
+      "guaranteedIncomeRatio": {
+        "inflowsSummary": {
+          "name": "All inflows",
+          "total": 17685194.58,
+          "guaranteedIncome": {
+            "name": "Guaranteed income",
+            "total": 17661940.89,
+            "ANNUITY_INCOME": {
+              "name": "Annuity income",
+              "total": 11565912.68,
+              "totalAtTodaysValue": 3469028.55,
+              "yearlyAverageTotal": 373093.96,
+              "yearlyAverageTotalAtTodaysValue": 111904.15
+            },
+            "SOCIAL_SECURITY": {
+              "name": "Social security",
+              "total": 6096028.22,
+              "totalAtTodaysValue": 1833702.02,
+              "yearlyAverageTotal": 196646.07,
+              "yearlyAverageTotalAtTodaysValue": 59151.68
+            },
+            "totalAtTodaysValue": 5302730.58,
+            "yearlyAverageTotal": 569740.03,
+            "PENSION_AND_DEFINED_BENEFIT": {
+              "name": "Pension / defined benefit",
+              "total": 0,
+              "totalAtTodaysValue": 0,
+              "yearlyAverageTotal": 0,
+              "yearlyAverageTotalAtTodaysValue": 0
+            },
+            "yearlyAverageTotalAtTodaysValue": 171055.83
+          },
+          "otherIncomeSources": {
+            "name": "Other income sources",
+            "total": 23253.68,
+            "STOCK_COMP": {
+              "name": "Stock compensation",
+              "total": 0,
+              "totalAtTodaysValue": 0,
+              "yearlyAverageTotal": 0,
+              "yearlyAverageTotalAtTodaysValue": 0
+            },
+            "OTHER_INFLOW": {
+              "name": "Other income",
+              "total": 0,
+              "totalAtTodaysValue": 0,
+              "yearlyAverageTotal": 0,
+              "yearlyAverageTotalAtTodaysValue": 0
+            },
+            "DEFERRED_COMP": {
+              "name": "Deferred compensation",
+              "total": 0,
+              "totalAtTodaysValue": 0,
+              "yearlyAverageTotal": 0,
+              "yearlyAverageTotalAtTodaysValue": 0
+            },
+            "EARNED_INCOME": {
+              "name": "Earned income",
+              "total": 23253.68,
+              "totalAtTodaysValue": 12240.69,
+              "yearlyAverageTotal": 750.12,
+              "yearlyAverageTotalAtTodaysValue": 394.86
+            },
+            "RENTAL_INCOME": {
+              "name": "Rental income",
+              "total": 0,
+              "totalAtTodaysValue": 0,
+              "yearlyAverageTotal": 0,
+              "yearlyAverageTotalAtTodaysValue": 0
+            },
+            "ROYALTY_AND_IP": {
+              "name": "Royalty & IP",
+              "total": 0,
+              "totalAtTodaysValue": 0,
+              "yearlyAverageTotal": 0,
+              "yearlyAverageTotalAtTodaysValue": 0
+            },
+            "SUPPORT_TRANSFER": {
+              "name": "Support & transfer",
+              "total": 0,
+              "totalAtTodaysValue": 0,
+              "yearlyAverageTotal": 0,
+              "yearlyAverageTotalAtTodaysValue": 0
+            },
+            "GOVERNMENT_BENEFIT": {
+              "name": "Government benefit",
+              "total": 0,
+              "totalAtTodaysValue": 0,
+              "yearlyAverageTotal": 0,
+              "yearlyAverageTotalAtTodaysValue": 0
+            },
+            "totalAtTodaysValue": 12240.69,
+            "yearlyAverageTotal": 750.12,
+            "BUSINESS_PASSIVE_INCOME": {
+              "name": "Business passive income",
+              "total": 0,
+              "totalAtTodaysValue": 0,
+              "yearlyAverageTotal": 0,
+              "yearlyAverageTotalAtTodaysValue": 0
+            },
+            "PROPERTY_LIQUIDATION_EVENT": {
+              "name": "Property liquidation event",
+              "total": 0,
+              "totalAtTodaysValue": 0,
+              "yearlyAverageTotal": 0,
+              "yearlyAverageTotalAtTodaysValue": 0
+            },
+            "yearlyAverageTotalAtTodaysValue": 394.86
+          },
+          "totalAtTodaysValue": 5314971.26,
+          "yearlyAverageTotal": 570490.15,
+          "yearlyAverageTotalAtTodaysValue": 171450.69
+        },
+        "outflowsSummary": {
+          "name": "Outflows",
+          "total": 22834895.03,
+          "ltcCosts": {
+            "name": "LTC Costs",
+            "total": 4291352.09,
+            "totalAtTodaysValue": 974057.64,
+            "yearlyAverageTotal": 138430.71,
+            "yearlyAverageTotalAtTodaysValue": 243514.41
+          },
+          "excludingLtcCosts": {
+            "name": "Excluding LTC Costs",
+            "total": 18543542.94,
+            "totalAtTodaysValue": 5713408.75,
+            "yearlyAverageTotal": 598178.8,
+            "yearlyAverageTotalAtTodaysValue": 184303.51
+          },
+          "totalAtTodaysValue": 6687466.39,
+          "yearlyAverageTotal": 736609.52,
+          "yearlyAverageTotalAtTodaysValue": 215724.72
+        },
+        "ltcCostsAreEstimated": true,
+        "allIncomesVsIncomeNeeded": 0.7948,
+        "otherIncomeVsIncomeNeeded": 0.0018,
+        "guaranteedIncomeVsIncomeNeeded": 0.7929,
+        "allIncomesVsIncomeNeededExLtcCosts": 0.9303,
+        "otherIncomeVsIncomeNeededExLtcCosts": 0.0021,
+        "guaranteedIncomeVsIncomeNeededExLtcCosts": 0.9281
+      }
+    },
+    "protection": {
+      "emergencyFund": {
+        "clientProfile": {
+          "kids": [
+            {
+              "age": 6,
+              "name": "Liam"
+            },
+            {
+              "age": 3,
+              "name": "Josh"
+            }
+          ],
+          "clientAge": 40,
+          "clientName": "Timothy",
+          "coClientAge": 38,
+          "coClientName": "Melanie",
+          "numberOfChildren": 2,
+          "clientRiskProfile": "(4) Growth",
+          "clientIncomeAtRisk": 150000,
+          "coClientRiskProfile": "(3) Moderate",
+          "coClientIncomeAtRisk": 120000
+        },
+        "cashAccountList": [
+          {
+            "name": "Cash account",
+            "type": "Checking account",
+            "owner": "Melanie",
+            "value": 150000
+          }
+        ],
+        "extraCashOutflows": [
+          {
+            "amount": 0,
+            "description": "Go on vacation",
+            "downpayment": 6000
+          }
+        ],
+        "realEstateDetails": [
+          [
+            "Real estate",
+            "Market value",
+            "Mortgage balance",
+            "Equity",
+            "HELOC"
+          ],
+          [
+            "Primary home",
+            350000,
+            50000,
+            0.8571,
+            0
+          ]
+        ],
+        "cashAndExpensesOverview": {
+          "cashReserves": 150800,
+          "livingExpenses": 6000,
+          "housingExpenses": 2437.5,
+          "monthlyExpenses": 9397.5,
+          "totalCashAmount": 150800,
+          "otherDebtPayment": 960,
+          "totalMoneyMarketAmount": 800,
+          "cashReservesAfterShortTermCashNeeds": 144800
+        },
+        "otherAccountsContributions": [
+          [
+            "Account",
+            "Holder",
+            "Current contribution"
+          ],
+          [
+            "Brokerage account",
+            "Melanie",
+            15000
+          ],
+          [
+            "Cash account",
+            "Melanie",
+            7500
+          ]
+        ],
+        "retirementAndEducationGaps": {
+          "educationGap": 113508.6,
+          "retirementGap": 0
+        },
+        "recommendedEmergencyFundLevels": {
+          "maximumAmountRecommended": 84577.5,
+          "maximumMonthsRecommended": 9,
+          "minimumAmountRecommended": 75180,
+          "minimumMonthsRecommended": 8,
+          "extraEmergencyFundNeededByShortTermCashNeeds": 6000,
+          "maximumAmountAdjustedAfterShortTermCashNeeds": 90577.5,
+          "minimumAmountAdjustedAfterShortTermCashNeeds": 81180
+        },
+        "emergencyFundCoverageEvaluation": {
+          "monthsCovered": 16,
+          "emergencyFundExcess": 66222.5,
+          "emergencyFundShortfall": "Not applicable",
+          "adjustedMonthsCoveredAfterShortTermCashNeeds": 15,
+          "adjustedEmergencyFundExcessAfterShortTermCashNeeds": 60222.5,
+          "adjustedEmergencyFundShortfallAfterShortTermCashNeeds": "Not applicable"
+        },
+        "taxAdvantagedAccountsContributions": [
+          [
+            "Account",
+            "Holder",
+            "Current contribution",
+            "Max contribution"
+          ],
+          [
+            "401(k) - Timothy",
+            "Timothy",
+            22000,
+            24500
+          ],
+          [
+            "401k - Melanie",
+            "Melanie",
+            17000,
+            24500
+          ],
+          [
+            "IRA - Roth Melanie",
+            "Melanie",
+            0,
+            24500
+          ],
+          [
+            "IRA - Roth Timothy",
+            "Timothy",
+            0,
+            24500
+          ]
+        ]
+      },
+      "lifeInsurance": {
+        "legacyGoal": {
+          "amount": "Not applicable",
+          "hasLegacyGoal": false
+        },
+        "educationGoal": [
+          [
+            "Kid name",
+            "Total cost",
+            "Inception Year"
+          ],
+          [
+            "Liam",
+            11250,
+            "2038"
+          ],
+          [
+            "Josh",
+            11250,
+            "2041"
+          ]
+        ],
+        "clientDemographics": {
+          "kids": [
+            {
+              "age": 6,
+              "name": "Liam"
+            },
+            {
+              "age": 3,
+              "name": "Josh"
+            }
+          ],
+          "clientAge": 40,
+          "clientName": "Timothy",
+          "coClientAge": 38,
+          "coClientName": "Melanie",
+          "numberOfChildren": 2,
+          "clientRiskProfile": "(4) Growth",
+          "clientIncomeAtRisk": 150000,
+          "coClientRiskProfile": "(3) Moderate",
+          "coClientIncomeAtRisk": 120000
+        },
+        "lifeInsuranceCoverageBasics": {
+          "hasLifeInsuranceClient": true,
+          "hasLifeInsuranceCoClient": true,
+          "lifeInsuranceAmountClient": 140000,
+          "lifeInsuranceAmountCoClient": 110000
+        },
+        "lifeInsuranceCoverageGapsAndExcess": {
+          "clientExcess": 0,
+          "coClientExcess": 0,
+          "clientShortfall": 610000,
+          "coClientShortfall": 490000
+        },
+        "lifeInsuranceCoverageRecommendations": {
+          "clientMaxRecommendedCoverage": 1500000,
+          "clientMinRecommendedCoverage": 750000,
+          "coClientMaxRecommendedCoverage": 1200000,
+          "coClientMinRecommendedCoverage": 600000
+        }
+      },
+      "umbrellaInsurance": {
+        "assetExposed": {
+          "netWorth": 695500,
+          "totalLiquidAssets": 360000,
+          "assetExposedSummary": [
+            [
+              "Asset",
+              "Number",
+              "Value",
+              "Equity"
+            ],
+            [
+              "Real estate",
+              1,
+              350000,
+              300000
+            ],
+            [
+              "Vehicle",
+              2,
+              58500,
+              48500
+            ],
+            [
+              "Other asset",
+              1,
+              20000,
+              20000
+            ],
+            [
+              "Total",
+              4,
+              428500,
+              368500
+            ]
+          ]
+        },
+        "umbrellaCoverage": {
+          "claim": "No coverage",
+          "hasUmbrellaPolicy": false,
+          "umbrellaCoverageAmount": "Not applicable"
+        },
+        "clientDemographics": {
+          "kids": [
+            {
+              "age": 6,
+              "name": "Liam"
+            },
+            {
+              "age": 3,
+              "name": "Josh"
+            }
+          ],
+          "clientAge": 40,
+          "clientName": "Timothy",
+          "coClientAge": 38,
+          "coClientName": "Melanie",
+          "numberOfChildren": 2,
+          "clientRiskProfile": "(4) Growth",
+          "clientIncomeAtRisk": 150000,
+          "coClientRiskProfile": "(3) Moderate",
+          "coClientIncomeAtRisk": 120000
+        },
+        "assetInsuranceStatus": [
+          {
+            "assetName": "Primary home",
+            "assetType": "Real Estate",
+            "isInsured": true,
+            "equityAmount": 300000
+          },
+          {
+            "assetName": "Ford",
+            "assetType": "Vehicle",
+            "isInsured": true,
+            "equityAmount": 28500
+          },
+          {
+            "assetName": "Tesla",
+            "assetType": "Vehicle",
+            "isInsured": true,
+            "equityAmount": 20000
+          }
+        ],
+        "coverageRecommendationsAndAnalysis": {
+          "umbrellaCoverageGap": 1000000,
+          "umbrellaCoverageExcess": "Not applicable",
+          "umbrellaMinRecommendedCoverage": 1000000
+        }
+      }
+    },
+    "debtManagement": {
+      "realEstate": {
+        "realEstateEquity": 300000,
+        "realEstateEquityThreshold1": 0.2,
+        "realEstateEquityThreshold2": 0.5,
+        "percentageOfRealEstateEquity": 0.8571
+      },
+      "listOfDebts": [
+        [
+          "Name",
+          "Type",
+          "Balance",
+          "Interest rate",
+          "Monthly payments",
+          "Interest paid"
+        ],
+        [
+          "Primary home mortgage",
+          "Mortgage",
+          50000,
+          0.06,
+          2000,
+          250
+        ],
+        [
+          "Chase CC",
+          "Credit card",
+          18000,
+          0.18,
+          300,
+          270
+        ],
+        [
+          "Melanie's student loan",
+          "Student loan",
+          15000,
+          0.055,
+          260,
+          68.75
+        ],
+        [
+          "Tesla loan",
+          "Vehicle loan",
+          10000,
+          0.045,
+          400,
+          37.5
+        ]
+      ],
+      "debtOverview": {
+        "debt": true,
+        "debtBalance": 93000,
+        "beforeRetirement": true,
+        "avgDtiInRetirement": 0,
+        "percentageOfDebtOverGrossIncome": 0.3444
+      },
+      "clientProfile": {
+        "clientName": "Timothy",
+        "coClientName": "Melanie"
+      },
+      "creditCardDebt": {
+        "ccPayoffDate": "2039-09-01T00:00:00.000Z",
+        "retirementDate": "2048-03-01T00:00:00.000Z",
+        "ccMonthlyPayment": 300,
+        "creditCardBalance": 18000,
+        "yearsInRetirement": "Not applicable",
+        "maxCcPaymentNormal": 650.74,
+        "minCcPaymentNormal": 457.08,
+        "yearsToCcPayoffDate": 12,
+        "ccPaymentEqualToInterestRate": 270
+      },
+      "vehiclePayment": {
+        "vehiclesPri": 0.0178,
+        "doTheyHaveAnyVehicle": true,
+        "vehiclesMonthlyPayments": 400
+      },
+      "housingExpenses": {
+        "rentVsOwn": "Own",
+        "housingRatio": 0.1083,
+        "rentalPayment": 0,
+        "housingExpenses": 2437.5,
+        "mortgagePayment": 2000,
+        "otherHousingExpenses": 437.5,
+        "housingRatioFirstThreshold": 0.28,
+        "housingRatioSecondThreshold": 0.32
+      },
+      "savingsAndCashflow": {
+        "annualCashFlow": 36960.75,
+        "annualSavingsRate": 0.2278,
+        "annualSavingsAmount": 61500
+      },
+      "debtToIncomeAndMonthlyObligations": {
+        "dti": 0.151,
+        "debtOnlyDti": 0.1316,
+        "grossIncome": 270000,
+        "dtiFirstThreshold": 0.36,
+        "dtiThirdThreshold": 0.5,
+        "dtiSecondThreshold": 0.43,
+        "monthlyGrossIncome": 22500,
+        "monthlyDebtPayments": 2960,
+        "totalMonthlyObligations": 3397.5,
+        "percentageOfDebtOverGrossIncome": 0.3444
+      }
+    },
+    "cashflowStatement": {
+      "inflows": {
+        "items": [
+          {
+            "name": "Earned income",
+            "items": [
+              {
+                "name": "Salary and wages",
+                "joint": 0,
+                "total": 270000,
+                "client": 150000,
+                "coClient": 120000
+              }
+            ],
+            "joint": 0,
+            "total": 270000,
+            "client": 150000,
+            "coClient": 120000
+          }
+        ],
+        "joint": 0,
+        "total": 270000,
+        "client": 150000,
+        "coClient": 120000
+      },
+      "outflows": {
+        "items": [
+          {
+            "name": "Taxes",
+            "items": [
+              {
+                "name": "Federal Income Tax",
+                "joint": 36267.98,
+                "total": 36267.98,
+                "client": 0,
+                "coClient": 0
+              },
+              {
+                "name": "FICA tax",
+                "joint": 180,
+                "total": 20835,
+                "client": 11475,
+                "coClient": 9180
+              },
+              {
+                "name": "State Income Tax",
+                "joint": 15662.27,
+                "total": 15662.27,
+                "client": 0,
+                "coClient": 0
+              }
+            ],
+            "joint": 52110.25,
+            "total": 72765.25,
+            "client": 11475,
+            "coClient": 9180
+          },
+          {
+            "name": "Expenses",
+            "items": [
+              {
+                "name": "Living Expenses",
+                "joint": 0,
+                "total": 72000,
+                "client": 72000,
+                "coClient": 0
+              },
+              {
+                "name": "Insurance payments",
+                "joint": 0,
+                "total": 4,
+                "client": 2,
+                "coClient": 2
+              }
+            ],
+            "joint": 0,
+            "total": 72004,
+            "client": 72002,
+            "coClient": 2
+          },
+          {
+            "name": "Savings",
+            "items": [
+              {
+                "name": "401k - Traditional savings",
+                "joint": 0,
+                "total": 25000,
+                "client": 14000,
+                "coClient": 11000
+              },
+              {
+                "name": "Brokerage account savings",
+                "joint": 0,
+                "total": 15000,
+                "client": 0,
+                "coClient": 15000
+              },
+              {
+                "name": "Cash savings",
+                "joint": 0,
+                "total": 7500,
+                "client": 0,
+                "coClient": 7500
+              }
+            ],
+            "joint": 0,
+            "total": 47500,
+            "client": 14000,
+            "coClient": 33500
+          },
+          {
+            "name": "Housing Expenses",
+            "items": [
+              {
+                "name": "Mortgage",
+                "joint": 0,
+                "total": 24000,
+                "client": 24000,
+                "coClient": 0
+              },
+              {
+                "name": "Property Taxes",
+                "joint": 0,
+                "total": 3500,
+                "client": 3500,
+                "coClient": 0
+              },
+              {
+                "name": "Home Insurance",
+                "joint": 0,
+                "total": 1750,
+                "client": 1750,
+                "coClient": 0
+              }
+            ],
+            "joint": 0,
+            "total": 29250,
+            "client": 29250,
+            "coClient": 0
+          },
+          {
+            "name": "Debt Payments",
+            "items": [
+              {
+                "name": "Car loan payments",
+                "joint": 0,
+                "total": 4800,
+                "client": 4800,
+                "coClient": 0
+              },
+              {
+                "name": "Credit card payments",
+                "joint": 0,
+                "total": 3600,
+                "client": 3600,
+                "coClient": 0
+              },
+              {
+                "name": "Student loan payments",
+                "joint": 0,
+                "total": 3120,
+                "client": 3120,
+                "coClient": 0
+              }
+            ],
+            "joint": 0,
+            "total": 11520,
+            "client": 11520,
+            "coClient": 0
+          }
+        ],
+        "joint": 52110.25,
+        "total": 233039.25,
+        "client": 138247,
+        "coClient": 42682
+      },
+      "freeCashflow": {
+        "joint": -52110.25,
+        "total": 36960.75,
+        "client": 11753,
+        "coClient": 77318
+      }
+    },
+    "netWorthStatement": {
+      "assets": {
+        "name": "Assets",
+        "type": "MAIN",
+        "items": [
+          {
+            "name": "Cash account",
+            "type": "CATEGORY",
+            "items": [
+              {
+                "name": "Cash account",
+                "type": "INDIVIDUAL",
+                "joint": 0,
+                "total": 150000,
+                "client": 0,
+                "coClient": 150000,
+                "annualSavings": 7500,
+                "clientSavings": 7500,
+                "annualMatching": 0,
+                "portfolioTypeName": "Checking account"
+              }
+            ],
+            "joint": 0,
+            "order": 1,
+            "total": 150000,
+            "client": 0,
+            "coClient": 150000,
+            "totalDebts": 0
+          },
+          {
+            "name": "Investment account",
+            "type": "CATEGORY",
+            "items": [
+              {
+                "name": "Taxable",
+                "type": "INDIVIDUAL",
+                "items": [
+                  {
+                    "name": "Brokerage account",
+                    "type": "PORTFOLIO",
+                    "joint": 0,
+                    "total": 40000,
+                    "client": 0,
+                    "coClient": 40000,
+                    "annualSavings": 15000,
+                    "clientSavings": 15000,
+                    "annualMatching": 0,
+                    "portfolioTypeName": "Brokerage account"
+                  }
+                ],
+                "joint": 0,
+                "total": 40000,
+                "client": 0,
+                "coClient": 40000
+              },
+              {
+                "name": "Tax-free",
+                "type": "INDIVIDUAL",
+                "items": [
+                  {
+                    "name": "IRA - Roth Timothy",
+                    "type": "PORTFOLIO",
+                    "joint": 0,
+                    "total": 25000,
+                    "client": 25000,
+                    "coClient": 0,
+                    "annualSavings": 0,
+                    "clientSavings": 0,
+                    "annualMatching": 0,
+                    "portfolioTypeName": "401k - Roth"
+                  },
+                  {
+                    "name": "IRA - Roth Melanie",
+                    "type": "PORTFOLIO",
+                    "joint": 0,
+                    "total": 20000,
+                    "client": 0,
+                    "coClient": 20000,
+                    "annualSavings": 0,
+                    "clientSavings": 0,
+                    "annualMatching": 0,
+                    "portfolioTypeName": "401k - Roth"
+                  }
+                ],
+                "joint": 0,
+                "total": 45000,
+                "client": 25000,
+                "coClient": 20000
+              },
+              {
+                "name": "Tax-deferred",
+                "type": "INDIVIDUAL",
+                "items": [
+                  {
+                    "name": "401(k) - Timothy",
+                    "type": "PORTFOLIO",
+                    "joint": 0,
+                    "total": 70000,
+                    "client": 70000,
+                    "coClient": 0,
+                    "annualSavings": 22000,
+                    "clientSavings": 14000,
+                    "annualMatching": 8000,
+                    "portfolioTypeName": "401k - Traditional"
+                  },
+                  {
+                    "name": "401k - Melanie",
+                    "type": "PORTFOLIO",
+                    "joint": 0,
+                    "total": 55000,
+                    "client": 0,
+                    "coClient": 55000,
+                    "annualSavings": 17000,
+                    "clientSavings": 11000,
+                    "annualMatching": 6000,
+                    "portfolioTypeName": "401k - Traditional"
+                  }
+                ],
+                "joint": 0,
+                "total": 125000,
+                "client": 70000,
+                "coClient": 55000
+              }
+            ],
+            "joint": 0,
+            "order": 2,
+            "total": 210000,
+            "client": 95000,
+            "coClient": 115000,
+            "totalDebts": 0
+          },
+          {
+            "name": "Stock compensation",
+            "type": "CATEGORY",
+            "joint": 0,
+            "order": 3,
+            "total": 0,
+            "client": 0,
+            "coClient": 0,
+            "_isHidden": true,
+            "totalDebts": 0
+          },
+          {
+            "name": "Annuity",
+            "type": "CATEGORY",
+            "joint": 0,
+            "order": 4,
+            "total": 0,
+            "client": 0,
+            "coClient": 0,
+            "_isHidden": true,
+            "totalDebts": 0
+          },
+          {
+            "name": "Insurance (Cash value)",
+            "type": "CATEGORY",
+            "joint": 0,
+            "order": 5,
+            "total": 0,
+            "client": 0,
+            "coClient": 0,
+            "_isHidden": true,
+            "totalDebts": 0
+          },
+          {
+            "name": "Business",
+            "type": "CATEGORY",
+            "joint": 0,
+            "order": 6,
+            "total": 0,
+            "client": 0,
+            "coClient": 0,
+            "_isHidden": true,
+            "totalDebts": 0
+          },
+          {
+            "name": "Real estate",
+            "type": "CATEGORY",
+            "items": [
+              {
+                "name": "Primary home",
+                "type": "INDIVIDUAL",
+                "joint": 0,
+                "total": 350000,
+                "client": 350000,
+                "coClient": 0
+              }
+            ],
+            "joint": 0,
+            "order": 7,
+            "total": 350000,
+            "client": 350000,
+            "coClient": 0,
+            "totalDebts": 50000
+          },
+          {
+            "name": "Vehicle",
+            "type": "CATEGORY",
+            "items": [
+              {
+                "name": "Tesla",
+                "type": "INDIVIDUAL",
+                "joint": 0,
+                "total": 30000,
+                "client": 30000,
+                "coClient": 0
+              },
+              {
+                "name": "Ford",
+                "type": "INDIVIDUAL",
+                "joint": 0,
+                "total": 28500,
+                "client": 28500,
+                "coClient": 0
+              }
+            ],
+            "joint": 0,
+            "order": 8,
+            "total": 58500,
+            "client": 58500,
+            "coClient": 0,
+            "totalDebts": 10000
+          },
+          {
+            "name": "Other asset",
+            "type": "CATEGORY",
+            "items": [
+              {
+                "name": "Jewelry",
+                "type": "INDIVIDUAL",
+                "joint": 0,
+                "total": 20000,
+                "client": 20000,
+                "coClient": 0
+              }
+            ],
+            "joint": 0,
+            "order": 9,
+            "total": 20000,
+            "client": 20000,
+            "coClient": 0,
+            "totalDebts": 0
+          }
+        ],
+        "joint": 0,
+        "total": 788500,
+        "client": 523500,
+        "coClient": 265000,
+        "totalDebts": 60000
+      },
+      "netWorth": {
+        "joint": 0,
+        "total": 695500,
+        "client": 430500,
+        "coClient": 265000
+      },
+      "liabilities": {
+        "name": "Liabilities",
+        "type": "MAIN",
+        "items": [
+          {
+            "name": "Credit card",
+            "type": "CATEGORY",
+            "items": [
+              {
+                "name": "Chase CC",
+                "type": "INDIVIDUAL",
+                "joint": 0,
+                "total": 18000,
+                "client": 18000,
+                "coClient": 0
+              }
+            ],
+            "joint": 0,
+            "order": 1,
+            "total": 18000,
+            "client": 18000,
+            "coClient": 0
+          },
+          {
+            "name": "Student loan",
+            "type": "CATEGORY",
+            "items": [
+              {
+                "name": "Melanie's student loan",
+                "type": "INDIVIDUAL",
+                "joint": 0,
+                "total": 15000,
+                "client": 15000,
+                "coClient": 0
+              }
+            ],
+            "joint": 0,
+            "order": 2,
+            "total": 15000,
+            "client": 15000,
+            "coClient": 0
+          },
+          {
+            "name": "Business loan",
+            "type": "CATEGORY",
+            "joint": 0,
+            "order": 3,
+            "total": 0,
+            "client": 0,
+            "coClient": 0,
+            "_isHidden": true
+          },
+          {
+            "name": "Personal loan",
+            "type": "CATEGORY",
+            "items": [
+              {
+                "name": "Tesla loan",
+                "type": "INDIVIDUAL",
+                "joint": 0,
+                "total": 10000,
+                "client": 10000,
+                "coClient": 0
+              }
+            ],
+            "joint": 0,
+            "order": 4,
+            "total": 10000,
+            "client": 10000,
+            "coClient": 0
+          },
+          {
+            "name": "Investment loan",
+            "type": "CATEGORY",
+            "joint": 0,
+            "order": 5,
+            "total": 0,
+            "client": 0,
+            "coClient": 0,
+            "_isHidden": true
+          },
+          {
+            "name": "Real estate debt",
+            "type": "CATEGORY",
+            "items": [
+              {
+                "name": "Primary home mortgage",
+                "type": "INDIVIDUAL",
+                "joint": 0,
+                "total": 50000,
+                "client": 50000,
+                "coClient": 0
+              }
+            ],
+            "joint": 0,
+            "order": 6,
+            "total": 50000,
+            "client": 50000,
+            "coClient": 0
+          },
+          {
+            "name": "Other debt",
+            "type": "CATEGORY",
+            "joint": 0,
+            "order": 7,
+            "total": 0,
+            "client": 0,
+            "coClient": 0,
+            "_isHidden": true
+          }
+        ],
+        "joint": 0,
+        "total": 93000,
+        "client": 93000,
+        "coClient": 0
+      }
+    },
+    "savingsAndExpenses": {
+      "goals": {
+        "clientRetirementAge": 62,
+        "coClientRetirementAge": 60,
+        "shortTermGoalsCashNeeds": 6000,
+        "doTheyHaveEducationFundingGoals": true,
+        "totalEducationGoalRequiredAmount": 22500
+      },
+      "annualSavings": {
+        "currentAnnualSavingsAtHSA": 0,
+        "currentAnnualSavingsAtHSARate": 0,
+        "currentAnnualSavingsAt529Accounts": 0,
+        "requiredRetirementExtraAnnualSavings": 0,
+        "currentAnnualSavingsAt529AccountsRate": 0,
+        "currentAnnualSavingsAtTaxableAccounts": 15000,
+        "gapInRetirementAccountsAtRetirementAge": 0,
+        "requiredAnnualSavingsAtTaxableAccounts": 15000,
+        "requiredExtraAnnualSavingsForEducation": 4609.22,
+        "currentAnnualSavingsAtRetirementAccounts": 39000,
+        "requiredRetirementExtraAnnualSavingsRate": 0,
+        "currentAnnualSavingsAtTaxableAccountsRate": 0.0556,
+        "requiredAnnualSavingsAtTaxableAccountsRate": 0.0556,
+        "requiredExtraAnnualSavingsForEducationRate": 0.0171,
+        "currentAnnualSavingsAtRetirementAccountsRate": 0.1444
+      },
+      "clientProfile": {
+        "clientAge": 40,
+        "clientName": "Timothy",
+        "coClientAge": 38,
+        "coClientName": "Melanie",
+        "numberOfChildren": 2,
+        "stateOfResidence": "California",
+        "clientRiskProfile": "(4) Growth",
+        "coClientRiskProfile": "(3) Moderate",
+        "maximumAgeOfChildren": 6,
+        "minimumAgeOfChildren": 3
+      },
+      "otherExpenses": {
+        "lifeInsuranceGap": 1100000,
+        "umbrellaInsuranceGap": 1000000
+      },
+      "liquidityContext": {
+        "shortTermNeeds": 6000,
+        "emergencyFundInCash": 150800,
+        "emergencyFundInMonths": "+12",
+        "maxEmergencyFundTargetInCash": 84577.5,
+        "minEmergencyFundTargetInCash": 75180,
+        "maxEmergencyFundTargetInMonths": 9,
+        "minEmergencyFundTargetInMonths": 8,
+        "gapWithRecommendedMinEmergencyFund": "Not applicable",
+        "excessWithRecommendedMaxEmergencyFund": 66222.5,
+        "maxEmergencyFundTargetAndShortTermNeeds": 90577.5,
+        "minEmergencyFundTargetAndShortTermNeeds": 81180,
+        "gapWithRecommendedMinEmergencyFundAndShortTermNeeds": "Not applicable",
+        "excessWithRecommendedMaxEmergencyFundAndShortTermNeeds": 60222.5
+      },
+      "advantagedSavings": {
+        "hsaMaxContributions": 8750,
+        "hsaClientCanContribute": true,
+        "hsaClientContributions": 0,
+        "client401kCanContribute": "Yes",
+        "client401kContributions": 14000,
+        "hsaCoClientCanContribute": true,
+        "hsaCoClientContributions": 0,
+        "coClient401kCanContribute": "Yes",
+        "coClient401kContributions": 11000,
+        "iraClientMaxContributions": 7500,
+        "rothIraClientCanContribute": true,
+        "rothIraClientContributions": 0,
+        "iraCoClientMaxContributions": 7500,
+        "rothIraCoClientCanContribute": true,
+        "rothIraCoClientContributions": 0,
+        "rothIraClientMaxContributions": 5250.1,
+        "rothIraCoClientMaxContributions": 5250.1,
+        "traditionalIraClientContributions": 0,
+        "traditionalIraCoClientContributions": 0,
+        "client401kContributionsMaxEmployerMatch": 9000,
+        "coClient401kContributionsMaxEmployerMatch": 7200,
+        "traditionalIraClientCanDeductContributions": false,
+        "client401kContributionsCurrentEmployerMatch": 8000,
+        "traditionalIraCoClientCanDeductContributions": false,
+        "coClient401kContributionsCurrentEmployerMatch": 6000,
+        "traditionalIraClientMaxDeductibleContributions": 0,
+        "traditionalIraCoClientMaxDeductibleContributions": 0
+      },
+      "incomeAndCashflow": {
+        "incomeSummary": [
+          [
+            "Category",
+            "Value",
+            "Percentage"
+          ],
+          [
+            "Earned income - Client",
+            150000,
+            0.5556
+          ],
+          [
+            "Earned income - Co-Client",
+            120000,
+            0.4444
+          ],
+          [
+            "Total",
+            270000,
+            1
+          ]
+        ],
+        "annualCashflow": 36960.75,
+        "outflowSummary": [
+          [
+            "Category",
+            "Value",
+            "Percentage"
+          ],
+          [
+            "Taxes",
+            72765.25,
+            0.2695
+          ],
+          [
+            "Debt Payments",
+            11520,
+            0.0427
+          ],
+          [
+            "Housing Expenses",
+            29250,
+            0.1083
+          ],
+          [
+            "Savings",
+            61500,
+            0.2278
+          ],
+          [
+            "Expenses",
+            72004,
+            0.2667
+          ],
+          [
+            "Total",
+            247039.25,
+            0.915
+          ]
+        ],
+        "annualCashflowPercentage": 0.1369,
+        "householdIncomePercentile": 0.9
+      },
+      "housingInformation": {
+        "rentVsOwn": "Own",
+        "rentalPayment": 0,
+        "housingExpenses": 2437.5,
+        "mortgagePayment": 2000,
+        "otherHousingExpenses": 437.5
+      },
+      "debtRatiosAndHealth": {
+        "dti": 0.151,
+        "housingRatio": 0.1083,
+        "housingExpenses": 2437.5,
+        "dtiFirstThreshold": 0.36,
+        "dtiThirdThreshold": 0.5,
+        "dtiSecondThreshold": 0.43,
+        "totalMonthlyObligations": 3397.5,
+        "housingRatioFirstThreshold": 0.28,
+        "housingRatioSecondThreshold": 0.32,
+        "percentageOfDebtOverGrossIncome": 0.3444
+      },
+      "shortTermGoalsNeeded": [
+        {
+          "date": "2027-01-01T00:00:00.000Z",
+          "amount": 6000,
+          "description": "Go on vacation",
+          "paymentFrequency": "ANNUAL"
+        }
+      ]
+    },
+    "assetsAndInvestments": {
+      "withdrawals": {
+        "rmdStartAge": 75,
+        "rmdStartYear": 2061,
+        "coClientRmdStartAge": 75,
+        "coClientRmdStartYear": 2063,
+        "averageWithdrawalsDuringRmds": 0,
+        "yearsPayingMoreRmdsThanRequiredWithoutSavings": 0,
+        "yearsPayingMoreRmdsThanRequiredWithCurrentSavings": 7
+      },
+      "listOfAssets": [
+        [
+          "Asset type",
+          "Number of assets",
+          "Asset value",
+          "% of total assets",
+          "Equity value",
+          "% of Net worth"
+        ],
+        [
+          "Cash account",
+          1,
+          150000,
+          0.1902,
+          150000,
+          0.2059
+        ],
+        [
+          "Investment account",
+          5,
+          210000,
+          0.2663,
+          210000,
+          0.2883
+        ],
+        [
+          "Real estate",
+          1,
+          350000,
+          0.4439,
+          300000,
+          0.4118
+        ],
+        [
+          "Vehicle",
+          2,
+          58500,
+          0.0742,
+          48500,
+          0.0666
+        ],
+        [
+          "Other asset",
+          1,
+          20000,
+          0.0254,
+          20000,
+          0.0275
+        ]
+      ],
+      "clientProfile": {
+        "clientAge": 40,
+        "clientName": "Timothy",
+        "coClientAge": 38,
+        "coClientName": "Melanie",
+        "clientRiskProfile": "(4) Growth",
+        "clientRetirementAge": 62,
+        "coClientRiskProfile": "(3) Moderate",
+        "coClientRetirementAge": 60
+      },
+      "contributions": {
+        "IRAContributions": [
+          [
+            "IRA contributions (Traditional + Roth)",
+            "Client",
+            "Co-Client"
+          ],
+          [
+            "Max IRA contribution (Traditional + Roth)",
+            7500,
+            7500
+          ],
+          [
+            "IRA catch-up (age 50+)",
+            "Not applicable",
+            "Not applicable"
+          ],
+          [
+            "Total possible IRA contribution",
+            7500,
+            7500
+          ],
+          [
+            "Roth IRA eligible amount (estimate)",
+            5250.1,
+            5250.1
+          ]
+        ],
+        "hsaContributions": {
+          "catchUpForClient": "Not applicable",
+          "maxContributions": 8750,
+          "catchUpForCoClient": "Not applicable",
+          "totalPossibleContribution": 8750
+        },
+        "employerPlanContributions": [
+          [
+            "Employer plan contributions (401k, 403b, etc)",
+            "Client",
+            "Co-Client"
+          ],
+          [
+            "Max employee contribution",
+            24500,
+            24500
+          ],
+          [
+            "Catch up (age 50+)",
+            "Not applicable",
+            "Not applicable"
+          ],
+          [
+            "Super catch up (age 60-63)",
+            "Not applicable",
+            "Not applicable"
+          ],
+          [
+            "Total possible employee contribution",
+            24500,
+            24500
+          ]
+        ]
+      },
+      "educationGoal": {
+        "hasAnEducationGoal": true
+      },
+      "listOfAccounts": [
+        [
+          "Account",
+          "Client",
+          "Number",
+          "Balance",
+          "Annual contribution"
+        ],
+        [
+          "401k - Roth",
+          "Melanie",
+          1,
+          20000,
+          0
+        ],
+        [
+          "401k - Roth",
+          "Timothy",
+          1,
+          25000,
+          0
+        ],
+        [
+          "401k - Traditional",
+          "Melanie",
+          1,
+          55000,
+          17000
+        ],
+        [
+          "401k - Traditional",
+          "Timothy",
+          1,
+          70000,
+          22000
+        ],
+        [
+          "Brokerage account",
+          "Melanie",
+          1,
+          40000,
+          15000
+        ],
+        [
+          "Cash/savings",
+          "Melanie",
+          1,
+          150000,
+          7500
+        ]
+      ],
+      "matchGapAnalysis": [
+        {
+          "holder": "client",
+          "accountName": "401(k) - Timothy",
+          "accountType": "401K",
+          "grossSalary": 150000,
+          "matchStructure": "FIXED_AMOUNT",
+          "alertSuppressed": false,
+          "matchPolicySource": "configured",
+          "currentAnnualMatch": 8000,
+          "fullMatchThreshold": 0,
+          "activeContributions": true,
+          "matchPolicyConfigured": true,
+          "uncapturedAnnualMatch": 0,
+          "maxPossibleAnnualMatch": 8000,
+          "matchMaximizationStatus": "MAXIMIZED",
+          "lifetimeUncapturedMatchEstimate": 0,
+          "additionalContributionToMaximize": 0
+        },
+        {
+          "holder": "coClient",
+          "accountName": "401k - Melanie",
+          "accountType": "401K",
+          "grossSalary": 120000,
+          "matchStructure": "FIXED_AMOUNT",
+          "alertSuppressed": false,
+          "matchPolicySource": "configured",
+          "currentAnnualMatch": 6000,
+          "fullMatchThreshold": 0,
+          "activeContributions": true,
+          "matchPolicyConfigured": true,
+          "uncapturedAnnualMatch": 0,
+          "maxPossibleAnnualMatch": 6000,
+          "matchMaximizationStatus": "MAXIMIZED",
+          "lifetimeUncapturedMatchEstimate": 0,
+          "additionalContributionToMaximize": 0
+        }
+      ],
+      "incomeAndTaxation": {
+        "taxRates": [
+          [
+            "Tax rate",
+            "Current",
+            "Expected at retirement"
+          ],
+          [
+            "Federal ordinary tax rate",
+            0.24,
+            0.2352
+          ],
+          [
+            "State tax rate",
+            0.093,
+            0.093
+          ],
+          [
+            "NIIT tax rate",
+            0,
+            0
+          ],
+          [
+            "Effective ordinary tax rate",
+            0.333,
+            0.3282
+          ]
+        ],
+        "taxableIncome": {
+          "totalTaxableIncome": 212799.92
+        },
+        "totalGrossIncome": 270000,
+        "clientGrossIncome": 150000,
+        "coClientGrossIncome": 120000
+      },
+      "educationGoalNeeds": {
+        "current529Balance": 0,
+        "educationGoalAmount": 22500,
+        "target529Contributions": 4609.22,
+        "current529Contributions": 0
+      },
+      "retirementGlidePath": {
+        "retirementGlidePathForClient": "98% equity and 2% fixed income",
+        "retirementGlideEquityForClient": 0.9798,
+        "retirementGlidePathForCoClient": "98% equity and 2% fixed income",
+        "retirementGlideEquityForCoClient": 0.9798,
+        "retirementGlideFixedIncomeForClient": 0.0202,
+        "retirementGlideFixedIncomeForCoClient": 0.0202
+      },
+      "totalAssetsAndEquity": {
+        "totalAssets": 788500,
+        "totalEquity": 728500
+      },
+      "realEstateAndMortgage": {
+        "mortgageBalance": 50000,
+        "realEstateEquity": 0.8571,
+        "realEstateEquityThreshold1": 0.2,
+        "realEstateEquityThreshold2": 0.5
+      },
+      "listOfRealEstateAssets": [
+        [
+          "Real estate",
+          "Value",
+          "Debt amount",
+          "Debt %",
+          "Equity amount",
+          "Equity %"
+        ],
+        [
+          "Primary home",
+          350000,
+          50000,
+          0.1429,
+          300000,
+          0.8571
+        ]
+      ],
+      "percentageOfCashThreshold": 0.5,
+      "listOfChildrenAndEducationGoals": [
+        [
+          "Student",
+          "Age",
+          "Education goal timeframe",
+          "Years to uni",
+          "Education goal ($)",
+          "Target equity allocation in 529 account",
+          "Target fixed income in 529 account"
+        ],
+        [
+          "Liam",
+          6,
+          "2038 - 2042",
+          11,
+          11250,
+          0.7999,
+          0.2001
+        ],
+        [
+          "Josh",
+          3,
+          "2041 - 2045",
+          14,
+          11250,
+          0.9798,
+          0.0202
+        ]
+      ]
+    },
+    "retirementAndOtherGoals": {
+      "otherIncome": [
+        [
+          "Income source",
+          "Total value",
+          "Yearly average value"
+        ],
+        [
+          "Earned income",
+          12240.69,
+          394.86
+        ],
+        [
+          "Total other income",
+          12240.69,
+          394.86
+        ]
+      ],
+      "withdrawals": {
+        "withdrawalRatio": 0.0102,
+        "supplementalTotalWithdrawals": 641317.73,
+        "supplementalAnnualWithdrawals": 20687.67
+      },
+      "clientProfile": {
+        "clientAge": 40,
+        "clientName": "Timothy",
+        "coClientAge": 38,
+        "coClientName": "Melanie",
+        "endOfPlanAge": 91,
+        "clientRiskProfile": "(4) Growth",
+        "clientRetirementAge": 62,
+        "coClientRiskProfile": "(3) Moderate",
+        "coClientRetirementAge": 60
+      },
+      "assetDepletion": {
+        "netWorthAtEndOfPlan": 3359399.98,
+        "requiredRetirementAge": "Not applicable",
+        "liquidAssetsAtEndOfPlan": 2371900.89,
+        "shortfallInNumberOfYears": "Not applicable",
+        "ageWhenTheyRunOutOfNetWorth": "Not applicable",
+        "ageWhenTheyRunOutOfLiquidAssets": "Not applicable"
+      },
+      "guaranteedIncome": [
+        [
+          "Income source",
+          "Total value",
+          "Yearly average value"
+        ],
+        [
+          "Social security",
+          1833702.02,
+          59151.68
+        ],
+        [
+          "Annuity income",
+          3469028.55,
+          111904.15
+        ],
+        [
+          "Pension / defined benefit",
+          0,
+          0
+        ],
+        [
+          "Total guaranteed income",
+          5302730.58,
+          171055.83
+        ]
+      ],
+      "incomeVsIncomeNeeds": {
+        "allIncomesVsIncomeNeeded": 0.7948,
+        "otherIncomeVsIncomeNeeded": 0.0018,
+        "guaranteedIncomeVsIncomeNeeded": 0.7929,
+        "allIncomesVsIncomeNeededExLtcCosts": 0.9303,
+        "otherIncomeVsIncomeNeededExLtcCosts": 0.0021,
+        "guaranteedIncomeVsIncomeNeededExLtcCosts": 0.9281
+      },
+      "otherGoalsAndLegacy": {
+        "legacyGoal": false,
+        "legacyGoalGap": "Not applicable",
+        "legacyGoalAmount": "Not applicable",
+        "achievesLegacyGoals": "Not applicable",
+        "otherGoalsAfterRetirement": true,
+        "otherGoalsAfterRetirementAmount": 673481.06
+      },
+      "netWorthAtRetirement": {
+        "netWorthAtRetirementAge": 2820966.62,
+        "liquidAssetsAtRetirementAge": 2010341.81,
+        "nonLiquidAssetsAtRetirementAge": 810624.8
+      },
+      "incomeNeedsAndWithdrawals": {
+        "totalLtcCosts": 974057.64,
+        "annualLtcCosts": 243514.41,
+        "totalIncomeNeeded": 6687466.39,
+        "ltcCostsAreEstimated": true,
+        "annualTotalIncomeNeeded": 215724.72,
+        "totalIncomeNeededExLtcCosts": 5713408.75,
+        "annualTotalIncomeNeededExLtcCosts": 184303.51
+      }
+    }
+  },
+  "projections": {
+    "yearly": [
+      {
+        "year": 2026,
+        "age_client": 40,
+        "age_co_client": 38,
+        "net_worth": 712086,
+        "net_worth_todays_dollars": 710310,
+        "total_debts": 88321,
+        "investable_assets": 371588,
+        "net_worth_needed": 712086
+      },
+      {
+        "year": 2027,
+        "age_client": 41,
+        "age_co_client": 39,
+        "net_worth": 823317,
+        "net_worth_todays_dollars": 797021,
+        "total_debts": 59265,
+        "investable_assets": 449278,
+        "net_worth_needed": 823317
+      },
+      {
+        "year": 2028,
+        "age_client": 42,
+        "age_co_client": 40,
+        "net_worth": 945346,
+        "net_worth_todays_dollars": 888140,
+        "total_debts": 63390,
+        "investable_assets": 524488,
+        "net_worth_needed": 945346
+      },
+      {
+        "year": 2029,
+        "age_client": 43,
+        "age_co_client": 41,
+        "net_worth": 1044059,
+        "net_worth_todays_dollars": 951926,
+        "total_debts": 51658,
+        "investable_assets": 614300,
+        "net_worth_needed": 1044059
+      },
+      {
+        "year": 2030,
+        "age_client": 44,
+        "age_co_client": 42,
+        "net_worth": 1163031,
+        "net_worth_todays_dollars": 1029097,
+        "total_debts": 575584,
+        "investable_assets": 561863,
+        "net_worth_needed": 1163031
+      },
+      {
+        "year": 2031,
+        "age_client": 45,
+        "age_co_client": 43,
+        "net_worth": 1307142,
+        "net_worth_todays_dollars": 1122472,
+        "total_debts": 558046,
+        "investable_assets": 663135,
+        "net_worth_needed": 1307142
+      },
+      {
+        "year": 2032,
+        "age_client": 46,
+        "age_co_client": 44,
+        "net_worth": 1460964,
+        "net_worth_todays_dollars": 1217530,
+        "total_debts": 540989,
+        "investable_assets": 772423,
+        "net_worth_needed": 1460964
+      },
+      {
+        "year": 2033,
+        "age_client": 47,
+        "age_co_client": 45,
+        "net_worth": 1621060,
+        "net_worth_todays_dollars": 1311072,
+        "total_debts": 528599,
+        "investable_assets": 890605,
+        "net_worth_needed": 1621060
+      },
+      {
+        "year": 2034,
+        "age_client": 48,
+        "age_co_client": 46,
+        "net_worth": 1790331,
+        "net_worth_todays_dollars": 1405233,
+        "total_debts": 519936,
+        "investable_assets": 1018840,
+        "net_worth_needed": 1790331
+      },
+      {
+        "year": 2035,
+        "age_client": 49,
+        "age_co_client": 47,
+        "net_worth": 1972378,
+        "net_worth_todays_dollars": 1502424,
+        "total_debts": 510473,
+        "investable_assets": 1157086,
+        "net_worth_needed": 1972378
+      },
+      {
+        "year": 2036,
+        "age_client": 50,
+        "age_co_client": 48,
+        "net_worth": 2167951,
+        "net_worth_todays_dollars": 1602652,
+        "total_debts": 500119,
+        "investable_assets": 1306111,
+        "net_worth_needed": 2167951
+      },
+      {
+        "year": 2037,
+        "age_client": 51,
+        "age_co_client": 49,
+        "net_worth": 2377773,
+        "net_worth_todays_dollars": 1705877,
+        "total_debts": 488768,
+        "investable_assets": 1466740,
+        "net_worth_needed": 2377773
+      },
+      {
+        "year": 2038,
+        "age_client": 52,
+        "age_co_client": 50,
+        "net_worth": 2585588,
+        "net_worth_todays_dollars": 1800214,
+        "total_debts": 476299,
+        "investable_assets": 1622749,
+        "net_worth_needed": 2585588
+      },
+      {
+        "year": 2039,
+        "age_client": 53,
+        "age_co_client": 51,
+        "net_worth": 2807491,
+        "net_worth_todays_dollars": 1897014,
+        "total_debts": 463596,
+        "investable_assets": 1791106,
+        "net_worth_needed": 2807491
+      },
+      {
+        "year": 2040,
+        "age_client": 54,
+        "age_co_client": 52,
+        "net_worth": 3042480,
+        "net_worth_todays_dollars": 1995112,
+        "total_debts": 452567,
+        "investable_assets": 1972706,
+        "net_worth_needed": 3042480
+      },
+      {
+        "year": 2041,
+        "age_client": 55,
+        "age_co_client": 53,
+        "net_worth": 3265261,
+        "net_worth_todays_dollars": 2077997,
+        "total_debts": 440741,
+        "investable_assets": 2143579,
+        "net_worth_needed": 3265261
+      },
+      {
+        "year": 2042,
+        "age_client": 56,
+        "age_co_client": 54,
+        "net_worth": 3532509,
+        "net_worth_todays_dollars": 2181714,
+        "total_debts": 428060,
+        "investable_assets": 2351109,
+        "net_worth_needed": 3532509
+      },
+      {
+        "year": 2043,
+        "age_client": 57,
+        "age_co_client": 55,
+        "net_worth": 3817378,
+        "net_worth_todays_dollars": 2288058,
+        "total_debts": 414463,
+        "investable_assets": 2573911,
+        "net_worth_needed": 3817378
+      },
+      {
+        "year": 2044,
+        "age_client": 58,
+        "age_co_client": 56,
+        "net_worth": 4121133,
+        "net_worth_todays_dollars": 2397209,
+        "total_debts": 399882,
+        "investable_assets": 2813143,
+        "net_worth_needed": 4121133
+      },
+      {
+        "year": 2045,
+        "age_client": 59,
+        "age_co_client": 57,
+        "net_worth": 4469226,
+        "net_worth_todays_dollars": 2522952,
+        "total_debts": 384247,
+        "investable_assets": 3094139,
+        "net_worth_needed": 4469226
+      },
+      {
+        "year": 2046,
+        "age_client": 60,
+        "age_co_client": 58,
+        "net_worth": 4841694,
+        "net_worth_todays_dollars": 2652537,
+        "total_debts": 367483,
+        "investable_assets": 3396816,
+        "net_worth_needed": 4841694
+      },
+      {
+        "year": 2047,
+        "age_client": 61,
+        "age_co_client": 59,
+        "net_worth": 5240317,
+        "net_worth_todays_dollars": 2786180,
+        "total_debts": 349506,
+        "investable_assets": 3722822,
+        "net_worth_needed": 5240317
+      },
+      {
+        "year": 2048,
+        "age_client": 62,
+        "age_co_client": 60,
+        "net_worth": 5442180,
+        "net_worth_todays_dollars": 2808095,
+        "total_debts": 330229,
+        "investable_assets": 3849106,
+        "net_worth_needed": 5442180
+      },
+      {
+        "year": 2049,
+        "age_client": 63,
+        "age_co_client": 61,
+        "net_worth": 5553124,
+        "net_worth_todays_dollars": 2780762,
+        "total_debts": 309560,
+        "investable_assets": 3881366,
+        "net_worth_needed": 5553124
+      },
+      {
+        "year": 2050,
+        "age_client": 64,
+        "age_co_client": 62,
+        "net_worth": 5663547,
+        "net_worth_todays_dollars": 2752342,
+        "total_debts": 287395,
+        "investable_assets": 3909846,
+        "net_worth_needed": 5663547
+      },
+      {
+        "year": 2051,
+        "age_client": 65,
+        "age_co_client": 63,
+        "net_worth": 5765563,
+        "net_worth_todays_dollars": 2719211,
+        "total_debts": 263629,
+        "investable_assets": 3926498,
+        "net_worth_needed": 5765563
+      },
+      {
+        "year": 2052,
+        "age_client": 66,
+        "age_co_client": 64,
+        "net_worth": 5862710,
+        "net_worth_todays_dollars": 2683410,
+        "total_debts": 238145,
+        "investable_assets": 3934690,
+        "net_worth_needed": 5862710
+      },
+      {
+        "year": 2053,
+        "age_client": 67,
+        "age_co_client": 65,
+        "net_worth": 6167559,
+        "net_worth_todays_dollars": 2739614,
+        "total_debts": 210818,
+        "investable_assets": 4146811,
+        "net_worth_needed": 6167559
+      },
+      {
+        "year": 2054,
+        "age_client": 68,
+        "age_co_client": 66,
+        "net_worth": 6555401,
+        "net_worth_todays_dollars": 2825939,
+        "total_debts": 181516,
+        "investable_assets": 4437961,
+        "net_worth_needed": 6555401
+      },
+      {
+        "year": 2055,
+        "age_client": 69,
+        "age_co_client": 67,
+        "net_worth": 6991844,
+        "net_worth_todays_dollars": 2925113,
+        "total_debts": 150095,
+        "investable_assets": 4773543,
+        "net_worth_needed": 6991844
+      },
+      {
+        "year": 2056,
+        "age_client": 70,
+        "age_co_client": 68,
+        "net_worth": 7458069,
+        "net_worth_todays_dollars": 3028062,
+        "total_debts": 116404,
+        "investable_assets": 5134524,
+        "net_worth_needed": 7458069
+      },
+      {
+        "year": 2057,
+        "age_client": 71,
+        "age_co_client": 69,
+        "net_worth": 7956228,
+        "net_worth_todays_dollars": 3134967,
+        "total_debts": 80276,
+        "investable_assets": 5522827,
+        "net_worth_needed": 7956228
+      },
+      {
+        "year": 2058,
+        "age_client": 72,
+        "age_co_client": 70,
+        "net_worth": 8488634,
+        "net_worth_todays_dollars": 3246019,
+        "total_debts": 41537,
+        "investable_assets": 5940523,
+        "net_worth_needed": 8488634
+      },
+      {
+        "year": 2059,
+        "age_client": 73,
+        "age_co_client": 71,
+        "net_worth": 9057769,
+        "net_worth_todays_dollars": 3361413,
+        "total_debts": 0,
+        "investable_assets": 6389838,
+        "net_worth_needed": 9057769
+      },
+      {
+        "year": 2060,
+        "age_client": 74,
+        "age_co_client": 72,
+        "net_worth": 9621762,
+        "net_worth_todays_dollars": 3465315,
+        "total_debts": 0,
+        "investable_assets": 6873168,
+        "net_worth_needed": 9621762
+      },
+      {
+        "year": 2061,
+        "age_client": 75,
+        "age_co_client": 73,
+        "net_worth": 10070976,
+        "net_worth_todays_dollars": 3520035,
+        "total_debts": 0,
+        "investable_assets": 7239265,
+        "net_worth_needed": 10070976
+      },
+      {
+        "year": 2062,
+        "age_client": 76,
+        "age_co_client": 74,
+        "net_worth": 10538674,
+        "net_worth_todays_dollars": 3574776,
+        "total_debts": 0,
+        "investable_assets": 7621320,
+        "net_worth_needed": 10538674
+      },
+      {
+        "year": 2063,
+        "age_client": 77,
+        "age_co_client": 75,
+        "net_worth": 10894736,
+        "net_worth_todays_dollars": 3586469,
+        "total_debts": 0,
+        "investable_assets": 7889132,
+        "net_worth_needed": 10894736
+      },
+      {
+        "year": 2064,
+        "age_client": 78,
+        "age_co_client": 76,
+        "net_worth": 11251414,
+        "net_worth_todays_dollars": 3594553,
+        "total_debts": 0,
+        "investable_assets": 8154877,
+        "net_worth_needed": 11251414
+      },
+      {
+        "year": 2065,
+        "age_client": 79,
+        "age_co_client": 77,
+        "net_worth": 11607716,
+        "net_worth_todays_dollars": 3598918,
+        "total_debts": 0,
+        "investable_assets": 8417479,
+        "net_worth_needed": 11607716
+      },
+      {
+        "year": 2066,
+        "age_client": 80,
+        "age_co_client": 78,
+        "net_worth": 11961193,
+        "net_worth_todays_dollars": 3599044,
+        "total_debts": 0,
+        "investable_assets": 8674407,
+        "net_worth_needed": 11961193
+      },
+      {
+        "year": 2067,
+        "age_client": 81,
+        "age_co_client": 79,
+        "net_worth": 12310930,
+        "net_worth_todays_dollars": 3594934,
+        "total_debts": 0,
+        "investable_assets": 8924657,
+        "net_worth_needed": 12310930
+      },
+      {
+        "year": 2068,
+        "age_client": 82,
+        "age_co_client": 80,
+        "net_worth": 12653482,
+        "net_worth_todays_dollars": 3585894,
+        "total_debts": 0,
+        "investable_assets": 9164697,
+        "net_worth_needed": 12653482
+      },
+      {
+        "year": 2069,
+        "age_client": 83,
+        "age_co_client": 81,
+        "net_worth": 12988685,
+        "net_worth_todays_dollars": 3572235,
+        "total_debts": 0,
+        "investable_assets": 9394271,
+        "net_worth_needed": 12988685
+      },
+      {
+        "year": 2070,
+        "age_client": 84,
+        "age_co_client": 82,
+        "net_worth": 13311338,
+        "net_worth_todays_dollars": 3552908,
+        "total_debts": 0,
+        "investable_assets": 9608081,
+        "net_worth_needed": 13311338
+      },
+      {
+        "year": 2071,
+        "age_client": 85,
+        "age_co_client": 83,
+        "net_worth": 13621274,
+        "net_worth_todays_dollars": 3528316,
+        "total_debts": 0,
+        "investable_assets": 9805864,
+        "net_worth_needed": 13621274
+      },
+      {
+        "year": 2072,
+        "age_client": 86,
+        "age_co_client": 84,
+        "net_worth": 13914178,
+        "net_worth_todays_dollars": 3497798,
+        "total_debts": 0,
+        "investable_assets": 9983203,
+        "net_worth_needed": 13914178
+      },
+      {
+        "year": 2073,
+        "age_client": 87,
+        "age_co_client": 85,
+        "net_worth": 14188088,
+        "net_worth_todays_dollars": 3461373,
+        "total_debts": 0,
+        "investable_assets": 10138033,
+        "net_worth_needed": 14188088
+      },
+      {
+        "year": 2074,
+        "age_client": 88,
+        "age_co_client": 86,
+        "net_worth": 14442231,
+        "net_worth_todays_dollars": 3419371,
+        "total_debts": 0,
+        "investable_assets": 10269474,
+        "net_worth_needed": 14442231
+      },
+      {
+        "year": 2075,
+        "age_client": 89,
+        "age_co_client": 87,
+        "net_worth": 14670470,
+        "net_worth_todays_dollars": 3370881,
+        "total_debts": 0,
+        "investable_assets": 10371279,
+        "net_worth_needed": 14670470
+      },
+      {
+        "year": 2076,
+        "age_client": 90,
+        "age_co_client": 88,
+        "net_worth": 14874373,
+        "net_worth_todays_dollars": 3316848,
+        "total_debts": 0,
+        "investable_assets": 10444903,
+        "net_worth_needed": 14874373
+      },
+      {
+        "year": 2077,
+        "age_client": null,
+        "age_co_client": 89,
+        "net_worth": 15334811,
+        "net_worth_todays_dollars": 3318583,
+        "total_debts": 0,
+        "investable_assets": 10771100,
+        "net_worth_needed": 15334811
+      },
+      {
+        "year": 2078,
+        "age_client": null,
+        "age_co_client": 90,
+        "net_worth": 15957595,
+        "net_worth_todays_dollars": 3351422,
+        "total_debts": 0,
+        "investable_assets": 11255558,
+        "net_worth_needed": 15957595
+      },
+      {
+        "year": 2079,
+        "age_client": null,
+        "age_co_client": 90,
+        "net_worth": 16115848,
+        "net_worth_todays_dollars": 3359400,
+        "total_debts": 0,
+        "investable_assets": 11378578,
+        "net_worth_needed": 16115848
+      }
+    ]
+  }
+}
