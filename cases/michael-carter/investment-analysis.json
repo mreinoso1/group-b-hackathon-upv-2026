@@ -1,0 +1,3462 @@
+{
+  "schema_version": 2,
+  "part": "investment-analysis",
+  "case": {
+    "slug": "michael-carter",
+    "household": [
+      {
+        "first_name": "Michael",
+        "role": "client",
+        "age": 37,
+        "retirement_age": 58,
+        "employment": "EMPLOYED",
+        "risk_profile": "Growth"
+      }
+    ],
+    "city": "Austin",
+    "state": "TX",
+    "zip_code": "78701",
+    "tax_filing_status": "SINGLE",
+    "synthetic": true
+  },
+  "narrative": {
+    "summary_main": "- **Retirement is the gap** — Your portfolio has to fund a long retirement while you keep saving from one salary. Your investable assets of $145,000 are a solid base. The clearest shortfall is that your savings and investments run out at age 85, leaving $32,439 of planned spending unpaid.\n- **What the numbers mean** — Income covers about 34% of your yearly retirement spending need of $89,649, so savings must supply about $59,613 per year on average. Net cash flow is -$8,336 per year, so each dollar needs a clear job.\n- **Where to start** — Rebuild your emergency reserve toward $46,530 to $55,836, and pay off the $3,500 credit card at 20% early. Then add to retirement: you defer $17,000 to your 401(k), so $7,500 is the most you can add. You could contribute up to $4,500 to a Roth IRA.\n- **Order matters** — Retirement saving, cash building and card payoff compete for the same dollars while cash flow is negative, so we'll test the sequence. Cost basis in your taxable brokerage account is missing, so the tax effect of any sale isn't known yet.\n- **Keep an eye on** — Your income depends on one employer, which adds risk on top of a thin cash cushion. Watch both as you build reserves.",
+    "snapshot_main": "This snapshot covers the accounts we have on record for you: your 401(k), your HSA, your taxable brokerage account, and your checking and savings. Taken together, they form a portfolio built around a large taxable brokerage account alongside your retirement and cash accounts, with a thin cash cushion relative to the size of the investments.",
+    "portfolio_today_intro": "Your portfolio is built for long-term growth, yet the same dollars also have to carry a retirement that currently runs short and keep a cash cushion that is still thin, so one pool of money is serving several jobs at once. Growth, safety and retirement income don't always pull in the same direction, which makes this a question of liquidity and sequencing more than of any single holding. The sections below look at how well today's portfolio serves each of those purposes.",
+    "portfolio_today_what_it_needs_to_do": "- **Safety cushion** — Your accessible cash of $30,000 covers about 2.9 months of expenses. A reserve of 5 to 6 months ($46,530 to $55,836) would let an unexpected event pass without forcing you to sell investments, which leaves you $16,530 short of the minimum. This money's job is to be available and stable, not to chase growth.\n- **Retirement income** — Today's projection shows your funds lasting to age 85 and ending the plan $32,439 short, with a withdrawal rate of 5.59% at today's value. This is the long-horizon job, and it draws on the same dollars as your yearly cash flow and your cash cushion.\n- **Long-term growth and tax-aware savings** — Your 401(k), HSA and taxable brokerage account carry the growth work, with $145,000 of investable assets. You defer $17,000 to the 401(k) with an employer match, and you could add up to $7,500 more to what you defer. You could also contribute up to $4,500 to a Roth IRA, with nothing contributed so far. Timing depends on how your cash flow allows.",
+    "portfolio_today_what_its_actually_doing": "- **Thin cash cushion** — Your accessible cash covers about 2.9 months of expenses, against a suggested 5 to 6 months ($46,530 to $55,836). That leaves you $16,530 short of the minimum. An unexpected bill or income interruption would likely be met by selling investments or borrowing, rather than from cash on hand.\n- **Spending outruns income** — Your net cash flow is -$8,336 a year, which is 4.63% of gross income, after expenses, taxes and $11,400 a year of debt payments. Even though cash flow has improved from -$14,936, your day-to-day spending and debt service still draw on savings. That makes the cash shortfall slow to close on its own.\n- **One employer carries both job and wealth** — Your $180,000 salary equals 82.38% of your $218,500 net worth. Your paycheck and most of your financial picture depend on the same employer. If that income were disrupted, you would feel it in your cash cushion and your investments' ability to keep growing at the same time, since the cushion is already thin.\n- **Expensive debt sits beside the shortfall** — Your Amex card carries $3,500 at 20%, with $200 paid monthly. Interest at that rate runs well above what idle savings earn, so it adds to the pressure on cash flow. Your overall debt is $28,500, or 15.83% of gross income, with a debt-only DTI of 6.33%, which is modest.",
+    "portfolio_today_performance_timeline": "Over the three years to November 2026, your portfolio grew about 13.6% a year. A simple diversified portfolio holding the same share in stocks grew about 15.3% a year over the same stretch, so you trailed it by roughly 1.7 percentage points. Your value moved up and down by about 7.9% a year, against about 9.0% for that comparison. Per unit of risk taken, the two were close (1.27 for you, 1.30 for the comparison). In plain terms, you earned about what your mix of stocks, bonds and cash would be expected to earn. Three years is a fairly short record, so it describes this window and not a long-run pattern.\n\nThe most meaningful pattern is how you behaved in rough patches. In your worst stretch the portfolio fell about 10.2% from its peak and recovered in 62 days, while the comparison fell about 11.4%. You also fell less than the comparison in most market shocks. Around the April 2025 tariff pause, you fell 2.0% against 3.3%. Around the February 2026 Supreme Court tariff ruling, you fell 0.8% against 1.4%. The flip side is that you captured only about 72% of the market's gains in rising stretches, while taking about 91% of its losses. So you gave up somewhat more of the recoveries than you saved in the declines.\n\nYour accounts differed. The 401(k) returned about 17.9% a year, while the HSA, which is mostly bonds and cash, returned about 3.0%. The paths of your portfolio and the comparison stayed close throughout, and the differences in individual shocks were small, so I wouldn't read a strong story into any single episode. Past results over this window are not a forecast.",
+    "portfolio_today_whats_working": "- **Employer match captured** — You contribute enough to your 401(k) to receive the employer contribution, which adds $7,000 a year to your retirement plan. That is compensation you already collect, and it builds alongside your own deferrals without any extra effort or cost from you.\n- **Steady 401(k) deferrals** — You defer $17,000 a year into your traditional 401(k), against a $24,500 limit, and the account holds $80,000. Those contributions build tax-deferred retirement savings, and you are keeping them up alongside saving in your HSA and brokerage account.\n- **Manageable debt** — Your debt-only debt-to-income ratio is 6.33%, with payments of $11,400 a year against $180,000 of gross income. Total debt is $28,500: $15,000 for the BMW 3 Series loan, $10,000 for the student loan and $3,500 on the Amex card.\n- **Cash flow** — Your net cash flow is -$8,336 a year, leaving an annual gap.\n- **Net worth** — Your net worth is $218,500.",
+    "portfolio_today_priorities": "- **Retirement depletion** — Your plan shows liquid assets running out at 85 and ending at -$32,439, with a 5.59% withdrawal rate at today's value. Closing that would take about $20,231 more per year, and those same dollars are also needed to cover your negative cash flow.\n- **Thin cash cushion** — Your cash covers about 2.9 months of expenses, against a suggested 5 to 6 months ($46,530 to $55,836). That leaves you $16,530 short of the minimum, so an unexpected expense or income interruption could force you to sell investments instead.\n- **Cash flow** — Net cash flow is -$8,336 a year, about 4.63% of gross income, even after improving from -$14,936. Spending and debt payments of $11,400 a year draw on savings, which limits how quickly the reserve and the retirement shortfall can both be addressed.",
+    "portfolio_today_verdict": "You are doing real work in your retirement accounts: you defer $17,000 to your 401(k), your employer adds $7,000 a year, and your 401(k) returned 17.9% annualized over three years. The weak point is that this effort still falls short of the goal, with a projected shortfall of $1,177,586 and savings running out at age 85. Closing that gap would take about $20,231 more per year, yet your yearly cash flow is already negative, so retirement dollars compete with your 20% credit card, your emergency reserve and your January 2027 home purchase. Your 401(k) limit is $24,500, so the most you can add is $7,500 (worth about $1,800 in tax), and you could contribute up to $4,500 to a Roth IRA, where nothing has been contributed so far, though your eligibility at this income is still to be confirmed. What is at stake is a retirement income that lasts, and trying to do everything at once is likely to stall. You need a clear, paced path that settles which dollars go to the credit card, to cash and to retirement, and in what order, then reviews spending to fund the gap.",
+    "portfolio_today_also_meaningful": "Your HSA is a smaller step to take after your larger priorities, such as the 20% credit card and building cash for your January 2027 goals. You have contributed $4,000 against a limit of $4,400. Adding the remaining $400 would save about $96 in tax per year, and it adds to a tax-free place to pay medical costs. Because your yearly cash flow is tight, add it only as money frees up. A second improvement is inside the account. Your HSA holds $1,500 in cash, $1,400 of it above a small working buffer, and that cash is earning 0.00%. Investing it inside the HSA, with no withdrawal, is worth about $104 per year on its own. Part of the $134 per year you could gain by investing idle cash in the HSA and 401(k) comes from this step. Your HSA's other holding is a bond fund of $3,500. Its payouts would cost about $38 a year in tax if held in a taxable account, and the HSA already shelters that cost, so it is not a saving still available to you. The HSA is mostly bonds and cash, and it returned 3.0% a year over three years. Reviewing the funds in the HSA for drag could help later.",
+    "recommendations_main": "- **Rebuild a liquidity cushion** — Your $30,000 of accessible cash covers about 3 months of essential expenses, against a recommended 5 to 6 months ($46,530 to $55,836). You are $16,530 short of the minimum. A larger buffer would let you handle a surprise without selling investments or leaning on the 20% credit card, which carries $3,500. You decide how fast to build it.\n\n- **Confirm your January 2027 cash needs** — Your cash target is $163,330 to $172,636 once the $113,300 home purchase and $3,500 vacation due in January 2027 are included. Against that, you are about $133,330 short, and cash would cover 0 months afterward. Confirming the size and timing of those goals would show how much of the gap is real. It would also keep a market dip from forcing sales.\n\n- **Make savings and cash flow fit together** — You save $43,000 a year, 23.9% of income. Even so, after taxes, spending and debt payments you run a $15,336 yearly shortfall. Retirement saving and cash building draw on the same dollars, so review spending and the savings mix together. Clearing the 20% card is a clear lever.\n\n- **Close the retirement gap steadily** — Your plan shows savings running out at 85, with about $32,439 of planned spending unpaid, and about $20,231 more per year would close the gap. You defer $17,000 to your 401(k), so you could add up to $7,500 more, worth about $1,800 in tax. Your HSA has $4,000 contributed against a $4,400 limit. Any extra depends on what cash flow allows.\n\n- **Look at where investment income is taxed** — You pay about $527 a year in tax on investment income, all in your brokerage account. About $247 comes from one high-yield bond fund taxed at 24%, which may fit better in a tax-sheltered account. The saving is modest, so weigh it against your other priorities.\n\n- **Spread concentrated exposures** — Your $180,000 salary equals 82.4% of your net worth. Technology is about 33% of your stock holdings, and US holdings are about 85%. A downturn at your employer or in one industry could hit your pay and portfolio together. Review this against your growth goals.",
+    "recommendations_scenarios": "- **Pullbacks have been shallow** — Over the three years studied, your mix of about 59% stocks, 21% bonds and 20% cash-like holdings lost at most 10.21% from peak to low, and it recovered in 62 days. A diversified portfolio with the same overall stock share lost 11.44% at its worst. You earned 13.6% a year against 15.3% for that comparison, with smaller swings. Return per unit of risk was close: 1.27 against 1.30. These are past results, not a promise about future markets.\n\n- **Recent shocks hit you a little less** — In the 90-day tariff pause rally (April 2025), you fell 1.98% while the comparison fell 3.27%. After the Supreme Court tariff ruling (February 2026), you fell 0.79% against 1.40%. After the final Fed rate hike (July 2023), you fell 4.19% against 4.63%. Your largest shortfalls were small: Operation Epic Fury was 0.29 percentage points worse, and the Liberation Day tariffs were 0.19 worse.\n\n- **Recoveries were captured less fully** — In rising markets you kept about 72% of the gains of a comparable mix. In falling markets you took about 91% of the losses. So the cushion protected only part of the downside while giving up more of the recovery. This describes the mix you held over these three years, not a target mix, and it may not describe future markets."
+  },
+  "positions": [
+    {
+      "account": "HSA",
+      "ticker": "",
+      "name": "Cash (USD)",
+      "type": "CASH",
+      "category": "Money Market-Taxable",
+      "value": 1500,
+      "weight_in_account": 0.3,
+      "expense_ratio": null
+    },
+    {
+      "account": "Taxable Brokerage",
+      "ticker": "JNK",
+      "name": "SPDR Bloomberg High Yield Bond ETF",
+      "type": "ETF",
+      "category": "High Yield Bond",
+      "value": 15000,
+      "weight_in_account": 0.25,
+      "expense_ratio": 0.004
+    },
+    {
+      "account": "401(k) - Michael",
+      "ticker": "SCHP",
+      "name": "Schwab U.S. TIPS ETF™",
+      "type": "ETF",
+      "category": "Inflation-Protected Bond",
+      "value": 18000,
+      "weight_in_account": 0.225,
+      "expense_ratio": 0.0003
+    },
+    {
+      "account": "401(k) - Michael",
+      "ticker": "",
+      "name": "Cash (USD)",
+      "type": "CASH",
+      "category": "Money Market-Taxable",
+      "value": 2000,
+      "weight_in_account": 0.025,
+      "expense_ratio": null
+    },
+    {
+      "account": "Taxable Brokerage",
+      "ticker": "SCHD",
+      "name": "Schwab US Dividend Equity ETF",
+      "type": "ETF",
+      "category": "Large Value",
+      "value": 20000,
+      "weight_in_account": 0.3333,
+      "expense_ratio": 0.0006
+    },
+    {
+      "account": "Taxable Brokerage",
+      "ticker": "VWO",
+      "name": "Vanguard FTSE Emerging Markets ETF",
+      "type": "ETF",
+      "category": "Diversified Emerging Markets",
+      "value": 22000,
+      "weight_in_account": 0.3667,
+      "expense_ratio": 0.0006
+    },
+    {
+      "account": "Taxable Brokerage",
+      "ticker": "",
+      "name": "Cash (USD)",
+      "type": "CASH",
+      "category": "Money Market-Taxable",
+      "value": 3000,
+      "weight_in_account": 0.05,
+      "expense_ratio": null
+    },
+    {
+      "account": "HSA",
+      "ticker": "FSTDX",
+      "name": "Fidelity Series 5+ Year Inflation-Protected Bond Index Fund",
+      "type": "FUND",
+      "category": "Inflation-Protected Bond",
+      "value": 3500,
+      "weight_in_account": 0.7,
+      "expense_ratio": 0
+    },
+    {
+      "account": "401(k) - Michael",
+      "ticker": "VTI",
+      "name": "Vanguard Morningstar Total Stock Market ETF",
+      "type": "ETF",
+      "category": "Large Blend",
+      "value": 60000,
+      "weight_in_account": 0.75,
+      "expense_ratio": 0.0003
+    }
+  ],
+  "key_metrics": {
+    "facts": {
+      "cash": {
+        "monthsCovered": {
+          "unit": "months",
+          "basis": "n/a",
+          "label": "Months of essential expenses accessible cash covers",
+          "value": "3.2",
+          "period": "today, before near-term goals",
+          "replaces": [
+            "ratios.emergencyFund.emergencyFundMonths (capped at \"+12\")",
+            "savingsAndExpenses.liquidityContext.emergencyFundInMonths",
+            "protection.emergencyFund.emergencyFundCoverageEvaluation.monthsCovered"
+          ],
+          "notToBeConfusedWith": [
+            "the recommended number of months"
+          ]
+        },
+        "nearTermGoals": [
+          {
+            "note": "A goal payment, not a down payment unless the goal is a purchase.",
+            "unit": "USD",
+            "basis": "as entered",
+            "label": "Take a vacation: cash to hold for its next payment",
+            "value": 3500,
+            "period": "next payment January 2027, then every year",
+            "replaces": [
+              "extraCashOutflows[].downpayment (holds any goal payment)"
+            ]
+          },
+          {
+            "note": "A goal payment, not a down payment unless the goal is a purchase.",
+            "unit": "USD",
+            "basis": "as entered",
+            "label": "Purchase a home: cash to hold for its next payment",
+            "value": 113300,
+            "period": "next payment January 2027",
+            "replaces": [
+              "extraCashOutflows[].downpayment (holds any goal payment)"
+            ]
+          }
+        ],
+        "accessibleCash": {
+          "unit": "USD",
+          "basis": "today's dollars at the plan date",
+          "label": "Accessible cash (bank accounts plus taxable money market)",
+          "value": 30000,
+          "period": "balance today",
+          "notToBeConfusedWith": [
+            "bank cash alone (excludes money market)",
+            "cash inside retirement accounts, which is not accessible"
+          ]
+        },
+        "totalCashNeeded": {
+          "max": 172636,
+          "min": 163330,
+          "note": "Never call this the emergency reserve.",
+          "unit": "USD",
+          "basis": "today's dollars at the plan date",
+          "label": "Cash target: emergency reserve plus near-term goals",
+          "period": "target balance today",
+          "replaces": [
+            "ratios.emergencyFund.adjustedRecommendedMin/MaxAmount",
+            "savingsAndExpenses.liquidityContext.min/maxEmergencyFundTargetAndShortTermNeeds",
+            "cashNeeds.cashTarget"
+          ],
+          "notToBeConfusedWith": [
+            "emergencyReserve"
+          ]
+        },
+        "emergencyReserve": {
+          "max": 55836,
+          "min": 46530,
+          "note": "Excludes near-term goals. This alone is the emergency reserve.",
+          "unit": "USD",
+          "basis": "today's dollars at the plan date",
+          "label": "Recommended emergency reserve (5–6 months of essential expenses)",
+          "period": "target balance today",
+          "replaces": [
+            "ratios.emergencyFund.min/maxRecommendedEmergencyFund",
+            "savingsAndExpenses.liquidityContext.min/maxEmergencyFundTargetInCash",
+            "protection.emergencyFund.recommendedEmergencyFundLevels.minimum/maximumAmountRecommended",
+            "cashNeeds.emergencyFund"
+          ],
+          "notToBeConfusedWith": [
+            "totalCashNeeded"
+          ]
+        },
+        "monthsCoveredAfterNearTermGoals": {
+          "unit": "months",
+          "basis": "n/a",
+          "label": "Months of essential expenses covered after setting aside near-term goals",
+          "value": "0",
+          "period": "today",
+          "replaces": [
+            "ratios.emergencyFund.adjustedMonthsCoveredAfterShortTermCashNeeds"
+          ]
+        }
+      },
+      "rules": [
+        "These facts are the only figures to quote for these concepts. Quote the label's meaning with the number; never relabel a fact as another one.",
+        "Each fact names the facts it must not be confused with. Never call one by the other's name.",
+        "Keep the unit: a USD/yr figure is always said per year, a lump sum never is.",
+        "Do not add, subtract or compare two facts unless a fact says how they relate.",
+        "Never quote a date that is before the plan date.",
+        "Write a date as month and year (August 2039), never as an ISO date (2039-08-01).",
+        "Write a ratio or rate as a percentage (55%), never as a decimal (0.551).",
+        "A fact's `replaces` lists key-metric fields that hold the same or a confusable figure under a misleading name. When you see one of those fields in your other inputs, quote the fact with its label instead. Field names are never labels."
+      ],
+      "retirement": {
+        "spendingGap": {
+          "note": "Savings, cash and required IRA withdrawals included, pay this each year on average. It is what the plan asks of savings.",
+          "unit": "USD/yr",
+          "basis": "today's dollars at the plan date",
+          "label": "Yearly retirement spending that income does not cover, paid from savings",
+          "value": 59612.79,
+          "period": "average over the 33 years of retirement",
+          "notToBeConfusedWith": [
+            "averagePortfolioDraw"
+          ]
+        },
+        "spendingNeed": {
+          "note": "Includes taxes, debt payments and goals after retirement; do not add those on top. annualTotalIncomeNeeded adds an estimated long-term care cost: do not quote it.",
+          "unit": "USD/yr",
+          "basis": "today's dollars at the plan date",
+          "label": "Yearly retirement spending need (excluding estimated long-term care)",
+          "value": 89648.57,
+          "period": "average over the 33 years of retirement",
+          "replaces": [
+            "retirementAndOtherGoals.incomeNeedsAndWithdrawals.annualTotalIncomeNeeded (adds estimated long-term care)"
+          ]
+        },
+        "savingsRunOut": {
+          "note": "Never write a negative balance or a debt. Say when savings run out and how much planned spending would go unpaid. Net worth stays positive only because it includes the home.",
+          "unit": "USD",
+          "basis": "today's dollars at the plan date",
+          "label": "Savings and investments run out at age 85",
+          "value": 32439.08,
+          "period": "planned spending left unpaid by the end of the plan",
+          "replaces": [
+            "assetDepletion.liquidAssetsAtEndOfPlan",
+            "capacity.liquidAssetsAtEndOfPlan"
+          ]
+        },
+        "savingsCapacity": {
+          "note": "It differs from net cash flow (-8336) because it subtracts the employer 401(k) match of 7000 as savings, though the employer pays it. Call it savings capacity, never spare or net cash flow. A negative value is a yearly shortfall: say it as one.",
+          "unit": "USD/yr",
+          "basis": "today's dollars at the plan date",
+          "label": "Savings capacity: after-tax income left after expenses, debt payments and current savings",
+          "value": -15336,
+          "period": "the plan year",
+          "replaces": [
+            "savingsAndContributions.savingsCapacity.savingsCapacity",
+            "savingsAndContributions.cashflowReconciliation.cashFlowDelta"
+          ],
+          "notToBeConfusedWith": [
+            "netCashFlowThisYear"
+          ]
+        },
+        "guaranteedIncome": {
+          "unit": "USD/yr",
+          "basis": "today's dollars at the plan date",
+          "label": "Guaranteed income in retirement (Social Security, annuities, pensions)",
+          "value": 30035.78,
+          "period": "average over the 33 years of retirement; years before a benefit starts count as zero"
+        },
+        "incomeShareOfNeed": {
+          "unit": "percent",
+          "basis": "today's dollars at the plan date",
+          "label": "Share of the yearly retirement spending need that income covers (guaranteed and other income)",
+          "value": "34%",
+          "period": "average over the 33 years of retirement",
+          "replaces": [
+            "retirementAndOtherGoals.incomeVsIncomeNeeds.allIncomesVsIncomeNeededExLtcCosts",
+            "ratios.guaranteedIncomeRatio.allIncomesVsIncomeNeededExLtcCosts"
+          ]
+        },
+        "netCashFlowThisYear": {
+          "note": "The outflow table counts the employer 401(k) match of 7000 as household savings; the employer pays it, so this figure does not subtract it. Income 180000 minus outflows 195336 is -15336: never present that subtraction as this figure.",
+          "unit": "USD/yr",
+          "basis": "today's dollars at the plan date",
+          "label": "Net cash flow this year",
+          "value": -8336,
+          "period": "the plan year",
+          "notToBeConfusedWith": [
+            "averagePortfolioDraw",
+            "withdrawalRateThisYear",
+            "savingsCapacity"
+          ]
+        },
+        "averagePortfolioDraw": {
+          "note": "Counts only the months when spending exceeds every inflow. Required IRA withdrawals and other inflows drawn from savings are not in it, so savings pay more than this. Draws are concentrated in fewer years and are larger in those years. It is not the spending gap: never present it as filling that gap, and never use it to say the plan leans little on savings.",
+          "unit": "USD/yr",
+          "basis": "today's dollars at the plan date",
+          "label": "Average yearly draw from savings in retirement",
+          "value": 59612.79,
+          "period": "average over the 33 years of retirement, counting years with no draw as zero",
+          "replaces": [
+            "retirementAndOtherGoals.withdrawals.supplementalAnnualWithdrawals"
+          ],
+          "notToBeConfusedWith": [
+            "spendingGap"
+          ]
+        },
+        "withdrawalRateAverage": {
+          "note": "A lifetime average. Do not compare it with the 4% sustainable rate.",
+          "unit": "percent",
+          "basis": "today's dollars at the plan date",
+          "label": "Average yearly draw as a share of savings at the start of retirement",
+          "value": "5.6%",
+          "period": "average over the 33 years of retirement",
+          "replaces": [
+            "retirementAndOtherGoals.withdrawals.withdrawalRatio"
+          ],
+          "notToBeConfusedWith": [
+            "withdrawalRateThisYear"
+          ]
+        }
+      }
+    },
+    "capacity": {
+      "educationGap": 0,
+      "retirementGap": 1177585.95,
+      "liquidAssetsAtEndOfPlan": -32439.08
+    },
+    "cashNeeds": {
+      "cashTarget": {
+        "max": 172636,
+        "min": 163330
+      },
+      "emergencyFund": {
+        "max": 55836,
+        "min": 46530
+      },
+      "summaryIncome": [
+        [
+          "",
+          "Current Earned",
+          "Target Earned",
+          "Drag Earned"
+        ],
+        [
+          "Liquidity",
+          0,
+          96,
+          96
+        ],
+        [
+          "Excess accessible",
+          0,
+          0,
+          0
+        ],
+        [
+          "Excess inaccessible",
+          0,
+          134.05,
+          134.05
+        ],
+        [
+          "Operational buffer",
+          0,
+          0,
+          0
+        ],
+        [
+          "  Accessible cash",
+          0,
+          0,
+          0
+        ],
+        [
+          "  Inaccessible cash",
+          0,
+          0,
+          0
+        ],
+        [
+          "Total",
+          0,
+          230.05,
+          230.05
+        ]
+      ],
+      "accessibleCash": 30000,
+      "shortTermNeeds": 116800,
+      "coverageVerdict": "gap",
+      "haveToNeedRatio": 0.1837,
+      "inaccessibleCash": 3500,
+      "accessibleCashGap": 133330,
+      "currentCashBalance": [
+        [
+          "Account",
+          "Category",
+          "Account Balance",
+          "Cash Balance",
+          "Current Yield",
+          "Liquidity Target",
+          "Target Yield",
+          "Buffer",
+          "Active Buffer",
+          "Excess Cash",
+          "Excess Target Yield"
+        ],
+        [
+          "401(k) - Michael",
+          "Inaccessible",
+          80000,
+          2000,
+          0,
+          0,
+          0.0745,
+          1600,
+          1600,
+          400,
+          0.0745
+        ],
+        [
+          "HSA",
+          "Inaccessible",
+          5000,
+          1500,
+          0,
+          0,
+          0.0745,
+          100,
+          100,
+          1400,
+          0.0745
+        ],
+        [
+          "Taxable Brokerage",
+          "Accessible",
+          60000,
+          3000,
+          0,
+          0,
+          0.032,
+          1200,
+          1200,
+          1800,
+          0.0745
+        ]
+      ],
+      "shortTermGoalsNeeded": [
+        {
+          "date": "2027-01-01T00:00:00.000Z",
+          "goal": "Take a vacation",
+          "amount": 3500,
+          "description": "Take a vacation",
+          "paymentFrequency": "ANNUAL"
+        },
+        {
+          "date": "2027-01-01T00:00:00.000Z",
+          "goal": "Purchase a home",
+          "amount": 113300,
+          "description": "Purchase a home",
+          "downpayment": 113300,
+          "paymentFrequency": "ONE_TIME"
+        }
+      ]
+    },
+    "clientName": "Michael",
+    "coClientName": "",
+    "targetAnalysis": {
+      "gross": {
+        "sharpe": 1.5613,
+        "volatility": {
+          "volatility": 0.0053,
+          "annualizedVolatility": 0.0836
+        },
+        "maxDrawdown": -0.1083,
+        "performance": {
+          "performance": 0.5873,
+          "expectedPerformance": 0.0691,
+          "annualizedPerformance": 0.1663
+        }
+      },
+      "sharpe": 1.5613,
+      "volatility": {
+        "volatility": 0.0053,
+        "annualizedVolatility": 0.0836
+      },
+      "maxDrawdown": -0.1083,
+      "performance": {
+        "performance": 0.5873,
+        "expectedPerformance": 0.0691,
+        "annualizedPerformance": 0.1663
+      },
+      "assetAllocations": {
+        "assetAllocationsEF": [
+          {
+            "weight": 0.6744,
+            "assetAllocation": "EQUITY"
+          },
+          {
+            "weight": 0.3256,
+            "assetAllocation": "FIXED_INCOME"
+          }
+        ],
+        "assetAllocationsUS": [
+          {
+            "weight": 0.1383,
+            "assetAllocation": "US_3"
+          },
+          {
+            "weight": 0.1753,
+            "assetAllocation": "US_7"
+          },
+          {
+            "weight": 0.0002,
+            "assetAllocation": "US_8"
+          },
+          {
+            "weight": 0.4728,
+            "assetAllocation": "US_1"
+          },
+          {
+            "weight": 0.2013,
+            "assetAllocation": "US_2"
+          },
+          {
+            "weight": 0.0123,
+            "assetAllocation": "US_4"
+          },
+          {
+            "weight": 0,
+            "assetAllocation": "US_6"
+          },
+          {
+            "weight": 0,
+            "assetAllocation": "US_5"
+          }
+        ],
+        "assetAllocationsEFC": [
+          {
+            "weight": 0.1753,
+            "assetAllocation": "CASH"
+          },
+          {
+            "weight": 0.6744,
+            "assetAllocation": "EQUITY"
+          },
+          {
+            "weight": 0.1505,
+            "assetAllocation": "FIXED_INCOME"
+          }
+        ],
+        "assetAllocationsUSMin": [
+          {
+            "weight": 0.1383,
+            "assetAllocation": "US_3"
+          },
+          {
+            "weight": 0.1753,
+            "assetAllocation": "US_7"
+          },
+          {
+            "weight": 0.0002,
+            "assetAllocation": "US_8"
+          },
+          {
+            "weight": 0.4728,
+            "assetAllocation": "US_1"
+          },
+          {
+            "weight": 0.2013,
+            "assetAllocation": "US_2"
+          },
+          {
+            "weight": 0.0123,
+            "assetAllocation": "US_4"
+          }
+        ]
+      },
+      "marketEnvironments": [
+        {
+          "name": "Post-GFC Bull Run",
+          "type": "historical",
+          "endDate": "2011-04-30",
+          "startDate": "2009-04-01",
+          "performance": 0.3159,
+          "resolvedEndDate": "2011-04-30"
+        },
+        {
+          "name": "Global Financial Crisis",
+          "type": "historical",
+          "endDate": "2009-03-31",
+          "startDate": "2007-10-01",
+          "performance": -0.1105,
+          "resolvedEndDate": "2009-03-31"
+        },
+        {
+          "name": "Global Equity Sell-off",
+          "type": "historical",
+          "endDate": "2018-12-31",
+          "startDate": "2018-09-01",
+          "performance": -0.0815,
+          "resolvedEndDate": "2018-12-31"
+        },
+        {
+          "name": "COVID-19 Pandemic Crash",
+          "type": "historical",
+          "endDate": "2020-03-31",
+          "startDate": "2020-02-01",
+          "performance": -0.131,
+          "resolvedEndDate": "2020-03-31"
+        },
+        {
+          "name": "Regional Banking Crisis (SVB / Credit Suisse)",
+          "type": "recent",
+          "endDate": "2023-05-05",
+          "startDate": "2023-03-08",
+          "performance": 0.0328,
+          "resolvedEndDate": "2023-05-05"
+        },
+        {
+          "name": "Fed Pivot Rally - Q4 2023",
+          "type": "recent",
+          "endDate": "2023-12-31",
+          "startDate": "2023-10-27",
+          "performance": 0.1182,
+          "resolvedEndDate": "2023-12-31"
+        },
+        {
+          "name": "Tariff Shock - Liberation Day",
+          "type": "recent",
+          "endDate": "2025-04-09",
+          "startDate": "2025-04-02",
+          "performance": -0.0379,
+          "resolvedEndDate": "2025-04-09"
+        },
+        {
+          "name": "Geopolitical Shock - Operation Epic Fury / Hormuz Closure",
+          "type": "recent",
+          "endDate": "Ongoing",
+          "startDate": "2026-02-28",
+          "performance": 0.0521,
+          "resolvedEndDate": "2026-11-01"
+        }
+      ]
+    },
+    "taxDragAnalysis": {
+      "householdRollup": [
+        [
+          "Metric",
+          "Value",
+          "Notes"
+        ],
+        [
+          "Total annual tax cost (Table 2)",
+          526.93,
+          "All taxable-account rows, including money-market positions."
+        ],
+        [
+          "Money-market drag routed to Cash sub-task",
+          0,
+          "Money-market positions stay visible here but are carved out of the in-scope Tax Drag total."
+        ],
+        [
+          "In-scope tax cost (Table 2 ex-MM)",
+          526.93,
+          "Standalone Tax Drag total after routing money-market drag to Cash."
+        ],
+        [
+          "Total annual tax cost saved (Table 3)",
+          38.2,
+          "Permanent annual tax saved if those holdings were taxable today."
+        ],
+        [
+          "Total annual tax cost deferred (Table 4)",
+          318.07,
+          "Deferred, not eliminated; future withdrawals remain taxable on exit."
+        ],
+        [
+          "NIIT contribution to Table 2",
+          0,
+          "Taxable net-investment components multiplied by the current NIIT rate."
+        ]
+      ],
+      "accountTypeInputs": [
+        [
+          "#",
+          "Account name",
+          "Account type",
+          "Tax treatment"
+        ],
+        [
+          "1",
+          "Checking account",
+          "Checking account",
+          "Taxable"
+        ],
+        [
+          "2",
+          "Savings account",
+          "Savings account",
+          "Taxable"
+        ],
+        [
+          "3",
+          "401(k) - Michael",
+          "401k - Traditional",
+          "Tax deferred"
+        ],
+        [
+          "4",
+          "HSA",
+          "HSA",
+          "Tax free"
+        ],
+        [
+          "5",
+          "Taxable Brokerage",
+          "Brokerage account",
+          "Taxable"
+        ]
+      ],
+      "effectiveTaxMargin": [
+        [
+          "Component",
+          "Rate",
+          "Source / Trigger",
+          "Applies to"
+        ],
+        [
+          "Federal ordinary",
+          "24%",
+          "FH metrics — currentTaxBracket",
+          "Ordinary income, ST cap gains, ST cap gain distributions, ordinary interest, non-qualified dividends"
+        ],
+        [
+          "Federal LTCG",
+          "15%",
+          "PW-computed federal LTCG (2026 thresholds; taxable-income proxy)",
+          "Qualified dividends, LT cap gains, LT cap gain distributions"
+        ],
+        [
+          "State (TX)",
+          "0%",
+          "FH metrics — stateTaxRate (TX)",
+          "All investment income (state rules)"
+        ],
+        [
+          "NIIT",
+          "0%",
+          "FH metrics — niitRate",
+          "All net investment income"
+        ],
+        [
+          "Total taxable income",
+          "$142,900",
+          "FH metrics — taxableIncome.totalTaxableIncome",
+          "Debug input for LTCG and NIIT lookups"
+        ],
+        [
+          "MAGI proxy",
+          "$142,900",
+          "Current tax-margin logic — reuse taxableIncome.totalTaxableIncome as MAGI proxy",
+          "Debug input for NIIT and current LTCG threshold lookup"
+        ],
+        [
+          "State input",
+          "TX — Texas",
+          "PW params — state.code / state.name",
+          "Debug input for state marginal-rate lookup"
+        ],
+        [
+          "Expected retirement ordinary",
+          "12%",
+          "FH metrics — expectedTaxBracketInRetirement",
+          "Future withdrawals from tax-deferred accounts"
+        ],
+        [
+          "Effective ordinary rate",
+          "24%",
+          "24% + 0% + 0%",
+          "Today's ordinary-rate income"
+        ],
+        [
+          "Effective LTCG rate",
+          "15%",
+          "15% + 0% + 0%",
+          "Today's LTCG-rate income"
+        ]
+      ],
+      "fundHoldingsInputs": [
+        [
+          "#",
+          "Account",
+          "Holding",
+          "Morningstar category",
+          "Balance",
+          "Shares",
+          "Estimated shares",
+          "Qualified div ($/share)",
+          "Non-qualified div ($/share)",
+          "Interest income ($/share)",
+          "Tax-free income ($/share)",
+          "LT cap gain ($/share)",
+          "ST cap gain ($/share)",
+          "Ordinary-rate share (non-qual div + interest + ST cap gain) / total distribution",
+          "Tax cost ratio",
+          "Turnover",
+          "PCGE"
+        ],
+        [
+          "1",
+          "HSA",
+          "Cash (USD)",
+          "Money Market-Taxable",
+          1500,
+          1500,
+          "-",
+          "[missing historical load]",
+          "[missing historical load]",
+          "[missing historical load]",
+          "[missing historical load]",
+          "[missing historical load]",
+          "[missing historical load]",
+          "[missing historical load]",
+          "[pending]",
+          "[pending]",
+          "[pending]"
+        ],
+        [
+          "2",
+          "Taxable Brokerage",
+          "JNK",
+          "High Yield Bond",
+          15000,
+          161.99,
+          "-",
+          "$0",
+          "$6.358",
+          "$0",
+          "$0",
+          "$0",
+          "$0",
+          "100%",
+          "[pending]",
+          "[pending]",
+          "[pending]"
+        ],
+        [
+          "3",
+          "401(k) - Michael",
+          "SCHP",
+          "Inflation-Protected Bond",
+          18000,
+          703.4,
+          "-",
+          "$0",
+          "$1.075",
+          "$0",
+          "$0",
+          "$0",
+          "$0",
+          "100%",
+          "[pending]",
+          "[pending]",
+          "[pending]"
+        ],
+        [
+          "4",
+          "401(k) - Michael",
+          "Cash (USD)",
+          "Money Market-Taxable",
+          2000,
+          2000,
+          "-",
+          "[missing historical load]",
+          "[missing historical load]",
+          "[missing historical load]",
+          "[missing historical load]",
+          "[missing historical load]",
+          "[missing historical load]",
+          "[missing historical load]",
+          "[pending]",
+          "[pending]",
+          "[pending]"
+        ],
+        [
+          "5",
+          "Taxable Brokerage",
+          "SCHD",
+          "Large Value",
+          20000,
+          568.5,
+          "-",
+          "$0",
+          "$1.048",
+          "$0",
+          "$0",
+          "$0",
+          "$0",
+          "100%",
+          "[pending]",
+          "[pending]",
+          "[pending]"
+        ],
+        [
+          "6",
+          "Taxable Brokerage",
+          "VWO",
+          "Diversified Emerging Markets",
+          22000,
+          397.4,
+          "-",
+          "$0.168",
+          "$1.329",
+          "$0",
+          "$0",
+          "$0",
+          "$0",
+          "88.77%",
+          "[pending]",
+          "[pending]",
+          "[pending]"
+        ],
+        [
+          "7",
+          "Taxable Brokerage",
+          "Cash (USD)",
+          "Money Market-Taxable",
+          3000,
+          3000,
+          "-",
+          "[missing historical load]",
+          "[missing historical load]",
+          "[missing historical load]",
+          "[missing historical load]",
+          "[missing historical load]",
+          "[missing historical load]",
+          "[missing historical load]",
+          "[pending]",
+          "[pending]",
+          "[pending]"
+        ],
+        [
+          "8",
+          "HSA",
+          "FSTDX",
+          "Inflation-Protected Bond",
+          3500,
+          479.45,
+          "-",
+          "$0",
+          "$0.332",
+          "$0",
+          "$0",
+          "$0",
+          "$0",
+          "100%",
+          "[pending]",
+          "[pending]",
+          "[pending]"
+        ],
+        [
+          "9",
+          "401(k) - Michael",
+          "VTI",
+          "Large Blend",
+          60000,
+          165.81,
+          "-",
+          "$0.86",
+          "$2.897",
+          "$0",
+          "$0",
+          "$0",
+          "$0",
+          "77.11%",
+          "[pending]",
+          "[pending]",
+          "[pending]"
+        ]
+      ],
+      "stockHoldingsInputs": [
+        [
+          "#",
+          "Account",
+          "Name",
+          "Ticker",
+          "Sector",
+          "Industry",
+          "Country",
+          "Balance",
+          "Qualified div ($/share)",
+          "Non-qualified div ($/share)",
+          "Dividend yield TTM"
+        ]
+      ],
+      "taxFreeAccountDetails": [
+        [
+          "#",
+          "Account",
+          "Holding",
+          "Balance",
+          "Component",
+          "Component distribution ($)",
+          "Applicable rate (if taxable)",
+          "Annual tax cost saved"
+        ],
+        [
+          "1",
+          "HSA",
+          "Cash (USD)",
+          1500,
+          "[missing historical load]",
+          "[missing historical load]",
+          "[missing historical load]",
+          "[missing historical load]"
+        ],
+        [
+          "2",
+          "HSA",
+          "FSTDX",
+          3500,
+          "Non-qualified dividend",
+          159.18,
+          "24%",
+          38.2
+        ],
+        [
+          "Total",
+          "Total tax-free",
+          "-",
+          5000,
+          "-",
+          159.18,
+          "-",
+          38.2
+        ]
+      ],
+      "taxableAccountDetails": [
+        [
+          "#",
+          "Account",
+          "Holding",
+          "Balance",
+          "Component",
+          "Component distribution ($)",
+          "Applicable rate",
+          "Annual tax cost"
+        ],
+        [
+          "1",
+          "Taxable Brokerage",
+          "JNK",
+          15000,
+          "Non-qualified dividend",
+          1030.01,
+          "24%",
+          247.2
+        ],
+        [
+          "2",
+          "Taxable Brokerage",
+          "SCHD",
+          20000,
+          "Non-qualified dividend",
+          595.57,
+          "24%",
+          142.94
+        ],
+        [
+          "3a",
+          "Taxable Brokerage",
+          "VWO",
+          22000,
+          "Qualified dividend",
+          66.84,
+          "15%",
+          10.03
+        ],
+        [
+          "3b",
+          "Taxable Brokerage",
+          "VWO",
+          22000,
+          "Non-qualified dividend",
+          528.19,
+          "24%",
+          126.77
+        ],
+        [
+          "3c",
+          "Taxable Brokerage",
+          "VWO",
+          22000,
+          "Subtotal",
+          595.03,
+          "-",
+          136.79
+        ],
+        [
+          "4",
+          "Taxable Brokerage",
+          "Cash (USD)",
+          3000,
+          "[missing historical load]",
+          "[missing historical load]",
+          "[missing historical load]",
+          "[missing historical load]"
+        ],
+        [
+          "Total",
+          "Total taxable",
+          "-",
+          60000,
+          "-",
+          2220.6,
+          "-",
+          526.93
+        ]
+      ],
+      "costBasisBlockingNotes": [
+        [
+          "Account",
+          "Blocking note"
+        ],
+        [
+          "Taxable Brokerage",
+          "Implementation of Taxable Brokerage cannot be responsibly sequenced without tax-lot data."
+        ]
+      ],
+      "taxableCostBasisInputs": [
+        [
+          "#",
+          "Account",
+          "Holding",
+          "Balance (market value)",
+          "Cost basis",
+          "Unrealized gain",
+          "Holding period",
+          "Notes"
+        ],
+        [
+          "1",
+          "Taxable Brokerage",
+          "JNK",
+          15000,
+          "[missing cost basis]",
+          "[missing cost basis]",
+          "[missing purchase date]",
+          "Approximation blocked until purchaseAmount / purchaseDate are filled."
+        ],
+        [
+          "2",
+          "Taxable Brokerage",
+          "SCHD",
+          20000,
+          "[missing cost basis]",
+          "[missing cost basis]",
+          "[missing purchase date]",
+          "Approximation blocked until purchaseAmount / purchaseDate are filled."
+        ],
+        [
+          "3",
+          "Taxable Brokerage",
+          "VWO",
+          22000,
+          "[missing cost basis]",
+          "[missing cost basis]",
+          "[missing purchase date]",
+          "Approximation blocked until purchaseAmount / purchaseDate are filled."
+        ],
+        [
+          "4",
+          "Taxable Brokerage",
+          "Cash (USD)",
+          3000,
+          3000,
+          0,
+          "N/A",
+          "Money market — NAV $1.00, no embedded gain by design."
+        ],
+        [
+          "Total",
+          "Total taxable",
+          "-",
+          60000,
+          "[missing cost basis]",
+          "[missing cost basis]",
+          "-",
+          "Totals stay blocked until missing tax-lot inputs are filled."
+        ]
+      ],
+      "taxDeferredAccountDetails": [
+        [
+          "#",
+          "Account",
+          "Holding",
+          "Balance",
+          "Component",
+          "Component distribution ($)",
+          "Applicable rate (if taxable today)",
+          "Annual tax cost deferred"
+        ],
+        [
+          "1",
+          "401(k) - Michael",
+          "SCHP",
+          18000,
+          "Non-qualified dividend",
+          755.87,
+          "24%",
+          181.41
+        ],
+        [
+          "2",
+          "401(k) - Michael",
+          "Cash (USD)",
+          2000,
+          "[missing historical load]",
+          "[missing historical load]",
+          "[missing historical load]",
+          "[missing historical load]"
+        ],
+        [
+          "3a",
+          "401(k) - Michael",
+          "VTI",
+          60000,
+          "Qualified dividend",
+          142.56,
+          "15%",
+          21.38
+        ],
+        [
+          "3b",
+          "401(k) - Michael",
+          "VTI",
+          60000,
+          "Non-qualified dividend",
+          480.3,
+          "24%",
+          115.27
+        ],
+        [
+          "3c",
+          "401(k) - Michael",
+          "VTI",
+          60000,
+          "Subtotal",
+          622.86,
+          "-",
+          136.66
+        ],
+        [
+          "Total",
+          "Total tax-deferred",
+          "-",
+          80000,
+          "-",
+          1378.74,
+          "-",
+          318.07
+        ]
+      ],
+      "componentTaxTreatmentMatrix": [
+        [
+          "Component",
+          "Federal rate type",
+          "Effective household rate today",
+          "Taxable accounts",
+          "Tax-free accounts",
+          "Tax-deferred accounts",
+          "Notes"
+        ],
+        [
+          "Qualified dividend",
+          "LTCG",
+          "15%",
+          "Annual tax cost today",
+          "Annual tax cost saved (permanent)",
+          "Annual tax cost deferred",
+          "Stocks route TTM dividend amount here for US common stock and treaty-country foreign names; funds keep the precomputed Morningstar qualified split."
+        ],
+        [
+          "Non-qualified dividend",
+          "ORDINARY",
+          "24%",
+          "Annual tax cost today",
+          "Annual tax cost saved (permanent)",
+          "Annual tax cost deferred",
+          "Stocks route TTM dividend amount here for REIT and non-treaty foreign names, while MLP distributions are treated as ROC; funds keep the precomputed Morningstar non-qualified split."
+        ],
+        [
+          "Interest income",
+          "ORDINARY",
+          "24%",
+          "Annual tax cost today",
+          "Annual tax cost saved (permanent)",
+          "Annual tax cost deferred",
+          "Money-market and bond-style fund income is treated as ordinary-rate income."
+        ],
+        [
+          "Tax-free income",
+          "Tax-exempt federal",
+          "0%",
+          "Annual tax cost today",
+          "Annual tax cost saved (permanent)",
+          "Annual tax cost deferred",
+          "Current phase assumes a 0% effective rate because state-specific muni exposure is not available in the data path."
+        ],
+        [
+          "LT cap gain distribution",
+          "LTCG",
+          "15%",
+          "Annual tax cost today",
+          "Annual tax cost saved (permanent)",
+          "Annual tax cost deferred",
+          "Fund-distributed long-term capital gains use the LTCG household rate."
+        ],
+        [
+          "ST cap gain distribution",
+          "ORDINARY",
+          "24%",
+          "Annual tax cost today",
+          "Annual tax cost saved (permanent)",
+          "Annual tax cost deferred",
+          "Fund-distributed short-term capital gains use the ordinary household rate."
+        ]
+      ]
+    },
+    "portfolioAnalysis": {
+      "volatility": {
+        "volatility": 0.005,
+        "annualizedVolatility": 0.079
+      },
+      "advisoryFee": {
+        "mode": "flat",
+        "source": "assumed_baseline",
+        "annualFeeAmount": 0,
+        "effectiveAnnualRate": 0
+      },
+      "performance": {
+        "performance": 0.4661,
+        "expectedPerformance": 0.0608,
+        "annualizedPerformance": 0.1359
+      },
+      "marketEnvironments": [
+        {
+          "name": "Post-GFC Bull Run",
+          "type": "historical",
+          "endDate": "2011-04-30",
+          "startDate": "2009-04-01",
+          "performance": 0.5122,
+          "resolvedEndDate": "2011-04-30"
+        },
+        {
+          "name": "Global Financial Crisis",
+          "type": "historical",
+          "endDate": "2009-03-31",
+          "startDate": "2007-10-01",
+          "performance": -0.1918,
+          "resolvedEndDate": "2009-03-31"
+        },
+        {
+          "name": "Global Equity Sell-off",
+          "type": "historical",
+          "endDate": "2018-12-31",
+          "startDate": "2018-09-01",
+          "performance": -0.073,
+          "resolvedEndDate": "2018-12-31"
+        },
+        {
+          "name": "COVID-19 Pandemic Crash",
+          "type": "historical",
+          "endDate": "2020-03-31",
+          "startDate": "2020-02-01",
+          "performance": -0.1316,
+          "resolvedEndDate": "2020-03-31"
+        },
+        {
+          "name": "Regional Banking Crisis (SVB / Credit Suisse)",
+          "type": "recent",
+          "endDate": "2023-05-05",
+          "startDate": "2023-03-08",
+          "performance": 0.0116,
+          "resolvedEndDate": "2023-05-05"
+        },
+        {
+          "name": "Fed Pivot Rally - Q4 2023",
+          "type": "recent",
+          "endDate": "2023-12-31",
+          "startDate": "2023-10-27",
+          "performance": 0.1029,
+          "resolvedEndDate": "2023-12-31"
+        },
+        {
+          "name": "Tariff Shock - Liberation Day",
+          "type": "recent",
+          "endDate": "2025-04-09",
+          "startDate": "2025-04-02",
+          "performance": -0.0346,
+          "resolvedEndDate": "2025-04-09"
+        },
+        {
+          "name": "Geopolitical Shock - Operation Epic Fury / Hormuz Closure",
+          "type": "recent",
+          "endDate": "Ongoing",
+          "startDate": "2026-02-28",
+          "performance": 0.0479,
+          "resolvedEndDate": "2026-11-01"
+        }
+      ],
+      "benchmarkComposition": [
+        {
+          "name": "Vanguard Morningstar Total Stock Market ETF",
+          "ticker": "VTI",
+          "weight": 0.5871
+        },
+        {
+          "name": "iShares Core U.S. Aggregate Bond ETF",
+          "ticker": "AGG",
+          "weight": 0.2116
+        },
+        {
+          "name": "F/m US Treasury 3 Month Bill Fund - ETF Class Shares",
+          "ticker": "TBIL",
+          "weight": 0.2013
+        }
+      ]
+    },
+    "performanceAnalysis": {
+      "window": {
+        "endDate": "2026-11-01",
+        "startDate": "2023-11-01",
+        "businessDayCount": 783
+      },
+      "household": {
+        "aum": 172000,
+        "zone": "good",
+        "inBand": true,
+        "sharpe3y": 1.2694,
+        "volatility3y": 0.079,
+        "maxDrawdown3y": -0.1021,
+        "targetProfile": "Moderate",
+        "upsideCapture3y": 0.7233,
+        "currentEquityPct": 0.5871,
+        "downsideCapture3y": 0.9121,
+        "return1yAnnualized": 0.0914,
+        "return3yAnnualized": 0.1361,
+        "return3yCumulative": 0.4661,
+        "currentFixedIncomePct": 0.2116,
+        "maxDrawdownRecoveryDays": 62,
+        "volatilityDragPpPerYear": 0.0031,
+        "volatilityDragDollarsPerYear": 536.29
+      },
+      "goalGroups": [
+        {
+          "aum": 145000,
+          "zone": "good",
+          "inBand": true,
+          "member": "client",
+          "accounts": [
+            {
+              "name": "401(k) - Michael",
+              "balance": 80000,
+              "sharpe3y": 1.2574,
+              "accountType": "401k - Traditional",
+              "volatility3y": 0.1139,
+              "return3yAnnualized": 0.1792
+            },
+            {
+              "name": "HSA",
+              "balance": 5000,
+              "sharpe3y": -0.1204,
+              "accountType": "HSA",
+              "volatility3y": 0.0483,
+              "return3yAnnualized": 0.0301
+            },
+            {
+              "name": "Taxable Brokerage",
+              "balance": 60000,
+              "sharpe3y": 1.3564,
+              "accountType": "Brokerage account",
+              "volatility3y": 0.0835,
+              "return3yAnnualized": 0.1492
+            }
+          ],
+          "goalType": "Long-term taxable",
+          "sharpe3y": 1.3434,
+          "accountCount": 3,
+          "volatility3y": 0.0937,
+          "targetProfile": "Growth",
+          "targetEquityPct": 0.8003,
+          "currentEquityPct": 0.7213,
+          "return3yAnnualized": 0.1617,
+          "targetFixedIncomePct": 0.1783,
+          "currentFixedIncomePct": 0.251,
+          "benchmarkAtTargetAlloc": {
+            "sharpe3y": 1.4004,
+            "volatility3y": 0.1002,
+            "return3yAnnualized": 0.1762
+          },
+          "benchmarkAtCurrentAlloc": {
+            "sharpe3y": 1.4004,
+            "volatility3y": 0.1002,
+            "return3yAnnualized": 0.1762
+          }
+        }
+      ],
+      "riskFreeRate": 0.0359,
+      "concentration": {
+        "topSectorPct": 0.4094,
+        "topSectorName": "Technology",
+        "isMaterialConcentration": true
+      },
+      "gapDecomposition": {
+        "totalGapPp": -0.0302,
+        "totalGapDollars": -5195.26,
+        "productPickingGapPp": -0.0166,
+        "assetAllocationGapPp": -0.0136,
+        "productPickingGapDollars": -2858.7,
+        "assetAllocationGapDollars": -2336.55
+      },
+      "householdContext": {
+        "clientAge": 37,
+        "clientName": "Michael Carter",
+        "clientYearsToRetirement": 20
+      },
+      "perEventDrawdowns": [
+        {
+          "severity": "major",
+          "eventDate": "2023-07-26",
+          "household": {
+            "drawdownPct": -0.0419,
+            "recoveryDays": 15,
+            "returnDuringPct": 0.196
+          },
+          "windowEnd": "2024-09-17",
+          "eventTitle": "Fed final hike to 5.25–5.50%",
+          "windowStart": "2023-07-23",
+          "divergencePp": 0.0044,
+          "sameRiskBenchmark": {
+            "drawdownPct": -0.0463,
+            "recoveryDays": 13,
+            "returnDuringPct": 0.235
+          }
+        },
+        {
+          "severity": "major",
+          "eventDate": "2023-12-13",
+          "household": {
+            "drawdownPct": -0.0141,
+            "recoveryDays": 7,
+            "returnDuringPct": 0.0746
+          },
+          "windowEnd": "2024-03-31",
+          "eventTitle": "Fed pivot — December 2023 dot plot",
+          "windowStart": "2023-12-10",
+          "divergencePp": 0.0018,
+          "sameRiskBenchmark": {
+            "drawdownPct": -0.016,
+            "recoveryDays": 14,
+            "returnDuringPct": 0.0887
+          }
+        },
+        {
+          "severity": "major",
+          "eventDate": "2024-08-05",
+          "household": {
+            "drawdownPct": -0.0349,
+            "returnDuringPct": -0.0174
+          },
+          "windowEnd": "2024-08-09",
+          "eventTitle": "Global selloff — VIX spikes above 60",
+          "windowStart": "2024-07-31",
+          "divergencePp": 0.0011,
+          "sameRiskBenchmark": {
+            "drawdownPct": -0.036,
+            "returnDuringPct": -0.0186
+          }
+        },
+        {
+          "severity": "major",
+          "eventDate": "2024-09-18",
+          "household": {
+            "drawdownPct": -0.0264,
+            "returnDuringPct": 0.0135
+          },
+          "windowEnd": "2024-12-18",
+          "eventTitle": "Fed first rate cut — 50bp",
+          "windowStart": "2024-09-15",
+          "divergencePp": 0.0013,
+          "sameRiskBenchmark": {
+            "drawdownPct": -0.0277,
+            "returnDuringPct": 0.0231
+          }
+        },
+        {
+          "severity": "major",
+          "eventDate": "2024-11-05",
+          "household": {
+            "drawdownPct": -0.0165,
+            "returnDuringPct": 0.0059
+          },
+          "windowEnd": "2024-11-19",
+          "eventTitle": "Trump election win",
+          "windowStart": "2024-11-05",
+          "divergencePp": -0.001,
+          "sameRiskBenchmark": {
+            "drawdownPct": -0.0156,
+            "returnDuringPct": 0.0151
+          }
+        },
+        {
+          "severity": "major",
+          "eventDate": "2025-01-27",
+          "household": {
+            "drawdownPct": -0.0017,
+            "recoveryDays": 0,
+            "returnDuringPct": 0.0045
+          },
+          "windowEnd": "2025-01-30",
+          "eventTitle": "DeepSeek AI shock",
+          "windowStart": "2025-01-27",
+          "divergencePp": 0.0009,
+          "sameRiskBenchmark": {
+            "drawdownPct": -0.0027,
+            "recoveryDays": 0,
+            "returnDuringPct": 0.0064
+          }
+        },
+        {
+          "severity": "major",
+          "eventDate": "2025-04-02",
+          "household": {
+            "drawdownPct": -0.0841,
+            "returnDuringPct": -0.0346
+          },
+          "windowEnd": "2025-04-09",
+          "eventTitle": "Liberation Day tariffs announced",
+          "windowStart": "2025-04-02",
+          "divergencePp": -0.0019,
+          "sameRiskBenchmark": {
+            "drawdownPct": -0.0822,
+            "returnDuringPct": -0.0243
+          }
+        },
+        {
+          "severity": "major",
+          "eventDate": "2025-04-09",
+          "household": {
+            "drawdownPct": -0.0198,
+            "returnDuringPct": -0.0053
+          },
+          "windowEnd": "2025-04-22",
+          "eventTitle": "90-day tariff pause rally",
+          "windowStart": "2025-04-09",
+          "divergencePp": 0.013,
+          "sameRiskBenchmark": {
+            "drawdownPct": -0.0327,
+            "returnDuringPct": -0.0168
+          }
+        },
+        {
+          "severity": "major",
+          "eventDate": "2025-05-12",
+          "household": {
+            "drawdownPct": -0.0005,
+            "recoveryDays": 0,
+            "returnDuringPct": 0.0096
+          },
+          "windowEnd": "2025-05-19",
+          "eventTitle": "US-China Geneva tariff truce",
+          "windowStart": "2025-05-11",
+          "divergencePp": -0.0002,
+          "sameRiskBenchmark": {
+            "drawdownPct": -0.0003,
+            "recoveryDays": 0,
+            "returnDuringPct": 0.0123
+          }
+        },
+        {
+          "severity": "major",
+          "eventDate": "2026-02-01",
+          "household": {
+            "drawdownPct": -0.0079,
+            "recoveryDays": 12,
+            "returnDuringPct": 0.0084
+          },
+          "windowEnd": "2026-02-28",
+          "eventTitle": "Supreme Court strikes down Liberation Day tariffs",
+          "windowStart": "2026-02-01",
+          "divergencePp": 0.0061,
+          "sameRiskBenchmark": {
+            "drawdownPct": -0.014,
+            "returnDuringPct": -0.0021
+          }
+        },
+        {
+          "severity": "major",
+          "eventDate": "2026-02-28",
+          "household": {
+            "drawdownPct": -0.0091,
+            "returnDuringPct": -0.0062
+          },
+          "windowEnd": "2026-03-04",
+          "eventTitle": "Operation Epic Fury — US-Israel strikes on Iran",
+          "windowStart": "2026-02-28",
+          "divergencePp": -0.0029,
+          "sameRiskBenchmark": {
+            "drawdownPct": -0.0062,
+            "returnDuringPct": -0.0019
+          }
+        }
+      ],
+      "sameRiskBenchmark": {
+        "sharpe3y": 1.3001,
+        "blendCash": 0.2013,
+        "blendEquity": 0.5871,
+        "volatility3y": 0.0899,
+        "maxDrawdown3y": -0.1144,
+        "blendFixedIncome": 0.2116,
+        "return1yAnnualized": 0.0784,
+        "return3yAnnualized": 0.1528,
+        "return3yCumulative": 0.5325
+      }
+    },
+    "savingsAndContributions": {
+      "goalCoverage": {
+        "educationGap": 0,
+        "retirementGap": 1177585.95,
+        "withdrawalRatio": 0.0559,
+        "liquidAssetsAtEndOfPlan": -32439.08
+      },
+      "currentSavings": {
+        "grossIncome": 180000,
+        "currentSavingsRate": 0.2389,
+        "reportedAnnualSavings": 43000
+      },
+      "savingsCapacity": {
+        "savingsCapacity": -15336,
+        "estimatedNetIncome": 139336,
+        "impliedTrueExpenses": 100272,
+        "reportedAnnualSavings": 43000,
+        "savingsCapacityReliable": true,
+        "reportedAnnualDebtService": 11400,
+        "additionalAnnualSavingsNeededToCloseGap": 20231.12
+      },
+      "savingsWaterfall": [
+        [
+          "#",
+          "Bucket",
+          "Current",
+          "Optimal target",
+          "Status",
+          "Delta",
+          "Flag",
+          "Notes"
+        ],
+        [
+          1,
+          "Build minimum emergency threshold (3 months)",
+          30000,
+          27918,
+          "Filled",
+          2082,
+          "",
+          ""
+        ],
+        [
+          2,
+          "Address essential insurance gaps",
+          180000,
+          1900000,
+          "Partially filled",
+          -1720000,
+          "",
+          ""
+        ],
+        [
+          3,
+          "Set aside cash for near-term goals",
+          2082,
+          116800,
+          "Partially filled",
+          -114718,
+          "",
+          ""
+        ],
+        [
+          4,
+          "Maximize employer match — primary plan",
+          "N/A",
+          "",
+          ""
+        ],
+        [
+          5,
+          "Maximize employer match — secondary plan",
+          "N/A",
+          "",
+          ""
+        ],
+        [
+          6,
+          "Maximize HSA match",
+          0,
+          "N/A",
+          "",
+          ""
+        ],
+        [
+          7,
+          "Maximize ESPP (Employee Stock Purchase Plan)",
+          "N/A",
+          "",
+          ""
+        ],
+        [
+          8,
+          "Pay high-interest debt (>7%)",
+          3500,
+          0,
+          "Empty",
+          3500,
+          "",
+          ""
+        ],
+        [
+          9,
+          "Build toward maximum emergency threshold (6 months)",
+          0,
+          55836,
+          "Empty",
+          -55836,
+          "",
+          ""
+        ],
+        [
+          10,
+          "Contribute to Roth IRA",
+          0,
+          4500,
+          "Empty",
+          -4500,
+          "",
+          ""
+        ],
+        [
+          11,
+          "Maximize HSA",
+          4000,
+          4400,
+          "Partially filled",
+          -400,
+          "",
+          ""
+        ],
+        [
+          12,
+          "Contribute to 529 accounts",
+          0,
+          "N/A",
+          "",
+          ""
+        ],
+        [
+          13,
+          "Maximize 401k / employer plans",
+          17000,
+          24500,
+          "Partially filled",
+          -7500,
+          "",
+          ""
+        ],
+        [
+          14,
+          "Invest in taxable brokerage",
+          12000,
+          "N/A",
+          "",
+          ""
+        ],
+        [
+          15,
+          "Pay low-interest debt (personal, auto)",
+          15000,
+          0,
+          "Partially filled",
+          15000,
+          "",
+          ""
+        ],
+        [
+          16,
+          "Make extra mortgage payments",
+          "N/A",
+          "",
+          ""
+        ]
+      ],
+      "taxOpportunityCheck": {
+        "hsaCheck": {
+          "hasHsa": true,
+          "hsaBalance": 5000,
+          "contributionGap": 400,
+          "maxContribution": 4400,
+          "currentContributions": 4000,
+          "clientYearsToMedicare": 28,
+          "annualTaxSavingsAtCurrentMarginal": 96
+        },
+        "preTaxVsRothCheck": {
+          "currentTaxBracket": 0.24,
+          "rothConversionWindowYears": 15,
+          "taxDeferredAccountBalance": 80000,
+          "taxDeferredBalanceThreshold": 1000000,
+          "expectedTaxBracketInRetirement": 0.12,
+          "yearsPayingMoreRmdsThanRequired": 0
+        },
+        "annualTaxSavingsByBucket": [
+          [
+            "#",
+            "Bucket",
+            "Current contributions",
+            "Target contributions",
+            "Gap",
+            "Annual tax savings at 24% marginal"
+          ],
+          [
+            10,
+            "Roth IRA",
+            0,
+            4500,
+            4500
+          ],
+          [
+            11,
+            "HSA",
+            4000,
+            4400,
+            400,
+            96
+          ],
+          [
+            13,
+            "401k",
+            17000,
+            24500,
+            7500,
+            1800
+          ]
+        ]
+      },
+      "cashflowReconciliation": {
+        "totalTaxes": 40664,
+        "grossIncome": 180000,
+        "cashFlowDelta": -15336,
+        "effectiveTaxRate": 0.2259,
+        "estimatedNetIncome": 139336,
+        "impliedTrueExpenses": 100272,
+        "reportedAnnualSavings": 43000,
+        "reportedAnnualExpenses": 100272,
+        "expensesLikelyUnderstated": false,
+        "reportedAnnualDebtService": 11400,
+        "cashFlowDeltaPctOfEstimatedNetIncome": -0.1101
+      }
+    },
+    "targetAllocationInForce": {
+      "root": "aiTargetAllocation"
+    },
+    "targetBenchmarkComposition": [
+      {
+        "name": "F/m US Treasury 3 Month Bill Fund - ETF Class Shares",
+        "ticker": "TBIL",
+        "weight": 0.1738
+      },
+      {
+        "name": "Vanguard S&P 500 ETF",
+        "ticker": "VOO",
+        "weight": 0.4721
+      },
+      {
+        "name": "Vanguard Total Bond Market Index Fund ETF Shares",
+        "ticker": "BND",
+        "weight": 0.1517
+      },
+      {
+        "name": "State Street® SPDR® Portfolio Developed World ex-US ETF",
+        "ticker": "SPDW",
+        "weight": 0.1416
+      },
+      {
+        "name": "State Street® SPDR® Portfolio Emerging Markets ETF",
+        "ticker": "SPEM",
+        "weight": 0.0607
+      }
+    ],
+    "allocationBenchmarkAnalysis": {
+      "accounts": [
+        {
+          "currentEF": {
+            "cash": 1
+          },
+          "accountName": "Checking account",
+          "benchmarkEF": {
+            "cash": 1,
+            "equity": 0,
+            "fixedIncome": 0
+          },
+          "targetAmount": 12000,
+          "accountAmount": 12000,
+          "targetPurpose": "Cash sleeve",
+          "portfolioMainType": "CASH",
+          "portfolioTypeName": "Checking account",
+          "allocationSeverity": "Unknown",
+          "benchmarkComposition": [
+            {
+              "name": "F/m US Treasury 3 Month Bill Fund - ETF Class Shares",
+              "ticker": "TBIL",
+              "weight": 1
+            }
+          ],
+          "allocationSeverityReason": "Missing target or current risk profile.",
+          "currentClosestProfileName": "Income",
+          "currentClosestProfileOrder": 1
+        },
+        {
+          "currentEF": {
+            "cash": 1
+          },
+          "accountName": "Savings account",
+          "benchmarkEF": {
+            "cash": 1,
+            "equity": 0,
+            "fixedIncome": 0
+          },
+          "targetAmount": 15000,
+          "accountAmount": 15000,
+          "targetPurpose": "Cash sleeve",
+          "portfolioMainType": "CASH",
+          "portfolioTypeName": "Savings account",
+          "allocationSeverity": "Unknown",
+          "benchmarkComposition": [
+            {
+              "name": "F/m US Treasury 3 Month Bill Fund - ETF Class Shares",
+              "ticker": "TBIL",
+              "weight": 1
+            }
+          ],
+          "allocationSeverityReason": "Missing target or current risk profile.",
+          "currentClosestProfileName": "Income",
+          "currentClosestProfileOrder": 1
+        },
+        {
+          "riskName": "Growth",
+          "currentEF": {
+            "cash": 0.0266,
+            "equity": 0.7484,
+            "fixedIncome": 0.225
+          },
+          "riskOrder": 4,
+          "accountName": "401(k) - Michael",
+          "benchmarkEF": {
+            "cash": 0.0215,
+            "equity": 0.8003,
+            "fixedIncome": 0.1783
+          },
+          "targetAmount": 80000,
+          "accountAmount": 80000,
+          "benchmarkName": "Benchmark | Growth",
+          "targetPurpose": "Long-term wealth",
+          "portfolioMainType": "RETIREMENT",
+          "portfolioTypeName": "401k - Traditional",
+          "yearsToGoalSigned": 20.42,
+          "allocationSeverity": "Unknown",
+          "modelPortfolioName": "Core ETF | Growth",
+          "benchmarkComposition": [
+            {
+              "name": "F/m US Treasury 3 Month Bill Fund - ETF Class Shares",
+              "ticker": "TBIL",
+              "weight": 0.02
+            },
+            {
+              "name": "Vanguard S&P 500 ETF",
+              "ticker": "VOO",
+              "weight": 0.56
+            },
+            {
+              "name": "Vanguard Total Bond Market Index Fund ETF Shares",
+              "ticker": "BND",
+              "weight": 0.18
+            },
+            {
+              "name": "State Street® SPDR® Portfolio Developed World ex-US ETF",
+              "ticker": "SPDW",
+              "weight": 0.168
+            },
+            {
+              "name": "State Street® SPDR® Portfolio Emerging Markets ETF",
+              "ticker": "SPEM",
+              "weight": 0.072
+            }
+          ],
+          "targetExpectedReturn": 0.1762,
+          "profileDeviationSteps": 0,
+          "allocationSeverityReason": "Missing goal deadline.",
+          "currentClosestProfileName": "Growth",
+          "currentClosestProfileOrder": 4,
+          "targetExpectedReturnSource": "annualized3Y"
+        },
+        {
+          "riskName": "Growth",
+          "currentEF": {
+            "cash": 0.3021,
+            "fixedIncome": 0.6979
+          },
+          "riskOrder": 4,
+          "accountName": "HSA",
+          "benchmarkEF": {
+            "cash": 0.0215,
+            "equity": 0.8003,
+            "fixedIncome": 0.1783
+          },
+          "targetAmount": 5000,
+          "accountAmount": 5000,
+          "benchmarkName": "Benchmark | Growth",
+          "targetPurpose": "Long-term wealth",
+          "portfolioMainType": "HEALTH_SAVINGS",
+          "portfolioTypeName": "HSA",
+          "allocationSeverity": "Unknown",
+          "modelPortfolioName": "Core ETF | Growth",
+          "benchmarkComposition": [
+            {
+              "name": "F/m US Treasury 3 Month Bill Fund - ETF Class Shares",
+              "ticker": "TBIL",
+              "weight": 0.02
+            },
+            {
+              "name": "Vanguard S&P 500 ETF",
+              "ticker": "VOO",
+              "weight": 0.56
+            },
+            {
+              "name": "Vanguard Total Bond Market Index Fund ETF Shares",
+              "ticker": "BND",
+              "weight": 0.18
+            },
+            {
+              "name": "State Street® SPDR® Portfolio Developed World ex-US ETF",
+              "ticker": "SPDW",
+              "weight": 0.168
+            },
+            {
+              "name": "State Street® SPDR® Portfolio Emerging Markets ETF",
+              "ticker": "SPEM",
+              "weight": 0.072
+            }
+          ],
+          "targetExpectedReturn": 0.1762,
+          "allocationSeverityReason": "Missing target or current risk profile.",
+          "targetExpectedReturnSource": "annualized3Y"
+        },
+        {
+          "riskName": "Growth",
+          "currentEF": {
+            "cash": 0.0664,
+            "equity": 0.6852,
+            "fixedIncome": 0.2483
+          },
+          "riskOrder": 4,
+          "accountName": "Taxable Brokerage",
+          "benchmarkEF": {
+            "cash": 0.0215,
+            "equity": 0.8003,
+            "fixedIncome": 0.1783
+          },
+          "targetAmount": 60000,
+          "accountAmount": 60000,
+          "benchmarkName": "Benchmark | Growth",
+          "targetPurpose": "Long-term wealth",
+          "portfolioMainType": "BROKERAGE",
+          "portfolioTypeName": "Brokerage account",
+          "allocationSeverity": "Unknown",
+          "modelPortfolioName": "Core ETF | Growth",
+          "benchmarkComposition": [
+            {
+              "name": "F/m US Treasury 3 Month Bill Fund - ETF Class Shares",
+              "ticker": "TBIL",
+              "weight": 0.02
+            },
+            {
+              "name": "Vanguard S&P 500 ETF",
+              "ticker": "VOO",
+              "weight": 0.56
+            },
+            {
+              "name": "Vanguard Total Bond Market Index Fund ETF Shares",
+              "ticker": "BND",
+              "weight": 0.18
+            },
+            {
+              "name": "State Street® SPDR® Portfolio Developed World ex-US ETF",
+              "ticker": "SPDW",
+              "weight": 0.168
+            },
+            {
+              "name": "State Street® SPDR® Portfolio Emerging Markets ETF",
+              "ticker": "SPEM",
+              "weight": 0.072
+            }
+          ],
+          "targetExpectedReturn": 0.1762,
+          "profileDeviationSteps": 1,
+          "allocationSeverityReason": "Missing goal deadline.",
+          "currentClosestProfileName": "Moderate",
+          "currentClosestProfileOrder": 3,
+          "targetExpectedReturnSource": "annualized3Y"
+        }
+      ],
+      "cashSleeve": {
+        "excess": 0,
+        "target": 27000,
+        "covered": 27000,
+        "bySource": [
+          {
+            "amount": 12000,
+            "sourceKind": "CASH",
+            "accountName": "Checking account"
+          },
+          {
+            "amount": 15000,
+            "sourceKind": "CASH",
+            "accountName": "Savings account"
+          }
+        ],
+        "shortfall": 0
+      },
+      "accountBenchmarkCompositions": [
+        {
+          "accountName": "Checking account",
+          "targetAmount": 12000,
+          "benchmarkComposition": [
+            {
+              "name": "F/m US Treasury 3 Month Bill Fund - ETF Class Shares",
+              "ticker": "TBIL",
+              "weight": 1
+            }
+          ]
+        },
+        {
+          "accountName": "Savings account",
+          "targetAmount": 15000,
+          "benchmarkComposition": [
+            {
+              "name": "F/m US Treasury 3 Month Bill Fund - ETF Class Shares",
+              "ticker": "TBIL",
+              "weight": 1
+            }
+          ]
+        },
+        {
+          "accountName": "401(k) - Michael",
+          "targetAmount": 80000,
+          "benchmarkComposition": [
+            {
+              "name": "F/m US Treasury 3 Month Bill Fund - ETF Class Shares",
+              "ticker": "TBIL",
+              "weight": 0.02
+            },
+            {
+              "name": "Vanguard S&P 500 ETF",
+              "ticker": "VOO",
+              "weight": 0.56
+            },
+            {
+              "name": "Vanguard Total Bond Market Index Fund ETF Shares",
+              "ticker": "BND",
+              "weight": 0.18
+            },
+            {
+              "name": "State Street® SPDR® Portfolio Developed World ex-US ETF",
+              "ticker": "SPDW",
+              "weight": 0.168
+            },
+            {
+              "name": "State Street® SPDR® Portfolio Emerging Markets ETF",
+              "ticker": "SPEM",
+              "weight": 0.072
+            }
+          ]
+        },
+        {
+          "accountName": "HSA",
+          "targetAmount": 5000,
+          "benchmarkComposition": [
+            {
+              "name": "F/m US Treasury 3 Month Bill Fund - ETF Class Shares",
+              "ticker": "TBIL",
+              "weight": 0.02
+            },
+            {
+              "name": "Vanguard S&P 500 ETF",
+              "ticker": "VOO",
+              "weight": 0.56
+            },
+            {
+              "name": "Vanguard Total Bond Market Index Fund ETF Shares",
+              "ticker": "BND",
+              "weight": 0.18
+            },
+            {
+              "name": "State Street® SPDR® Portfolio Developed World ex-US ETF",
+              "ticker": "SPDW",
+              "weight": 0.168
+            },
+            {
+              "name": "State Street® SPDR® Portfolio Emerging Markets ETF",
+              "ticker": "SPEM",
+              "weight": 0.072
+            }
+          ]
+        },
+        {
+          "accountName": "Taxable Brokerage",
+          "targetAmount": 60000,
+          "benchmarkComposition": [
+            {
+              "name": "F/m US Treasury 3 Month Bill Fund - ETF Class Shares",
+              "ticker": "TBIL",
+              "weight": 0.02
+            },
+            {
+              "name": "Vanguard S&P 500 ETF",
+              "ticker": "VOO",
+              "weight": 0.56
+            },
+            {
+              "name": "Vanguard Total Bond Market Index Fund ETF Shares",
+              "ticker": "BND",
+              "weight": 0.18
+            },
+            {
+              "name": "State Street® SPDR® Portfolio Developed World ex-US ETF",
+              "ticker": "SPDW",
+              "weight": 0.168
+            },
+            {
+              "name": "State Street® SPDR® Portfolio Emerging Markets ETF",
+              "ticker": "SPEM",
+              "weight": 0.072
+            }
+          ]
+        }
+      ]
+    },
+    "concentrationAndDiversification": {
+      "totals": {
+        "holdings": 9,
+        "netWorth": 218500,
+        "equityExposure": 100986.23,
+        "singleStockValue": 0,
+        "singleStockWeight": 0,
+        "singleStockPositions": 0,
+        "investablePortfolioValue": 145000
+      },
+      "geographyByRegion": [
+        [
+          "Region",
+          "Weight (% of classified holdings)"
+        ],
+        [
+          "United States",
+          0.8529
+        ],
+        [
+          "Asia - Emerging",
+          0.067
+        ],
+        [
+          "Asia - Developed",
+          0.0516
+        ],
+        [
+          "Latin America",
+          0.011
+        ],
+        [
+          "Middle East",
+          0.0087
+        ],
+        [
+          "Africa",
+          0.0047
+        ],
+        [
+          "Europe - Emerging",
+          0.0022
+        ],
+        [
+          "Europe - ex Euro",
+          0.0012
+        ],
+        [
+          "Eurozone",
+          0.0003
+        ],
+        [
+          "United Kingdom",
+          0.0002
+        ],
+        [
+          "Canada",
+          0.0002
+        ]
+      ],
+      "holdingsByAccount": [
+        [
+          "Account",
+          "Holding",
+          "Ticker",
+          "Type",
+          "Category",
+          "Expense ratio",
+          "Amount"
+        ],
+        [
+          "401(k) - Michael",
+          "Vanguard Morningstar Total Stock Market ETF",
+          "VTI",
+          "ETF",
+          "Large Blend",
+          0.0003,
+          60000
+        ],
+        [
+          "401(k) - Michael",
+          "Schwab U.S. TIPS ETF™",
+          "SCHP",
+          "ETF",
+          "Inflation-Protected Bond",
+          0.0003,
+          18000
+        ],
+        [
+          "401(k) - Michael",
+          "Cash (USD)",
+          "",
+          "CASH",
+          "Money Market-Taxable",
+          2000
+        ],
+        [
+          "HSA",
+          "Fidelity Series 5+ Year Inflation-Protected Bond Index Fund",
+          "FSTDX",
+          "FUND",
+          "Inflation-Protected Bond",
+          0,
+          3500
+        ],
+        [
+          "HSA",
+          "Cash (USD)",
+          "",
+          "CASH",
+          "Money Market-Taxable",
+          1500
+        ],
+        [
+          "Taxable Brokerage",
+          "Vanguard FTSE Emerging Markets ETF",
+          "VWO",
+          "ETF",
+          "Diversified Emerging Markets",
+          0.0006,
+          22000
+        ],
+        [
+          "Taxable Brokerage",
+          "Schwab US Dividend Equity ETF",
+          "SCHD",
+          "ETF",
+          "Large Value",
+          0.0006,
+          20000
+        ],
+        [
+          "Taxable Brokerage",
+          "SPDR Bloomberg High Yield Bond ETF",
+          "JNK",
+          "ETF",
+          "High Yield Bond",
+          0.004,
+          15000
+        ],
+        [
+          "Taxable Brokerage",
+          "Cash (USD)",
+          "",
+          "CASH",
+          "Money Market-Taxable",
+          3000
+        ]
+      ],
+      "sectorConcentration": [
+        [
+          "Sector",
+          "Weight (% of equity)",
+          "Threshold",
+          "Severity",
+          "Driver"
+        ],
+        [
+          "Technology",
+          0.3295,
+          "20-35%",
+          "Elevated",
+          "VTI (68.6%), VWO (21.4%), SCHD (10.0%)"
+        ],
+        [
+          "Financial Services",
+          0.1269,
+          "<20%",
+          "Acceptable",
+          "VTI (53.9%), VWO (32.1%), SCHD (14.0%)"
+        ],
+        [
+          "Healthcare",
+          0.1046,
+          "<20%",
+          "Acceptable",
+          "VTI (56.8%), SCHD (35.0%), VWO (8.2%)"
+        ],
+        [
+          "Consumer Cyclical",
+          0.0848,
+          "<20%",
+          "Acceptable",
+          "VTI (60.9%), VWO (23.0%), SCHD (16.1%)"
+        ],
+        [
+          "Industrials",
+          0.0832,
+          "<20%",
+          "Acceptable",
+          "VTI (62.8%), VWO (18.8%), SCHD (18.4%)"
+        ],
+        [
+          "Communication Services",
+          0.0787,
+          "<20%",
+          "Acceptable",
+          "VTI (69.5%), VWO (17.0%), SCHD (13.5%)"
+        ],
+        [
+          "Consumer Defensive",
+          0.0703,
+          "<20%",
+          "Acceptable",
+          "SCHD (55.2%), VTI (35.2%), VWO (9.6%)"
+        ],
+        [
+          "Energy",
+          0.0616,
+          "<20%",
+          "Acceptable",
+          "SCHD (52.0%), VTI (34.2%), VWO (13.8%)"
+        ],
+        [
+          "Basic Materials",
+          0.0262,
+          "<20%",
+          "Acceptable",
+          "VWO (59.2%), VTI (40.8%)"
+        ],
+        [
+          "Real Estate",
+          0.0173,
+          "<20%",
+          "Acceptable",
+          "VTI (74.0%), VWO (26.0%)"
+        ],
+        [
+          "Utilities",
+          0.0168,
+          "<20%",
+          "Acceptable",
+          "VTI (66.4%), VWO (32.5%), SCHD (1.1%)"
+        ]
+      ],
+      "employerConcentration": [
+        [
+          "Component",
+          "Value",
+          "% of net worth"
+        ],
+        [
+          "Employer stock in portfolio",
+          "[employer not identifiable]",
+          "[employer not identifiable]"
+        ],
+        [
+          "Unvested equity",
+          0,
+          0
+        ],
+        [
+          "Annual salary",
+          180000,
+          0.8238
+        ],
+        [
+          "Total employer exposure",
+          180000,
+          0.8238
+        ],
+        [
+          "Severity",
+          "Significant"
+        ]
+      ],
+      "geographyConcentration": [
+        [
+          "Geography",
+          "Weight (% of equity)",
+          "Threshold",
+          "Severity"
+        ],
+        [
+          "United States",
+          0.8529,
+          ">85%",
+          "Significant home bias"
+        ],
+        [
+          "International",
+          0.1471,
+          "",
+          ""
+        ],
+        [
+          "Unclassified (% of all holdings)",
+          0.125,
+          "",
+          ""
+        ]
+      ],
+      "singleStockConcentration": [
+        [
+          "Stock",
+          "Accounts",
+          "Total value",
+          "Portfolio weight",
+          "Embedded gain",
+          "Exit friction",
+          "Severity"
+        ]
+      ]
+    }
+  },
+  "analysis": {
+    "summary": {
+      "assetAllocation": {
+        "currentEF": {
+          "equity": 0.5871,
+          "fixedIncome": 0.4129
+        },
+        "currentEFC": {
+          "cash": 0.2013,
+          "equity": 0.5871,
+          "fixedIncome": 0.2116
+        },
+        "targetEF": {
+          "equity": 0.6744,
+          "fixedIncome": 0.3256
+        },
+        "targetEFC": {
+          "cash": 0.1753,
+          "equity": 0.6744,
+          "fixedIncome": 0.1505
+        }
+      }
+    },
+    "portfolioAnalysis": {
+      "allocationSnapshot": {
+        "advisoryFeeRate": 0,
+        "allocation": {
+          "annualReturn": 0.1359,
+          "ef": {
+            "equity": 0.5871,
+            "fixedIncome": 0.4129
+          },
+          "efc": {
+            "cash": 0.2013,
+            "equity": 0.5871,
+            "fixedIncome": 0.2116
+          },
+          "standardDeviation": 0.079
+        },
+        "performanceWindow": {
+          "endDate": "2026-11-01",
+          "startDate": "2023-11-01"
+        },
+        "rows": [
+          {
+            "label": "Cash",
+            "weight": 0.2013
+          },
+          {
+            "label": "U.S. Fixed Income",
+            "weight": 0.1942
+          },
+          {
+            "label": "Non-U.S. Fixed Income",
+            "weight": 0.0174
+          },
+          {
+            "label": "U.S. Equity",
+            "weight": 0.4631
+          },
+          {
+            "label": "Non-U.S. Equity",
+            "weight": 0.1237
+          },
+          {
+            "label": "Other",
+            "weight": 0.0004
+          },
+          {
+            "label": "Weighted avg ER",
+            "weight": 0.0006
+          }
+        ]
+      },
+      "investmentSnapshot": {
+        "byAllocation": [
+          {
+            "allocationSegments": [
+              {
+                "label": "U.S. Fixed Income",
+                "value": 17677.29
+              },
+              {
+                "label": "Non-U.S. Fixed Income",
+                "value": 322.59
+              },
+              {
+                "label": "Cash",
+                "value": 2126.99
+              },
+              {
+                "label": "U.S. Equity",
+                "value": 59513.81
+              },
+              {
+                "label": "Non-U.S. Equity",
+                "value": 333.16
+              },
+              {
+                "label": "Other",
+                "value": 26.15
+              }
+            ],
+            "head": 0,
+            "joint": 0,
+            "spouse": 0,
+            "totalAccount": 1,
+            "typeLabel": "retirement"
+          },
+          {
+            "head": 0,
+            "joint": 0,
+            "spouse": 0,
+            "totalAccount": 0,
+            "typeLabel": "retirement-free"
+          },
+          {
+            "allocationSegments": [
+              {
+                "label": "Cash",
+                "value": 1510.67
+              },
+              {
+                "label": "U.S. Fixed Income",
+                "value": 3489.33
+              }
+            ],
+            "head": 0,
+            "joint": 0,
+            "spouse": 0,
+            "totalAccount": 1,
+            "typeLabel": "hsa"
+          },
+          {
+            "head": 0,
+            "joint": 0,
+            "spouse": 0,
+            "totalAccount": 0,
+            "typeLabel": "education"
+          },
+          {
+            "allocationSegments": [
+              {
+                "label": "U.S. Equity",
+                "value": 20133.85
+              },
+              {
+                "label": "Non-U.S. Equity",
+                "value": 20938.01
+              },
+              {
+                "label": "U.S. Fixed Income",
+                "value": 12230.13
+              },
+              {
+                "label": "Non-U.S. Fixed Income",
+                "value": 2670.12
+              },
+              {
+                "label": "Cash",
+                "value": 3986.63
+              },
+              {
+                "label": "Other",
+                "value": 41.25
+              }
+            ],
+            "head": 0,
+            "joint": 0,
+            "spouse": 0,
+            "totalAccount": 1,
+            "typeLabel": "brokerage"
+          },
+          {
+            "head": 0,
+            "joint": 0,
+            "spouse": 0,
+            "totalAccount": 0,
+            "typeLabel": "crypto"
+          },
+          {
+            "allocationSegments": [
+              {
+                "label": "Cash",
+                "value": 27000
+              }
+            ],
+            "head": 0,
+            "joint": 0,
+            "spouse": 0,
+            "totalAccount": 2,
+            "typeLabel": "cash"
+          }
+        ],
+        "byHolder": [
+          {
+            "head": 80000,
+            "headAccounts": [
+              {
+                "assetAllocationEFC": {
+                  "cash": 0.0266,
+                  "equity": 0.7484,
+                  "fixedIncome": 0.225
+                },
+                "assetAllocationUSMin": [
+                  {
+                    "assetAllocation": "US_3",
+                    "label": "U.S. Fixed Income",
+                    "weight": 0.221
+                  },
+                  {
+                    "assetAllocation": "US_4",
+                    "label": "Non-U.S. Fixed Income",
+                    "weight": 0.004
+                  },
+                  {
+                    "assetAllocation": "US_7",
+                    "label": "Cash",
+                    "weight": 0.0266
+                  },
+                  {
+                    "assetAllocation": "US_1",
+                    "label": "U.S. Equity",
+                    "weight": 0.7439
+                  },
+                  {
+                    "assetAllocation": "US_2",
+                    "label": "Non-U.S. Equity",
+                    "weight": 0.0042
+                  },
+                  {
+                    "assetAllocation": "US_8",
+                    "label": "Other",
+                    "weight": 0.0003
+                  }
+                ],
+                "name": "401(k) - Michael",
+                "value": 80000
+              }
+            ],
+            "spouse": 0,
+            "totalAccount": 1,
+            "typeLabel": "retirement",
+            "unattributed": 0
+          },
+          {
+            "head": 0,
+            "spouse": 0,
+            "totalAccount": 0,
+            "typeLabel": "retirement-free",
+            "unattributed": 0
+          },
+          {
+            "head": 5000,
+            "headAccounts": [
+              {
+                "assetAllocationEFC": {
+                  "cash": 0.3021,
+                  "fixedIncome": 0.6979
+                },
+                "assetAllocationUSMin": [
+                  {
+                    "assetAllocation": "US_7",
+                    "label": "Cash",
+                    "weight": 0.3021
+                  },
+                  {
+                    "assetAllocation": "US_3",
+                    "label": "U.S. Fixed Income",
+                    "weight": 0.6979
+                  }
+                ],
+                "name": "HSA",
+                "value": 5000
+              }
+            ],
+            "spouse": 0,
+            "totalAccount": 1,
+            "typeLabel": "hsa",
+            "unattributed": 0
+          },
+          {
+            "head": 0,
+            "joint": 0,
+            "spouse": 0,
+            "totalAccount": 0,
+            "typeLabel": "education",
+            "unattributed": 0
+          },
+          {
+            "head": 60000,
+            "headAccounts": [
+              {
+                "assetAllocationEFC": {
+                  "cash": 0.0664,
+                  "equity": 0.6852,
+                  "fixedIncome": 0.2483
+                },
+                "assetAllocationUSMin": [
+                  {
+                    "assetAllocation": "US_1",
+                    "label": "U.S. Equity",
+                    "weight": 0.3356
+                  },
+                  {
+                    "assetAllocation": "US_2",
+                    "label": "Non-U.S. Equity",
+                    "weight": 0.349
+                  },
+                  {
+                    "assetAllocation": "US_3",
+                    "label": "U.S. Fixed Income",
+                    "weight": 0.2038
+                  },
+                  {
+                    "assetAllocation": "US_4",
+                    "label": "Non-U.S. Fixed Income",
+                    "weight": 0.0445
+                  },
+                  {
+                    "assetAllocation": "US_7",
+                    "label": "Cash",
+                    "weight": 0.0664
+                  },
+                  {
+                    "assetAllocation": "US_8",
+                    "label": "Other",
+                    "weight": 0.0007
+                  }
+                ],
+                "name": "Taxable Brokerage",
+                "value": 60000
+              }
+            ],
+            "joint": 0,
+            "spouse": 0,
+            "totalAccount": 1,
+            "typeLabel": "brokerage",
+            "unattributed": 0
+          },
+          {
+            "head": 0,
+            "joint": 0,
+            "spouse": 0,
+            "totalAccount": 0,
+            "typeLabel": "crypto",
+            "unattributed": 0
+          },
+          {
+            "head": 27000,
+            "headAccounts": [
+              {
+                "assetAllocationEFC": {
+                  "cash": 1
+                },
+                "assetAllocationUSMin": [
+                  {
+                    "assetAllocation": "US_7",
+                    "label": "Cash",
+                    "weight": 1
+                  }
+                ],
+                "name": "Checking account",
+                "value": 12000
+              },
+              {
+                "assetAllocationEFC": {
+                  "cash": 1
+                },
+                "assetAllocationUSMin": [
+                  {
+                    "assetAllocation": "US_7",
+                    "label": "Cash",
+                    "weight": 1
+                  }
+                ],
+                "name": "Savings account",
+                "value": 15000
+              }
+            ],
+            "joint": 0,
+            "spouse": 0,
+            "totalAccount": 2,
+            "typeLabel": "cash",
+            "unattributed": 0
+          }
+        ],
+        "metrics": {
+          "accounts": [
+            {
+              "instruments": [
+                {
+                  "assetClass": "Equity",
+                  "performance1Y": 0.1193,
+                  "standardDeviation1Y": 0.1278
+                },
+                {
+                  "assetClass": "Fixed Income",
+                  "performance1Y": 0.0028,
+                  "standardDeviation1Y": 0.0337
+                },
+                {
+                  "assetClass": "Cash",
+                  "performance1Y": 0,
+                  "standardDeviation1Y": 0
+                }
+              ],
+              "performance1Y": 0.0905,
+              "standardDeviation1Y": 0.098
+            },
+            {
+              "instruments": [
+                {
+                  "assetClass": "Equity",
+                  "performance1Y": 0.0323,
+                  "standardDeviation1Y": 0.1593
+                },
+                {
+                  "assetClass": "Equity",
+                  "performance1Y": 0.3985,
+                  "standardDeviation1Y": 0.1126
+                },
+                {
+                  "assetClass": "Fixed Income",
+                  "performance1Y": 0.0183,
+                  "standardDeviation1Y": 0.0293
+                },
+                {
+                  "assetClass": "Cash",
+                  "performance1Y": 0,
+                  "standardDeviation1Y": 0
+                }
+              ],
+              "performance1Y": 0.1413,
+              "standardDeviation1Y": 0.0753
+            },
+            {
+              "instruments": [
+                {
+                  "assetClass": "Fixed Income",
+                  "performance1Y": -0.0153,
+                  "standardDeviation1Y": 0.0539
+                },
+                {
+                  "assetClass": "Cash",
+                  "performance1Y": 0,
+                  "standardDeviation1Y": 0
+                }
+              ],
+              "performance1Y": -0.0104,
+              "standardDeviation1Y": 0.0377
+            }
+          ]
+        }
+      }
+    },
+    "targetAnalysis": {
+      "allocationSnapshot": {
+        "allocation": {
+          "annualReturn": 0.1663,
+          "ef": {
+            "equity": 0.6744,
+            "fixedIncome": 0.3256
+          },
+          "efc": {
+            "cash": 0.1753,
+            "equity": 0.6744,
+            "fixedIncome": 0.1505
+          },
+          "standardDeviation": 0.0836
+        },
+        "performanceWindow": {
+          "endDate": "2026-11-01",
+          "startDate": "2023-11-01"
+        },
+        "rows": [
+          {
+            "label": "U.S. Fixed Income",
+            "weight": 0.1383
+          },
+          {
+            "label": "Cash",
+            "weight": 0.1753
+          },
+          {
+            "label": "Other",
+            "weight": 0.0002
+          },
+          {
+            "label": "U.S. Equity",
+            "weight": 0.4728
+          },
+          {
+            "label": "Non-U.S. Equity",
+            "weight": 0.2013
+          },
+          {
+            "label": "Non-U.S. Fixed Income",
+            "weight": 0.0123
+          }
+        ]
+      }
+    },
+    "events": [
+      {
+        "assetClassesAffected": [
+          "US Treasuries",
+          "US equities",
+          "USD",
+          "rate-sensitive sectors"
+        ],
+        "dateLabel": "2023-07-26",
+        "description": "The Fed raised rates 25bp to 5.25–5.50%, the 11th and final hike in the cycle — the highest level in 22 years. The Fed held here for 14 months before cutting in September 2024.",
+        "duration": "Extended",
+        "endDate": "2024-09-17",
+        "impactDirection": "Rates-driven",
+        "name": "Fed final hike to 5.25–5.50%",
+        "portfolioImpact": "Mixed",
+        "severity": "High",
+        "startDate": "2023-07-23",
+        "type": "Fed/Macro"
+      },
+      {
+        "assetClassesAffected": [
+          "US equities",
+          "US Treasuries",
+          "small caps",
+          "USD",
+          "rate-sensitive sectors"
+        ],
+        "dateLabel": "2023-12-13",
+        "description": "Fed held rates steady but the dot plot signaled 75bp of cuts in 2024, marking a decisive pivot. S&P 500 surged to new highs; Russell 2000 +4%. Long-end yields fell sharply. Catalyzed a broad year-end rally across equities and bonds.",
+        "duration": "Extended",
+        "endDate": "2024-03-31",
+        "impactDirection": "Risk-on equity",
+        "name": "Fed pivot — December 2023 dot plot",
+        "portfolioImpact": "Positive",
+        "severity": "High",
+        "startDate": "2023-12-10",
+        "type": "Fed/Macro"
+      },
+      {
+        "assetClassesAffected": [
+          "US equities",
+          "Japanese equities",
+          "EM",
+          "global equities",
+          "USD/JPY"
+        ],
+        "dateLabel": "2024-08-05",
+        "description": "Yen carry trade unwind and US recession fears triggered a global rout. Japan's TOPIX fell 12.3% — worst since 1987 Black Monday. VIX spiked above 65 intraday. S&P 500 fell ~3% at the open but recovered most losses by Friday. The episode lasted one week.",
+        "duration": "Immediate (days)",
+        "endDate": "2024-08-09",
+        "impactDirection": "Risk-off equity",
+        "name": "Global selloff — VIX spikes above 60",
+        "portfolioImpact": "Negative",
+        "severity": "High",
+        "startDate": "2024-07-31",
+        "type": "Market"
+      },
+      {
+        "assetClassesAffected": [
+          "US equities",
+          "US Treasuries",
+          "USD",
+          "EM",
+          "rate-sensitive sectors"
+        ],
+        "dateLabel": "2024-09-18",
+        "description": "First Fed rate cut in four years, and an outsized 50bp move, formally marking the start of the easing cycle. Signaled the Fed's confidence that inflation was heading sustainably toward 2% and opened the door to subsequent cuts.",
+        "duration": "Extended",
+        "endDate": "2024-12-18",
+        "impactDirection": "Risk-on equity",
+        "name": "Fed first rate cut — 50bp",
+        "portfolioImpact": "Positive",
+        "severity": "High",
+        "startDate": "2024-09-15",
+        "type": "Fed/Macro"
+      },
+      {
+        "assetClassesAffected": [
+          "US equities",
+          "small caps",
+          "financials",
+          "USD",
+          "crypto"
+        ],
+        "dateLabel": "2024-11-05",
+        "description": "Trump defeated Kamala Harris decisively. S&P 500 surged 2.5%, Dow +3.6%, Russell 2000 +5.8%. The \"Trump trade\" lifted banks, small caps, and crypto on expectations of deregulation and tax cuts. USD strengthened sharply.",
+        "duration": "Short",
+        "endDate": "2024-11-19",
+        "impactDirection": "Risk-on equity",
+        "name": "Trump election win",
+        "portfolioImpact": "Positive",
+        "severity": "High",
+        "startDate": "2024-11-05",
+        "type": "Policy"
+      },
+      {
+        "assetClassesAffected": [
+          "US equities (tech/semis)",
+          "Nvidia",
+          "AI-linked names"
+        ],
+        "dateLabel": "2025-01-27",
+        "description": "Chinese startup DeepSeek released an open-source AI model rivaling GPT-4 at a fraction of the cost, questioning the US AI capex thesis. Nvidia lost $589B in market value — the largest single-day loss for any stock in history. Nasdaq fell 3.1%, S&P 500 fell 1.5%.",
+        "duration": "Immediate (days)",
+        "endDate": "2025-01-30",
+        "impactDirection": "Sector-specific",
+        "name": "DeepSeek AI shock",
+        "portfolioImpact": "Negative",
+        "severity": "High",
+        "startDate": "2025-01-27",
+        "type": "Tech/AI"
+      },
+      {
+        "assetClassesAffected": [
+          "US equities",
+          "international equities",
+          "EM",
+          "USD",
+          "US Treasuries"
+        ],
+        "dateLabel": "2025-04-02",
+        "description": "Trump announced sweeping reciprocal tariffs (10% baseline, 34% on China, 20% on EU, 46% on Vietnam) — the highest US tariff level since 1909. S&P 500 lost 10% in two days — the worst two-day loss in history ($6.6T erased). Long-end yields spiked on bond vigilante concerns.",
+        "duration": "Short",
+        "endDate": "2025-04-09",
+        "impactDirection": "Risk-off equity",
+        "name": "Liberation Day tariffs announced",
+        "portfolioImpact": "Negative",
+        "severity": "High",
+        "startDate": "2025-04-02",
+        "type": "Policy"
+      },
+      {
+        "assetClassesAffected": [
+          "US equities",
+          "international equities",
+          "US Treasuries",
+          "USD"
+        ],
+        "dateLabel": "2025-04-09",
+        "description": "After the S&P 500 fell 10% in two days post-Liberation Day, Trump announced a 90-day pause on reciprocal tariffs above 10% for all countries except China (raised to 125%). S&P 500 surged 9.52% — its largest single-day gain since 2008. Nasdaq jumped 12.16%. Record 30B shares traded.",
+        "duration": "Short",
+        "endDate": "2025-04-22",
+        "impactDirection": "Risk-on equity",
+        "name": "90-day tariff pause rally",
+        "portfolioImpact": "Positive",
+        "severity": "High",
+        "startDate": "2025-04-09",
+        "type": "Policy"
+      },
+      {
+        "assetClassesAffected": [
+          "US equities",
+          "international equities",
+          "EM",
+          "USD",
+          "tech",
+          "retail"
+        ],
+        "dateLabel": "2025-05-12",
+        "description": "After two days of talks in Geneva, the US and China agreed to reduce reciprocal tariffs from 125% to 10% for 90 days. S&P 500 surged 3.3%, Nasdaq +4.4%. Apple and Amazon led gains as the deal eased supply-chain fears for import-dependent tech and retail sectors.",
+        "duration": "Short",
+        "endDate": "2025-05-19",
+        "impactDirection": "Risk-on equity",
+        "name": "US-China Geneva tariff truce",
+        "portfolioImpact": "Positive",
+        "severity": "High",
+        "startDate": "2025-05-11",
+        "type": "Policy"
+      },
+      {
+        "assetClassesAffected": [
+          "US equities",
+          "international equities",
+          "USD",
+          "imports-sensitive sectors"
+        ],
+        "dateLabel": "2026-02-01",
+        "description": "The Supreme Court affirmed that the Trump administration's use of emergency powers to impose the April 2025 reciprocal tariffs was unlawful, formally unwinding the tariff regime's legal basis. (Exact date to verify on next run.)",
+        "duration": "Extended",
+        "endDate": "2026-02-28",
+        "impactDirection": "Risk-on equity",
+        "name": "Supreme Court strikes down Liberation Day tariffs",
+        "portfolioImpact": "Positive",
+        "severity": "High",
+        "startDate": "2026-02-01",
+        "type": "Policy"
+      },
+      {
+        "assetClassesAffected": [
+          "Crude oil",
+          "US equities",
+          "international equities",
+          "defense stocks",
+          "US Treasuries"
+        ],
+        "dateLabel": "2026-02-28",
+        "description": "US and Israel launched coordinated airstrikes on Iranian military and nuclear sites, with nearly 900 strikes in the first 12 hours. Iranian leadership was decapitated. Brent crude surged 10–13% immediately; global equity markets sold off sharply on escalation and energy-supply fears.",
+        "duration": "Extended",
+        "endDate": "2026-03-04",
+        "impactDirection": "Risk-off equity",
+        "name": "Operation Epic Fury — US-Israel strikes on Iran",
+        "portfolioImpact": "Negative",
+        "severity": "High",
+        "startDate": "2026-02-28",
+        "type": "Geopolitical"
+      }
+    ],
+    "periods": [
+      {
+        "character": "Fed held rates at 5.25–5.50% for 14 months while inflation ground lower. US equities (led by Mag-7/AI) still delivered strong returns despite restrictive policy.",
+        "endDate": "2024-09-17",
+        "name": "Higher-for-longer plateau",
+        "portfolioExperience": "Mixed-to-positive: short-duration cash delivered attractive carry, US large-cap led by AI themes, long-duration bonds struggled.",
+        "primaryDriver": "Fed policy",
+        "startDate": "2023-07-27",
+        "theme": "Sideways"
+      },
+      {
+        "character": "After 10Y yield peaked at 5% on Oct 19, cooling inflation data and the Fed's December dot-plot pivot catalyzed a powerful simultaneous rally in equities and bonds through year-end.",
+        "endDate": "2023-12-31",
+        "name": "Q4 2023 rate-pivot rally",
+        "portfolioExperience": "Strongly positive: both equity and fixed income rallied, rewarding duration and risk after a painful Q3.",
+        "primaryDriver": "Fed policy",
+        "startDate": "2023-10-27",
+        "theme": "Bull run"
+      },
+      {
+        "character": "Three consecutive cuts (-50bp, -25bp, -25bp) took the policy rate from 5.25–5.50% to 4.25–4.50%, supporting risk assets even as the December cut was delivered in a hawkish package.",
+        "endDate": "2024-11-04",
+        "name": "Fed easing cycle — initial phase",
+        "portfolioExperience": "Positive: equities and duration both rallied through the fall before the December hawkish cut capped the move.",
+        "primaryDriver": "Fed policy",
+        "startDate": "2024-09-18",
+        "theme": "Bull run"
+      },
+      {
+        "character": "Trump's decisive election victory sparked a rally in domestic-focused assets — small caps, banks, crypto, defense — on expectations of deregulation and tax cuts. S&P 500 hit all-time high Feb 19.",
+        "endDate": "2025-02-19",
+        "name": "Post-election \"Trump trade\"",
+        "portfolioExperience": "Positive for US-tilted portfolios, especially small-cap and value; international allocations lagged as USD strengthened.",
+        "primaryDriver": "Policy",
+        "startDate": "2024-11-05",
+        "theme": "Bull run"
+      },
+      {
+        "character": "Escalating tariff threats against Canada, Mexico, and China — compounded by DeepSeek's AI disruption — reversed the post-election rally. S&P 500 fell 10% from its February all-time high.",
+        "endDate": "2025-04-01",
+        "name": "Pre-Liberation Day correction",
+        "portfolioExperience": "Moderately negative: US large cap led losses; international equities held up better as the \"US exceptionalism\" trade unwound.",
+        "primaryDriver": "Policy",
+        "startDate": "2025-02-19",
+        "theme": "High volatility"
+      },
+      {
+        "character": "Liberation Day tariffs triggered the worst two-day S&P loss in history ($6.6T erased); the 90-day pause the following week triggered the largest single-day gain since 2008. Geneva truce and S&P ATH by June 27 closed the episode.",
+        "endDate": "2025-12-31",
+        "name": "Tariff shock & recovery",
+        "portfolioExperience": "Negative turning strongly positive: V-shaped recovery rewarded investors who stayed allocated; international equities outperformed the full year.",
+        "primaryDriver": "Policy",
+        "startDate": "2025-04-02",
+        "theme": "High volatility → Recovery"
+      },
+      {
+        "character": "Repricing away from the 2025 \"soft landing + AI boom\" narrative toward sticky core inflation, Middle East conflict premium in oil, elevated long-end Treasury yields, and US large-cap underperformance vs. international.",
+        "endDate": "2026-11-01",
+        "name": "Sticky-inflation / geopolitical risk regime",
+        "portfolioExperience": "Mildly negative: US large-cap drawdown cushioned by international equity, short duration, and energy exposure.",
+        "primaryDriver": "Geopolitics",
+        "startDate": "2026-02-01",
+        "theme": "High volatility"
+      }
+    ]
+  }
+}
