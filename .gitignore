@@ -16,3 +16,7 @@ build/
 .DS_Store
 .idea/
 .vscode/
+
+# Local app state (reactions, audit log)
+data/
+.claude/

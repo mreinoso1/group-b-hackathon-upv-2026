@@ -1,0 +1,27 @@
+{
+  "name": "plan-one-bite",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "concurrently -k -n api,web -c blue,magenta \"npm run dev -w @bite/app-server\" \"npm run dev -w @bite/web\"",
+    "build": "npm run build -w @bite/web",
+    "start": "npm run build && npm run start -w @bite/app-server",
+    "mcp:http": "npm run start:http -w @bite/plan-coach-mcp",
+    "mcp:stdio": "npm run start:stdio -w @bite/plan-coach-mcp",
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "concurrently": "^10.0.7",
+    "tsx": "^4.23.15",
+    "typescript": "^5.9.3",
+    "vitest": "^5.1.0"
+  }
+}
