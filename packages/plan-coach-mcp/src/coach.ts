@@ -127,7 +127,11 @@ export function spokenText(c: Capsule): string {
  * budget would be exceeded, the caller gets the text for the browser's own voice instead.
  */
 export async function capsuleAudio(capsule: Capsule, deps: CoachDeps): Promise<AudioResult> {
-  const text = spokenText(capsule);
+  return speak(spokenText(capsule), deps);
+}
+
+/** Speech for any plan-derived text (a capsule, the future self's opening line). */
+export async function speak(text: string, deps: CoachDeps): Promise<AudioResult> {
   const model = deps.ttsModel ?? "eleven-flash-v2.5";
   const voice = deps.voice ?? "alloy";
   const audioId = cacheKey({ v: CACHE_VERSION, model, voice, text });

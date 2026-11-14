@@ -8,6 +8,7 @@ import {
   at,
   buildCapsule,
   buildExplainPrompt,
+  checkInLabel,
   futureSelf,
   futureSelfLine,
   futureSelves,
@@ -29,7 +30,7 @@ import {
   type RawCase,
 } from "@bite/plan-core";
 import { audited, type AuditLog } from "./audit.ts";
-import { capsuleAudio, simpleCapsule, type CoachDeps } from "./coach.ts";
+import { capsuleAudio, simpleCapsule, speak, type CoachDeps } from "./coach.ts";
 import { isCheckin, isCommitment, isReaction, type EventStore } from "./store.ts";
 
 export interface PlanCoachDeps extends CoachDeps {
@@ -205,7 +206,7 @@ export function createPlanCoachServer(deps: PlanCoachDeps): McpServer {
       guard(async () => {
         const raw = await source.getCase(args.caseId);
         checkMember(raw, args.member);
-        const all = futureSelves(raw);
+        const all = futureSelves(raw).map((f) => ({ ...f, checkIns: f.checkIns.map((m) => ({ ...m, checkInLabel: checkInLabel(m) })) }));
         const one = args.member && args.member !== "together";
         return { futureSelves: one ? all.filter((f) => f.memberId === args.member) : all };
       }),
@@ -301,13 +302,26 @@ export function createPlanCoachServer(deps: PlanCoachDeps): McpServer {
       title: "Get a capsule's audio",
       description:
         "Audio for a capsule, generated once and cached. Returns { kind: 'audio', audioId } (an mp3 in the cache) or, with no key " +
-        "or when the voice budget is used up, { kind: 'browser', text } so the client reads it with the device's own voice.",
-      inputSchema: { caseId: CASE_ID, topicId: TOPIC_ID, level: LEVEL.default("standard"), member: MEMBER.optional(), attempt: ATTEMPT.default(0) },
+        "or when the voice budget is used up, { kind: 'browser', text } so the client reads it with the device's own voice. " +
+        "With intro: true, it speaks the member's future-self opening line instead of a capsule.",
+      inputSchema: {
+        caseId: CASE_ID,
+        topicId: TOPIC_ID,
+        level: LEVEL.default("standard"),
+        member: MEMBER.optional(),
+        attempt: ATTEMPT.default(0),
+        intro: z.boolean().optional(),
+      },
     },
-    audited(audit, "tool", "get_audio", async (args: { caseId: string; topicId: string; level: Level; member?: string; attempt?: number }) =>
+    audited(audit, "tool", "get_audio", async (args: { caseId: string; topicId: string; level: Level; member?: string; attempt?: number; intro?: boolean }) =>
       guard(async () => {
         const raw = await source.getCase(args.caseId);
         checkMember(raw, args.member);
+        if (args.intro) {
+          const f = args.member && args.member !== "together" ? futureSelf(raw, args.member) : futureSelves(raw)[0];
+          if (!f) throw new InvalidInputError("The plan does not give enough to build this future self");
+          return speak(f.introText, coach);
+        }
         if (!TOPICS.some((t) => t.id === args.topicId)) throw new UnknownTopicError(args.topicId);
         const capsule =
           args.level === "simple"

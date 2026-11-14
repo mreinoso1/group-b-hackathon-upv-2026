@@ -53,6 +53,23 @@ app.get("/api/cases/:caseId/future-self", async (c) => {
   return c.json(await coach.call("get_future_self", { caseId: c.req.param("caseId"), ...(member ? { member } : {}) }));
 });
 
+app.get("/api/cases/:caseId/first-step", async (c) => {
+  const member = c.req.query("member");
+  return c.json(await coach.call("get_first_step", { caseId: c.req.param("caseId"), ...(member ? { member } : {}) }));
+});
+
+app.post("/api/cases/:caseId/commitments", bodyLimit({ maxSize: 2 * 1024 }), async (c) => {
+  const body = await c.req.json<Record<string, unknown>>();
+  return c.json(
+    await coach.call("commit_step", { caseId: c.req.param("caseId"), member: body.member, moveIndex: body.moveIndex, dueDate: body.dueDate }),
+  );
+});
+
+app.post("/api/cases/:caseId/checkins", bodyLimit({ maxSize: 2 * 1024 }), async (c) => {
+  const body = await c.req.json<Record<string, unknown>>();
+  return c.json(await coach.call("record_checkin", { caseId: c.req.param("caseId"), member: body.member, status: body.status }));
+});
+
 app.post("/api/cases/:caseId/audio", bodyLimit({ maxSize: 4 * 1024 }), async (c) => {
   const body = await c.req.json<Record<string, unknown>>();
   const result = await coach.call<{ kind: string; audioId?: string; text?: string }>("get_audio", {
@@ -61,6 +78,7 @@ app.post("/api/cases/:caseId/audio", bodyLimit({ maxSize: 4 * 1024 }), async (c)
     level: body.level ?? "standard",
     ...(typeof body.member === "string" ? { member: body.member } : {}),
     ...(typeof body.attempt === "number" ? { attempt: body.attempt } : {}),
+    ...(body.intro === true ? { intro: true } : {}),
   });
   return c.json(result.kind === "audio" ? { kind: "audio", url: `/api/audio/${result.audioId}` } : result);
 });
