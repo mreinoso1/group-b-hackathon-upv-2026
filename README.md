@@ -70,6 +70,9 @@ phone browser ──HTTP──▶ app-server (Hono) ──MCP over stdio──�
 | `get_capsule` | `caseId`, `topicId`, `level` (`standard` · `simple` · `expert`), `member?`, `attempt?` | Capsule: text blocks with their source, chart spec, figures with their plan section, `missing`; for `simple`, `planWords`, `style` and `check` |
 | `record_reaction` | `caseId`, `member`, `topicId`, `level`, `reaction` (`got_it` · `lost` · `tell_me_more`), `dwellMs?` | `next`: what to show next (`attempt` grows with each *I'm lost* in a row) |
 | `get_future_self` | `caseId`, `member?` | `{ futureSelves: [{ memberId, name, ageNow, age, year, reason, introText, checkIns }] }`: the age each adult's future self speaks from (retirement, or the last year with savings when the plan says they run out) and upcoming plan dates to check in |
+| `get_first_step` | `caseId`, `member?` | The plan's top moves (`score.top_moves`) with effort, score before → after, combinations that include them, and the capsule that explains each; the plan's first is `suggested`, the family may pick another. Plus the member's commitment and check-ins |
+| `commit_step` | `caseId`, `member`, `moveIndex`, `dueDate` | Stores "I'll do it by…" (today to one year ahead) |
+| `record_checkin` | `caseId`, `member`, `status` (`done` · `not_yet`) | Stores the answer; `not_yet` returns the capsule that explains the step |
 | `get_audio` | same as `get_capsule` | `{ kind: "audio", audioId }` (cached mp3) or `{ kind: "browser", text }` |
 
 **Prompts**
@@ -79,7 +82,9 @@ phone browser ──HTTP──▶ app-server (Hono) ──MCP over stdio──�
 | `explain_simple` | `caseId`, `topicId`, `member?`, `attempt?` | The *I'm lost* request: the plan text grouped by person, the allowed numbers, the way in and the voice |
 | `explain_expert` | `caseId`, `topicId` | Follow-up questions on one idea with the full text and every figure; answers stay inside the plan |
 
-Coming next: prompt `future_self`; tools `submit_ranking`, `get_agreement`, `set_consent`, `schedule_nudge`, `get_advisor_brief`, `log_question`.
+Standard capsules also carry `futureSelfLine`: what the reader's future self says before the idea (templates using only the ages and year from the plan).
+
+Coming next: tools `submit_ranking`, `get_agreement`, `set_consent`, `schedule_nudge`, `get_advisor_brief`, `log_question`.
 
 ## Rules we hold ourselves to
 

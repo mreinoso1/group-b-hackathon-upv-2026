@@ -192,3 +192,37 @@ describe("get_future_self", () => {
     expect(parse(r).error.code).toBe("INVALID_MEMBER");
   });
 });
+
+describe("first step and check-ins", () => {
+  const inDays = (d: number) => new Date(Date.now() + d * 86_400_000).toISOString().slice(0, 10);
+
+  it("standard capsules carry a line from the reader's future self", async () => {
+    const c = parse(await call("get_capsule", { caseId: WEAH, topicId: "map.timeline", member: "melanie" })) as Capsule;
+    expect(c.futureSelfLine).toMatch(/our road from 38 to 60/);
+  });
+
+  it("offers the plan's moves with the first one suggested", async () => {
+    const r = parse(await call("get_first_step", { caseId: WEAH, member: "timothy" }));
+    expect(r.suggested).toBe(0);
+    expect(r.moves[0].title).toBe("Pay down revolving card");
+    expect(r.commitment).toBeNull();
+  });
+
+  it("stores a commitment, then a check-in that leads back to the explanation", async () => {
+    const c = parse(await call("commit_step", { caseId: WEAH, member: "timothy", moveIndex: 0, dueDate: inDays(5) }));
+    expect(c.commitment).toMatchObject({ moveTitle: "Pay down revolving card" });
+    const step = parse(await call("get_first_step", { caseId: WEAH, member: "timothy" }));
+    expect(step.commitment.dueDate).toBe(inDays(5));
+    const notYet = parse(await call("record_checkin", { caseId: WEAH, member: "timothy", status: "not_yet" }));
+    expect(notYet.next).toEqual({ topicId: "advice.debt", level: "simple", attempt: 0 });
+    const done = parse(await call("record_checkin", { caseId: WEAH, member: "timothy", status: "done" }));
+    expect(done.next).toBeNull();
+    expect(parse(await call("get_first_step", { caseId: WEAH, member: "timothy" })).checkins).toHaveLength(2);
+  });
+
+  it("rejects dates in the past or more than a year ahead, and check-ins without a commitment", async () => {
+    expect(parse(await call("commit_step", { caseId: WEAH, member: "timothy", moveIndex: 0, dueDate: inDays(-2) })).error.code).toBe("INVALID_INPUT");
+    expect(parse(await call("commit_step", { caseId: WEAH, member: "timothy", moveIndex: 0, dueDate: inDays(400) })).error.code).toBe("INVALID_INPUT");
+    expect(parse(await call("record_checkin", { caseId: WEAH, member: "melanie", status: "done" })).error.code).toBe("INVALID_INPUT");
+  });
+});

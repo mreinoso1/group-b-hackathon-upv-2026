@@ -13,7 +13,32 @@ export interface ReactionEvent {
   dwellMs?: number;
 }
 
-export type PlanEvent = ReactionEvent;
+/** "I'll do it by…": the step a member chose from the plan's top moves, and their date. */
+export interface CommitmentEvent {
+  type: "commitment";
+  at: string;
+  caseId: string;
+  member: string;
+  moveIndex: number;
+  moveTitle: string;
+  dueDate: string; // YYYY-MM-DD
+}
+
+/** The answer to a future-self check-in ("Did you do it?"). */
+export interface CheckinEvent {
+  type: "checkin";
+  at: string;
+  caseId: string;
+  member: string;
+  moveTitle: string;
+  status: "done" | "not_yet";
+}
+
+export type PlanEvent = ReactionEvent | CommitmentEvent | CheckinEvent;
+
+export const isReaction = (e: PlanEvent): e is ReactionEvent => e.type === "reaction";
+export const isCommitment = (e: PlanEvent): e is CommitmentEvent => e.type === "commitment";
+export const isCheckin = (e: PlanEvent): e is CheckinEvent => e.type === "checkin";
 
 /** What the family did, as an append-only log. Reactions feed the advisor brief later. */
 export interface EventStore {
