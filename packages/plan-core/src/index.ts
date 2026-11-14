@@ -7,3 +7,4 @@ export * from "./capsule.ts";
 export * from "./sections.ts";
 export * from "./guard.ts";
 export * from "./explain.ts";
+export * from "./future-self.ts";
