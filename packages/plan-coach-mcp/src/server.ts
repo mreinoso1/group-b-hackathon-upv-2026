@@ -8,6 +8,7 @@ import {
   at,
   buildCapsule,
   buildExplainPrompt,
+  futureSelves,
   caseSummary,
   LEVELS,
   members,
@@ -176,6 +177,28 @@ export function createPlanCoachServer(deps: PlanCoachDeps): McpServer {
                 : nextOrNull(args.topicId);
           return { ok: true, next };
         }),
+    ),
+  );
+
+  server.registerTool(
+    "get_future_self",
+    {
+      title: "Get the future self",
+      description:
+        "Who speaks to each adult as their future self: the age and year they speak from (retirement, or the last year " +
+        "with savings if the plan says they run out), an opening line built only from plan values, and upcoming plan " +
+        "dates to check in. With member, only that person's; with 'together' or no member, everyone's.",
+      inputSchema: { caseId: CASE_ID, member: MEMBER.optional() },
+      annotations: { readOnlyHint: true },
+    },
+    audited(audit, "tool", "get_future_self", async (args: { caseId: string; member?: string }) =>
+      guard(async () => {
+        const raw = await source.getCase(args.caseId);
+        checkMember(raw, args.member);
+        const all = futureSelves(raw);
+        const one = args.member && args.member !== "together";
+        return { futureSelves: one ? all.filter((f) => f.memberId === args.member) : all };
+      }),
     ),
   );
 

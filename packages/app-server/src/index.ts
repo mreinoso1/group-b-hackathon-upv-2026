@@ -48,6 +48,11 @@ app.get("/api/cases/:caseId/capsule", async (c) => {
   return c.json(capsule);
 });
 
+app.get("/api/cases/:caseId/future-self", async (c) => {
+  const member = c.req.query("member");
+  return c.json(await coach.call("get_future_self", { caseId: c.req.param("caseId"), ...(member ? { member } : {}) }));
+});
+
 app.post("/api/cases/:caseId/audio", bodyLimit({ maxSize: 4 * 1024 }), async (c) => {
   const body = await c.req.json<Record<string, unknown>>();
   const result = await coach.call<{ kind: string; audioId?: string; text?: string }>("get_audio", {
