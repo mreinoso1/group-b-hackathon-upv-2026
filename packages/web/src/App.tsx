@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { api, type Capsule, type CaseSummary, type Level, type Reaction, type TopicInfo } from "./api.ts";
 import { CapsuleCard, ReactionBar } from "./components/CapsuleCard.tsx";
+import { Bubble, CheckInScreen, FirstStepScreen, FutureSelfIntro } from "./components/FutureSelf.tsx";
 
-type Screen = { name: "cases" } | { name: "who"; household: CaseSummary } | { name: "feed"; household: CaseSummary; member: string } | { name: "done"; household: CaseSummary; member: string };
+type Step = "intro" | "feed" | "step" | "checkin";
+type Screen = { name: "cases" } | { name: "who"; household: CaseSummary } | { name: Step; household: CaseSummary; member: string };
 
 export function App() {
   const [screen, setScreen] = useState<Screen>({ name: "cases" });
@@ -32,7 +34,7 @@ export function App() {
   }, []);
 
   const pickCase = (household: CaseSummary) => {
-    if (household.members.length === 1) setScreen({ name: "feed", household, member: household.members[0]!.id });
+    if (household.members.length === 1) setScreen({ name: "intro", household, member: household.members[0]!.id });
     else setScreen({ name: "who", household });
   };
 
@@ -48,11 +50,15 @@ export function App() {
       <main>
         {error ? <p className="error">{error}</p> : null}
         {screen.name === "cases" ? <CasePicker cases={cases} onPick={pickCase} /> : null}
-        {screen.name === "who" ? <WhoPicker household={screen.household} onPick={(member) => setScreen({ name: "feed", household: screen.household, member })} /> : null}
-        {screen.name === "feed" ? (
-          <Feed household={screen.household} member={screen.member} onDone={() => setScreen({ name: "done", household: screen.household, member: screen.member })} />
+        {screen.name === "who" ? <WhoPicker household={screen.household} onPick={(member) => setScreen({ name: "intro", household: screen.household, member })} /> : null}
+        {screen.name === "intro" ? (
+          <FutureSelfIntro household={screen.household} member={screen.member} onStart={() => setScreen({ ...screen, name: "feed" })} />
         ) : null}
-        {screen.name === "done" ? <Done household={screen.household} onRestart={() => setScreen({ name: "cases" })} /> : null}
+        {screen.name === "feed" ? <Feed household={screen.household} member={screen.member} onDone={() => setScreen({ ...screen, name: "step" })} /> : null}
+        {screen.name === "step" ? (
+          <FirstStepScreen household={screen.household} member={screen.member} onCommitted={() => setScreen({ ...screen, name: "checkin" })} />
+        ) : null}
+        {screen.name === "checkin" ? <CheckInScreen household={screen.household} member={screen.member} onRestart={() => setScreen({ name: "cases" })} /> : null}
       </main>
     </div>
   );
@@ -255,6 +261,9 @@ function Feed({ household, member, onDone }: { household: CaseSummary; member: s
           {pending}
         </p>
       ) : null}
+      {capsule?.futureSelfLine && capsule.level === "standard" ? (
+        <Bubble name={speakerName(household, member)}>{capsule.futureSelfLine}</Bubble>
+      ) : null}
       {capsule ? (
         <CapsuleCard
           key={`${capsule.id}-${pos}`}
@@ -271,16 +280,7 @@ function Feed({ household, member, onDone }: { household: CaseSummary; member: s
   );
 }
 
-function Done({ household, onRestart }: { household: CaseSummary; onRestart: () => void }) {
-  return (
-    <section className="intro">
-      <h1>That's the whole plan</h1>
-      <p className="lede">
-        You went through every idea in {household.label}'s plan. Next comes choosing, together, where the spare money goes first.
-      </p>
-      <button className="primary" onClick={onRestart}>
-        Back to start
-      </button>
-    </section>
-  );
+/** Who speaks as the future self: the reader, or the first adult when reading together. */
+function speakerName(household: CaseSummary, member: string): string {
+  return household.members.find((m) => m.id === member)?.name ?? household.members[0]?.name ?? "";
 }

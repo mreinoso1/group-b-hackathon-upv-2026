@@ -14,7 +14,7 @@ export type AudioAnswer = { kind: "audio"; url: string } | { kind: "browser"; te
 const RETRYABLE = new Set([502, 503, 504]);
 
 /** One retry when the API is briefly unavailable (restarting); real errors surface at once. */
-async function request<T>(path: string, init?: RequestInit, retries = 2): Promise<T> {
+export async function request<T>(path: string, init?: RequestInit, retries = 2): Promise<T> {
   let res: Response;
   try {
     res = await fetch(path, init);
