@@ -24,9 +24,7 @@ export function CapsuleCard({ capsule, step, total, onListen }: { capsule: Capsu
     <article className={`capsule level-${capsule.level}`} aria-live="polite">
       <header className="capsule-head">
         <span className={`piece piece-${capsule.piece}`}>{PIECE_LABEL[capsule.piece]}</span>
-        <span className="step">
-          {step} of {total} · ~{capsule.estSeconds}s
-        </span>
+        <span className="step">{total > 0 ? `${step} of ${total} · ~${capsule.estSeconds}s` : `~${capsule.estSeconds}s`}</span>
       </header>
       <h2>{capsule.title}</h2>
       {tag ? <p className="level-tag">{tag}</p> : null}
@@ -85,7 +83,7 @@ export function CapsuleCard({ capsule, step, total, onListen }: { capsule: Capsu
  * Plays the capsule: a cached recording when there is one, otherwise the device's own voice.
  * Nothing plays until the person taps.
  */
-function ListenButton({ onListen }: { onListen: () => Promise<AudioAnswer> }) {
+export function ListenButton({ onListen }: { onListen: () => Promise<AudioAnswer> }) {
   const [state, setState] = useState<"idle" | "loading" | "playing">("idle");
   const audio = useRef<HTMLAudioElement | null>(null);
 
