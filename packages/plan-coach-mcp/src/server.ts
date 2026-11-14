@@ -8,7 +8,10 @@ import {
   at,
   buildCapsule,
   buildExplainPrompt,
+  futureSelf,
+  futureSelfLine,
   futureSelves,
+  planMoves,
   caseSummary,
   LEVELS,
   members,
@@ -27,7 +30,7 @@ import {
 } from "@bite/plan-core";
 import { audited, type AuditLog } from "./audit.ts";
 import { capsuleAudio, simpleCapsule, type CoachDeps } from "./coach.ts";
-import type { EventStore } from "./store.ts";
+import { isCheckin, isCommitment, isReaction, type EventStore } from "./store.ts";
 
 export interface PlanCoachDeps extends CoachDeps {
   source: CaseSource;
@@ -40,6 +43,10 @@ type ResourceKind = (typeof RESOURCE_KINDS)[number];
 
 class InvalidMemberError extends Error {
   readonly code = "INVALID_MEMBER";
+}
+
+class InvalidInputError extends Error {
+  readonly code = "INVALID_INPUT";
 }
 
 const CASE_ID = z.string().regex(/^[a-z0-9-]+$/).describe("Case id from plan://cases, e.g. timothy-melanie-weah");
@@ -123,7 +130,10 @@ export function createPlanCoachServer(deps: PlanCoachDeps): McpServer {
         checkMember(raw, args.member);
         if (!TOPICS.some((t) => t.id === args.topicId)) throw new UnknownTopicError(args.topicId);
         if (args.level === "simple") return simpleCapsule(raw, args.topicId, args.member ?? null, args.attempt ?? 0, coach);
-        return buildCapsule(raw, { topicId: args.topicId, level: args.level, member: args.member ?? null });
+        const capsule = buildCapsule(raw, { topicId: args.topicId, level: args.level, member: args.member ?? null });
+        // The reader's future self introduces each idea (together: the first adult's).
+        const speaker = args.member && args.member !== "together" ? futureSelf(raw, args.member) : futureSelves(raw)[0];
+        return args.level === "standard" && speaker ? { ...capsule, futureSelfLine: futureSelfLine(speaker, args.topicId) } : capsule;
       }),
     ),
   );
@@ -166,7 +176,7 @@ export function createPlanCoachServer(deps: PlanCoachDeps): McpServer {
           });
           // Each "I'm lost" in a row on the same idea asks for a different way in; any other
           // reaction ends the streak, so coming back later starts again with the analogy.
-          const mine = store.list(args.caseId).filter((e) => e.type === "reaction" && e.member === args.member && e.topicId === args.topicId);
+          const mine = store.list(args.caseId).filter(isReaction).filter((e) => e.member === args.member && e.topicId === args.topicId);
           let lostSoFar = 0;
           for (let i = mine.length - 1; i >= 0 && mine[i]!.reaction === "lost"; i--) lostSoFar++;
           const next =
@@ -198,6 +208,89 @@ export function createPlanCoachServer(deps: PlanCoachDeps): McpServer {
         const all = futureSelves(raw);
         const one = args.member && args.member !== "together";
         return { futureSelves: one ? all.filter((f) => f.memberId === args.member) : all };
+      }),
+    ),
+  );
+
+  server.registerTool(
+    "get_first_step",
+    {
+      title: "Get the first step",
+      description:
+        "The plan's own top moves (score.top_moves) with effort, score before → after, whether they lift a cap, the " +
+        "combinations that include them (score.combined_moves) and the capsule that explains each. The plan's first move is " +
+        "`suggested`; the family may choose another. Also returns this member's latest commitment and check-ins.",
+      inputSchema: { caseId: CASE_ID, member: MEMBER.optional() },
+      annotations: { readOnlyHint: true },
+    },
+    audited(audit, "tool", "get_first_step", async (args: { caseId: string; member?: string }) =>
+      guard(async () => {
+        const raw = await source.getCase(args.caseId);
+        checkMember(raw, args.member);
+        const events = store.list(args.caseId).filter((e) => !args.member || e.member === args.member);
+        return {
+          moves: planMoves(raw),
+          suggested: 0,
+          commitment: events.filter(isCommitment).at(-1) ?? null,
+          checkins: events.filter(isCheckin),
+        };
+      }),
+    ),
+  );
+
+  server.registerTool(
+    "commit_step",
+    {
+      title: "Commit to a step",
+      description: "Stores \"I'll do it by <date>\" for a member: one of the plan's top moves and a date from today up to a year ahead.",
+      inputSchema: {
+        caseId: CASE_ID,
+        member: MEMBER,
+        moveIndex: z.number().int().min(0).max(20),
+        dueDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).describe("YYYY-MM-DD"),
+      },
+    },
+    audited(audit, "tool", "commit_step", async (args: { caseId: string; member: string; moveIndex: number; dueDate: string }) =>
+      guard(async () => {
+        const raw = await source.getCase(args.caseId);
+        checkMember(raw, args.member);
+        const move = planMoves(raw).find((m) => m.index === args.moveIndex);
+        if (!move) throw new InvalidInputError(`No step ${args.moveIndex} in this plan`);
+        const today = new Date().toISOString().slice(0, 10);
+        const limit = new Date(Date.now() + 366 * 86_400_000).toISOString().slice(0, 10);
+        if (args.dueDate < today || args.dueDate > limit) throw new InvalidInputError("Pick a date between today and one year from now");
+        const commitment = {
+          type: "commitment" as const,
+          at: new Date().toISOString(),
+          caseId: args.caseId,
+          member: args.member,
+          moveIndex: move.index,
+          moveTitle: move.title,
+          dueDate: args.dueDate,
+        };
+        store.append(commitment);
+        return { ok: true, commitment };
+      }),
+    ),
+  );
+
+  server.registerTool(
+    "record_checkin",
+    {
+      title: "Record a check-in answer",
+      description:
+        "The member's answer when their future self asks \"Did you do it?\". not_yet returns the capsule that explains the step, at the simple level.",
+      inputSchema: { caseId: CASE_ID, member: MEMBER, status: z.enum(["done", "not_yet"]) },
+    },
+    audited(audit, "tool", "record_checkin", async (args: { caseId: string; member: string; status: "done" | "not_yet" }) =>
+      guard(async () => {
+        const raw = await source.getCase(args.caseId);
+        checkMember(raw, args.member);
+        const commitment = store.list(args.caseId).filter(isCommitment).filter((e) => e.member === args.member).at(-1);
+        if (!commitment) throw new InvalidInputError("No step committed yet");
+        store.append({ type: "checkin", at: new Date().toISOString(), caseId: args.caseId, member: args.member, moveTitle: commitment.moveTitle, status: args.status });
+        const move = planMoves(raw).find((m) => m.index === commitment.moveIndex);
+        return { ok: true, next: args.status === "not_yet" && move ? { topicId: move.topicId, level: "simple" as const, attempt: 0 } : null };
       }),
     ),
   );
@@ -336,7 +429,7 @@ async function guard(fn: () => Promise<unknown>): Promise<CallToolResult> {
     return { content: [{ type: "text", text: JSON.stringify(data) }], structuredContent: data as Record<string, unknown> };
   } catch (e) {
     const err = e as Error & { code?: string };
-    if (err instanceof UnknownCaseError || err instanceof UnknownTopicError || err instanceof InvalidMemberError) {
+    if (err instanceof UnknownCaseError || err instanceof UnknownTopicError || err instanceof InvalidMemberError || err instanceof InvalidInputError) {
       const error = { code: err.code, message: err.message };
       return { isError: true, content: [{ type: "text", text: JSON.stringify({ error }) }] };
     }

@@ -62,7 +62,7 @@ function lastYearWithSavings(raw: RawCase): YearRow | undefined {
 
 function intro(m: Member, age: number, reason: FutureSelfReason): string {
   return reason === "savings_run_out"
-    ? `Hey ${m.name}. It's you, at ${age}. This is the year our savings run out. Let's change that, starting now.`
+    ? `Hey ${m.name}. It's you, at ${age}. The plan shows our savings running out around now, and we still have time to change that. Let's start this week.`
     : `Hey ${m.name}. It's you, at ${age}, the year we retire. Here's what got us here, and the one thing to do this week.`;
 }
 
