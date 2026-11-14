@@ -175,3 +175,20 @@ describe("audit", () => {
     expect(out).not.toContain("Bearer x");
   });
 });
+
+describe("get_future_self", () => {
+  it("returns one future self per adult, or just the member asked for", async () => {
+    const both = parse(await call("get_future_self", { caseId: WEAH }));
+    expect(both.futureSelves.map((f: { memberId: string }) => f.memberId)).toEqual(["timothy", "melanie"]);
+    const melanie = parse(await call("get_future_self", { caseId: WEAH, member: "melanie" }));
+    expect(melanie.futureSelves).toHaveLength(1);
+    expect(melanie.futureSelves[0]).toMatchObject({ name: "Melanie", age: 60, reason: "retirement" });
+    const together = parse(await call("get_future_self", { caseId: WEAH, member: "together" }));
+    expect(together.futureSelves).toHaveLength(2);
+  });
+
+  it("refuses members who are not in the household", async () => {
+    const r = await call("get_future_self", { caseId: "michael-carter", member: "melanie" });
+    expect(parse(r).error.code).toBe("INVALID_MEMBER");
+  });
+});

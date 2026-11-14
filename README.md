@@ -69,6 +69,7 @@ phone browser ──HTTP──▶ app-server (Hono) ──MCP over stdio──�
 |---|---|---|
 | `get_capsule` | `caseId`, `topicId`, `level` (`standard` · `simple` · `expert`), `member?`, `attempt?` | Capsule: text blocks with their source, chart spec, figures with their plan section, `missing`; for `simple`, `planWords`, `style` and `check` |
 | `record_reaction` | `caseId`, `member`, `topicId`, `level`, `reaction` (`got_it` · `lost` · `tell_me_more`), `dwellMs?` | `next`: what to show next (`attempt` grows with each *I'm lost* in a row) |
+| `get_future_self` | `caseId`, `member?` | `{ futureSelves: [{ memberId, name, ageNow, age, year, reason, introText, checkIns }] }`: the age each adult's future self speaks from (retirement, or the last year with savings when the plan says they run out) and upcoming plan dates to check in |
 | `get_audio` | same as `get_capsule` | `{ kind: "audio", audioId }` (cached mp3) or `{ kind: "browser", text }` |
 
 **Prompts**
