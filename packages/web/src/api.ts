@@ -35,7 +35,8 @@ const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 export const api = {
   cases: () => request<{ dataSource: string; cases: CaseSummary[] }>("/api/cases"),
-  topics: (caseId: string) => request<{ topics: TopicInfo[] }>(`/api/cases/${encodeURIComponent(caseId)}/topics`),
+  topics: (caseId: string, member?: string) =>
+    request<{ topics: TopicInfo[] }>(`/api/cases/${encodeURIComponent(caseId)}/topics${member ? `?member=${encodeURIComponent(member)}` : ""}`),
   capsule: (caseId: string, topicId: string, level: Level, member: string, attempt = 0) =>
     request<Capsule>(
       `/api/cases/${encodeURIComponent(caseId)}/capsule?` +

@@ -36,7 +36,11 @@ app.get("/api/health", (c) => c.json({ ok: true }));
 
 app.get("/api/cases", async (c) => c.json(await coach.readJson("plan://cases")));
 
-app.get("/api/cases/:caseId/topics", async (c) => c.json(await coach.readJson(`plan://${enc(c.req.param("caseId"))}/topics`)));
+app.get("/api/cases/:caseId/topics", async (c) => {
+  const member = c.req.query("member");
+  const uri = member ? `plan://${enc(c.req.param("caseId"))}/topics/${enc(member)}` : `plan://${enc(c.req.param("caseId"))}/topics`;
+  return c.json(await coach.readJson(uri));
+});
 
 /**
  * Prefetches run here, in the background, and the browser gets 202 at once: a request held open

@@ -93,7 +93,7 @@ describe("record_reaction", () => {
   it.each([
     ["lost", { topicId: "advice.debt", level: "simple", attempt: 0 }],
     ["tell_me_more", { topicId: "advice.debt", level: "expert" }],
-    ["got_it", { topicId: "advice.protection.emergency_fund", level: "standard" }],
+    ["got_it", { topicId: "advice.investments", level: "standard" }], // Timothy (Growth): debt, then investments
   ])("%s decides what comes next", async (reaction, next) => {
     const r = parse(await call("record_reaction", { caseId: WEAH, member: "timothy", topicId: "advice.debt", level: "standard", reaction }));
     expect(r.next).toEqual(next);
@@ -257,5 +257,27 @@ describe("couple agreement and questions", () => {
   it("logs a question for the advisor, without HTML", async () => {
     expect(parse(await call("log_question", { caseId: WEAH, member: "melanie", topicId: "advice.debt", text: "Why <b>18%</b>?" })).ok).toBe(true);
     expect(store.list(WEAH).at(-1)).toMatchObject({ type: "question", member: "melanie", text: "Why 18%?" });
+  });
+});
+
+describe("each person's order and voice", () => {
+  it("orders capsules for the reader: protection first for Melanie, debt first for Timothy, retirement first for Michael", async () => {
+    const order = async (caseId: string, member: string) =>
+      (await readJson(`plan://${caseId}/topics/${member}`)).topics.map((t: { id: string }) => t.id);
+    expect((await order(WEAH, "melanie"))[3]).toBe("advice.protection.life_insurance");
+    expect((await order(WEAH, "timothy"))[3]).toBe("advice.debt");
+    expect((await order("michael-carter", "michael"))[3]).toBe("advice.retirement");
+    const together = await order(WEAH, "together");
+    expect(together).toEqual(TOPICS.map((t) => t.id));
+    expect((await order(WEAH, "melanie")).at(-1)).toBe("advice.priorities");
+  });
+
+  it("reading together, the partners' future selves take turns", async () => {
+    const names = [];
+    for (const t of TOPICS.slice(0, 4)) {
+      const c = parse(await call("get_capsule", { caseId: WEAH, topicId: t.id, member: "together" })) as Capsule;
+      names.push(c.futureSelfName);
+    }
+    expect(names).toEqual(["Timothy", "Melanie", "Timothy", "Melanie"]);
   });
 });

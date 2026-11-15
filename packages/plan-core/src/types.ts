@@ -131,6 +131,8 @@ export interface Capsule {
   style?: string;
   /** A first-person line from the reader's future self, shown before the capsule. */
   futureSelfLine?: string;
+  /** Whose future self says it (reading together, the partners take turns). */
+  futureSelfName?: string;
   /** For a model-written capsule: how many numbers were checked against the plan. All passed, or it would not be here. */
   check?: { numbersChecked: number };
   /** JSON paths we looked for and did not find. The UI says so instead of guessing. */
