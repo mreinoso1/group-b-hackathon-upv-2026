@@ -85,7 +85,7 @@ function MediaSlot({ household, self }: { household: CaseSummary; self: FutureSe
     return (
       <div className="media-slot audio">
         {media.avatar ? <img src={media.avatar} alt={`${self.name} at ${self.age}`} /> : <span className="big-avatar">{initials(self.name)}</span>}
-        <audio src={media.src} controls preload="none" />
+        <audio src={media.src} controls preload="metadata" />
       </div>
     );
   return (

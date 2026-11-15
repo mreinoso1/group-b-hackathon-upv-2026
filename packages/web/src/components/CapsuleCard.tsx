@@ -20,6 +20,8 @@ function levelTag(c: Capsule): string | null {
 export function CapsuleCard({ capsule, step, total, onListen }: { capsule: Capsule; step: number; total: number; onListen: () => Promise<AudioAnswer> }) {
   const [showPlanWords, setShowPlanWords] = useState(false);
   const tag = levelTag(capsule);
+  const sections = new Set(capsule.figures.map((f) => f.section));
+  const oneSection = sections.size === 1 ? capsule.figures[0]?.section : undefined;
   return (
     <article className={`capsule level-${capsule.level}`} aria-live="polite">
       <header className="capsule-head">
@@ -57,13 +59,15 @@ export function CapsuleCard({ capsule, step, total, onListen }: { capsule: Capsu
 
       {capsule.level === "expert" && capsule.figures.length > 0 ? (
         <table className="figures">
-          <caption>The numbers, and where to find them in your plan</caption>
+          <caption>
+            {oneSection ? `The numbers, all from your plan · ${oneSection}` : "The numbers, and where to find them in your plan"}
+          </caption>
           <tbody>
             {capsule.figures.map((f) => (
               <tr key={f.source + f.label} data-source={f.source}>
                 <th scope="row">
                   {f.label}
-                  {f.section ? <span className="figure-section">{f.section}</span> : null}
+                  {f.section && !oneSection ? <span className="figure-section">{f.section}</span> : null}
                 </th>
                 <td>{figure(f.value, f.unit)}</td>
               </tr>
