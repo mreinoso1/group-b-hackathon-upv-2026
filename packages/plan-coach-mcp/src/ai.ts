@@ -13,8 +13,8 @@ export interface AiClient {
   chat(messages: ChatMessage[]): Promise<ChatResult>;
   /** ElevenLabs text-to-speech (mp3). */
   speech(input: string): Promise<Uint8Array>;
-  /** A realtime voice model reading the text aloud (PCM + transcript of what it said). */
-  voice(input: string): Promise<VoiceResult>;
+  /** A realtime voice model reading the text aloud (PCM + transcript of what it said), streamed to onChunk. */
+  voice(input: string, onChunk?: (pcm: Uint8Array) => void): Promise<VoiceResult>;
 }
 
 export interface AiConfig {
@@ -98,14 +98,14 @@ export function createAiClient(cfg: AiConfig): AiClient {
       const res = await post("/v1/audio/speech", { model: cfg.ttsModel ?? "eleven-flash-v2.5", voice: cfg.voice ?? "alloy", input, response_format: "mp3" }, 45_000);
       return new Uint8Array(await res.arrayBuffer());
     },
-    async voice(input) {
+    async voice(input, onChunk) {
       // Try voice models in order; one the proxy refuses is skipped for a while.
       const models = (cfg.voiceModel ?? "gpt-realtime-2.1-mini,gemini-3.8-live").split(",").map((m) => m.trim());
       let last: Error = new Error("no voice model available");
       for (const model of models) {
         if ((deadUntil.get(model) ?? 0) > Date.now()) continue;
         try {
-          return await limiter.run(() => realtimeSpeech(input, { baseUrl: base, key: cfg.key, model, voice: cfg.realtimeVoice }));
+          return await limiter.run(() => realtimeSpeech(input, { baseUrl: base, key: cfg.key, model, voice: cfg.realtimeVoice }, onChunk));
         } catch (e) {
           last = e as Error;
           if (/expired|refused|HTTP 4\d\d|invalid/i.test(last.message)) deadUntil.set(model, Date.now() + 10 * 60_000);

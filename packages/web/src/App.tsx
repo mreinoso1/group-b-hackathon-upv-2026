@@ -186,10 +186,9 @@ function Feed({ household, member, onDone }: { household: CaseSummary; member: s
           shownAt.current = Date.now();
           window.scrollTo({ top: 0, behavior: "smooth" });
           // While they read, prepare "I'm lost" so it answers at once (cached server-side, budget-capped).
-          // While they read, the server prepares "I'm lost" and the voice for "Listen" (not for the
-          // long expert detail, which is rarely listened to). Both return at once.
+          // While they read, the server prepares "I'm lost" (returns at once). "Listen" needs no
+          // prefetch: the voice streams and starts within a second or two.
           if (c.level === "standard") void api.prefetchCapsule(household.id, c.topicId, "simple", member, 0);
-          if (c.level !== "expert") void api.prefetchAudio(household.id, { topicId: c.topicId, level: c.level, member, attempt: current.attempt ?? 0 });
         },
         (e: Error) => !cancelled && setError(e.message),
       )

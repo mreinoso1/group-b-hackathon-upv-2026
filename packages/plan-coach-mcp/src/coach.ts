@@ -112,6 +112,8 @@ function asModelCapsule(base: Capsule, value: CachedExplain): Capsule {
 
 export type AudioResult =
   | { kind: "audio"; audioId: string; format: "mp3" | "wav"; cached: boolean; chars: number }
+  /** Being generated now: its PCM grows in the cache as `<audioId>.part` until the WAV is written. */
+  | { kind: "stream"; audioId: string }
   | { kind: "browser"; text: string; reason: "no_key" | "budget" | "error" | "unavailable" };
 
 /** After ElevenLabs refuses us (e.g. 401 upstream), stop asking it for a while. */
@@ -125,8 +127,8 @@ export function spokenText(c: Capsule): string {
 }
 
 /** Audio for a capsule, generated on first request and cached. */
-export async function capsuleAudio(capsule: Capsule, deps: CoachDeps): Promise<AudioResult> {
-  return speak(spokenText(capsule), deps);
+export async function capsuleAudio(capsule: Capsule, deps: CoachDeps, opts: { stream?: boolean } = {}): Promise<AudioResult> {
+  return speak(spokenText(capsule), deps, opts);
 }
 
 /**
@@ -135,7 +137,7 @@ export async function capsuleAudio(capsule: Capsule, deps: CoachDeps): Promise<A
  * text. One cached clip per text. Only when neither is possible does the caller fall back to
  * the device's voice.
  */
-export async function speak(text: string, deps: CoachDeps): Promise<AudioResult> {
+export async function speak(text: string, deps: CoachDeps, opts: { stream?: boolean } = {}): Promise<AudioResult> {
   const audioId = cacheKey({ v: CACHE_VERSION, kind: "speech", text });
   for (const format of ["mp3", "wav"] as const) {
     if (deps.cache.has("audio", audioId, format)) return { kind: "audio", audioId, format, cached: true, chars: text.length };
@@ -144,11 +146,13 @@ export async function speak(text: string, deps: CoachDeps): Promise<AudioResult>
   // A prefetch and a tap for the same text share one generation.
   let job = speaking.get(audioId);
   if (!job) {
+    if (opts.stream && !deps.budget.canSpend("voice", VOICE_ESTIMATE_USD)) return { kind: "browser", text, reason: "budget" };
     job = generateSpeech(text, audioId, deps);
     speaking.set(audioId, job);
     void job.finally(() => speaking.delete(audioId));
   }
-  return job;
+  // Streaming: answer at once; the client plays the audio as it is written.
+  return opts.stream ? { kind: "stream", audioId } : job;
 }
 
 const speaking = new Map<string, Promise<AudioResult>>();
@@ -174,17 +178,22 @@ async function generateSpeech(text: string, audioId: string, deps: CoachDeps): P
 
   for (let attempt = 0; attempt < 2; attempt++) {
     if (!deps.budget.canSpend("voice", VOICE_ESTIMATE_USD)) return { kind: "browser", text, reason: "budget" };
+    deps.cache.remove("audio", audioId, "part");
     try {
-      const r = await deps.ai.voice(text);
+      const r = await deps.ai.voice(text, (pcm) => deps.cache.appendBytes("audio", audioId, "part", pcm));
       deps.budget.record("voice", r.usd);
       // With a transcript, words and numbers must match; without one (Gemini), the length must fit.
       const faithful = r.transcript ? saidTheText(text, r.transcript) : plausibleLength(text, r.pcm.length);
       if (r.pcm.length && faithful) {
         deps.cache.putBytes("audio", audioId, "wav", wav(r.pcm));
+        // Listeners still reading the partial file finish from the WAV; drop the part a bit later.
+        setTimeout(() => deps.cache.remove("audio", audioId, "part"), 30_000).unref?.();
         return { kind: "audio", audioId, format: "wav", cached: false, chars: text.length };
       }
+      deps.cache.remove("audio", audioId, "part");
       deps.log?.(`voice model strayed from the text: "${r.transcript.slice(0, 80)}"`);
     } catch (e) {
+      deps.cache.remove("audio", audioId, "part");
       deps.log?.(`voice model failed: ${(e as Error).message.slice(0, 120)}`);
       return { kind: "browser", text, reason: "error" };
     }

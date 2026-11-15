@@ -317,23 +317,24 @@ export function createPlanCoachServer(deps: PlanCoachDeps): McpServer {
         member: MEMBER.optional(),
         attempt: ATTEMPT.default(0),
         intro: z.boolean().optional(),
+        stream: z.boolean().optional().describe("Answer at once with { kind: 'stream', audioId } and generate in the background"),
       },
     },
-    audited(audit, "tool", "get_audio", async (args: { caseId: string; topicId: string; level: Level; member?: string; attempt?: number; intro?: boolean }) =>
+    audited(audit, "tool", "get_audio", async (args: { caseId: string; topicId: string; level: Level; member?: string; attempt?: number; intro?: boolean; stream?: boolean }) =>
       guard(async () => {
         const raw = await source.getCase(args.caseId);
         checkMember(raw, args.member);
         if (args.intro) {
           const f = args.member && args.member !== "together" ? futureSelf(raw, args.member) : futureSelves(raw)[0];
           if (!f) throw new InvalidInputError("The plan does not give enough to build this future self");
-          return speak(f.introText, coach);
+          return speak(f.introText, coach, { stream: args.stream });
         }
         if (!TOPICS.some((t) => t.id === args.topicId)) throw new UnknownTopicError(args.topicId);
         const capsule =
           args.level === "simple"
             ? await simpleCapsule(raw, args.topicId, args.member ?? null, args.attempt ?? 0, coach)
             : buildCapsule(raw, { topicId: args.topicId, level: args.level, member: args.member ?? null });
-        return capsuleAudio(capsule, coach);
+        return capsuleAudio(capsule, coach, { stream: args.stream });
       }),
     ),
   );

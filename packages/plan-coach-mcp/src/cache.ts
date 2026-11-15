@@ -1,7 +1,7 @@
 // Content-addressed cache. The key is a hash of everything that shapes the output (plan text,
 // tone, style, model), so a changed plan regenerates by itself and a repeat costs nothing.
 import { createHash } from "node:crypto";
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { appendFileSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
 export function cacheKey(parts: unknown): string {
@@ -14,6 +14,9 @@ export interface Cache {
   getBytes(kind: string, key: string, ext: string): Uint8Array | undefined;
   putBytes(kind: string, key: string, ext: string, bytes: Uint8Array): void;
   has(kind: string, key: string, ext: string): boolean;
+  /** Bytes of a file still being generated (audio streamed while it is made). */
+  appendBytes(kind: string, key: string, ext: string, bytes: Uint8Array): void;
+  remove(kind: string, key: string, ext: string): void;
 }
 
 const SAFE = /^[a-z0-9_-]+$/;
@@ -54,6 +57,15 @@ export class DiskCache implements Cache {
   has(kind: string, key: string, ext: string) {
     return existsSync(this.path(kind, key, ext));
   }
+
+  appendBytes(kind: string, key: string, ext: string, bytes: Uint8Array) {
+    mkdirSync(join(this.dir, kind), { recursive: true });
+    appendFileSync(this.path(kind, key, ext), bytes);
+  }
+
+  remove(kind: string, key: string, ext: string) {
+    rmSync(this.path(kind, key, ext), { force: true });
+  }
 }
 
 export class MemoryCache implements Cache {
@@ -72,5 +84,16 @@ export class MemoryCache implements Cache {
   }
   has(kind: string, key: string, ext: string) {
     return this.map.has(`${kind}/${key}.${ext}`);
+  }
+  appendBytes(kind: string, key: string, ext: string, bytes: Uint8Array) {
+    const k = `${kind}/${key}.${ext}`;
+    const prev = (this.map.get(k) as Uint8Array | undefined) ?? new Uint8Array();
+    const next = new Uint8Array(prev.length + bytes.length);
+    next.set(prev);
+    next.set(bytes, prev.length);
+    this.map.set(k, next);
+  }
+  remove(kind: string, key: string, ext: string) {
+    this.map.delete(`${kind}/${key}.${ext}`);
   }
 }
