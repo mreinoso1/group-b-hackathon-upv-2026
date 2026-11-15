@@ -176,9 +176,26 @@ app.post("/api/cases/:caseId/reactions", bodyLimit({ maxSize: 4 * 1024 }), async
     level: body.level,
     reaction: body.reaction,
     ...(typeof body.dwellMs === "number" ? { dwellMs: Math.round(body.dwellMs) } : {}),
+    ...(typeof body.attempt === "number" ? { attempt: body.attempt } : {}),
   });
   return c.json(result);
 });
+
+// ---- consent and the advisor's side --------------------------------------------------------
+
+app.get("/api/cases/:caseId/consent", async (c) => c.json(await coach.call("get_consent", { caseId: c.req.param("caseId") })));
+
+app.post("/api/cases/:caseId/consent", bodyLimit({ maxSize: 1024 }), async (c) => {
+  const body = await c.req.json<Record<string, unknown>>();
+  return c.json(await coach.call("set_consent", { caseId: c.req.param("caseId"), member: body.member, share: body.share }));
+});
+
+app.get("/api/cases/:caseId/advisor-brief", async (c) => {
+  c.header("cache-control", "no-store");
+  return c.json(await coach.call("get_advisor_brief", { caseId: c.req.param("caseId") }));
+});
+
+app.post("/api/cases/:caseId/reset", async (c) => c.json(await coach.call("reset_case", { caseId: c.req.param("caseId") })));
 
 if (existsSync(WEB_DIST)) {
   app.use("/*", serveStatic({ root: WEB_DIST }));

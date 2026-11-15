@@ -54,7 +54,7 @@ export const api = {
       headers: { "content-type": "application/json" },
       body: JSON.stringify(body),
     }),
-  react: (caseId: string, body: { member: string; topicId: string; level: Level; reaction: Reaction; dwellMs: number }) =>
+  react: (caseId: string, body: { member: string; topicId: string; level: Level; reaction: Reaction; dwellMs: number; attempt?: number }) =>
     request<{ ok: true; next: Next | null }>(`/api/cases/${encodeURIComponent(caseId)}/reactions`, {
       method: "POST",
       headers: { "content-type": "application/json" },
