@@ -37,12 +37,15 @@ for (const id of await source.listIds()) {
     console.log(`\n${f.name}, ${f.age} (${f.reason === "retirement" ? "retirement" : "savings run out"})`);
     // A faithful reading takes 2–3 words a second: much longer means another text was recorded.
     const longest = words / 1.8 + 2;
+    const shortest = words / 3.4; // faster than ~3.4 words a second means words are missing
     const seconds = existsSync(audio) ? mp3Seconds(audio) : 0;
     const status = !existsSync(audio)
       ? "✗ missing"
       : seconds > longest
         ? `⚠ ${seconds.toFixed(1)} s, longer than this text (~${Math.round(words / 2.5)} s): re-record it`
-        : `✓ ${seconds.toFixed(1)} s, ${Math.round(statSync(audio).size / 1024)} KB`;
+        : seconds < shortest
+          ? `⚠ ${seconds.toFixed(1)} s, shorter than this text (~${Math.round(words / 2.5)} s): probably an older line, re-record it`
+          : `✓ ${seconds.toFixed(1)} s, ${Math.round(statSync(audio).size / 1024)} KB`;
     if (!status.startsWith("✓")) problems++;
     console.log(`  file:   packages/web/public/audio/${key}.mp3  ${status}`);
     console.log(`  avatar: ${avatar ? "✓" : "✗ missing (initials are shown)"}`);
