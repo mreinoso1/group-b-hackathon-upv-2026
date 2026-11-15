@@ -33,7 +33,7 @@ describe("simpleCapsule", () => {
     const d = deps(ai);
     const c = await simpleCapsule(weah, TOPIC, "melanie", 0, d);
     expect(c.generatedBy).toBe("llm");
-    expect(c.style).toBe("analogy");
+    expect(c.style).toBe("plain");
     expect(c.check?.numbersChecked).toBe(2);
     expect(c.planWords.length).toBeGreaterThan(0);
     expect(d.budget.report().text.spent).toBeGreaterThan(0);

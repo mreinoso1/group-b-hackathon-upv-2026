@@ -29,7 +29,7 @@ export interface CoachDeps {
 }
 
 const TEXT_ESTIMATE_USD = 0.005; // generous per-call estimate for the budget check
-const CACHE_VERSION = 5;
+const CACHE_VERSION = 6;
 const MAX_NUMBERS = 3; // "at most two" asked; a range like "$750,000 to $1,500,000" may need three
 const MAX_WORDS = 90;
 

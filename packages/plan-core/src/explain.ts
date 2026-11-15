@@ -8,7 +8,9 @@ import { firstSentence } from "./text.ts";
 import { findTopic } from "./topics.ts";
 import type { Block } from "./types.ts";
 
-export const EXPLAIN_STYLES = ["analogy", "steps", "one_number"] as const;
+// Plain words first: most people who say "I'm lost" need the same idea said simply, not an image.
+// The single number next, and an analogy only if both of those did not land.
+export const EXPLAIN_STYLES = ["plain", "one_number", "analogy"] as const;
 export type ExplainStyle = (typeof EXPLAIN_STYLES)[number];
 
 /** An image that fits each idea, so analogies don't all sound the same. */
@@ -52,7 +54,7 @@ export interface ExplainPrompt {
 
 const STYLE_GUIDE: Record<ExplainStyle, string> = {
   analogy: "Use one everyday analogy to make the idea click, then tie it back to the plan.",
-  steps: "Explain it as two or three very short plain sentences, in order: what you have now, what the plan says would be enough, what the difference means.",
+  plain: "Say the same idea again in two or three short, plain sentences, the way you would explain it to a friend: what the plan sees, then what it means for them. No images or comparisons.",
   one_number: "Focus on the single most important figure in the text and say plainly why it matters to them. Two sentences at most.",
 };
 
@@ -123,7 +125,8 @@ export function buildExplainPrompt(raw: RawCase, topicId: string, memberId: stri
         : []),
     "- Do not tell them what to do first: the order of their priorities is their own decision.",
     "- Plain English, no jargon. 2 to 4 short sentences, under 70 words. No headings, lists, links or markdown.",
-    "- Calm and encouraging, never alarming.",
+    "- Calm and encouraging, never alarming. If the plan text sounds harsh, keep its facts but say them calmly; add no urgency.",
+    "- You are not their advisor: never write \"let me\", \"let's\" or \"we\", and never tell them to seek help.",
     `Way in: ${STYLE_GUIDE[style]}${style === "analogy" ? ` A good image for this idea: ${ANALOGY_BY_TOPIC[topicId] ?? "something from everyday life"}. Avoid comparing it to a household budget.` : ""}`,
     ...(tone.length ? [`Voice: ${tone.join(", ")}.`] : []),
   ].join("\n");
