@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { api, type Capsule, type CaseSummary, type Level, type Reaction, type TopicInfo } from "./api.ts";
 import { CapsuleCard, ReactionBar } from "./components/CapsuleCard.tsx";
+import { ConsentScreen } from "./components/Consent.tsx";
 import { Bubble, FutureSelfIntro } from "./components/FutureSelf.tsx";
 import { AgreementScreen, AskAdvisor, CheckInScreen, FirstStepScreen } from "./components/Steps.tsx";
 
-type Step = "intro" | "feed" | "agree" | "step" | "checkin";
+type Step = "consent" | "intro" | "feed" | "agree" | "step" | "checkin";
 type Screen = { name: "cases" } | { name: "who"; household: CaseSummary } | { name: Step; household: CaseSummary; member: string };
 
 export function App() {
@@ -35,7 +36,7 @@ export function App() {
   }, []);
 
   const pickCase = (household: CaseSummary) => {
-    if (household.members.length === 1) setScreen({ name: "intro", household, member: household.members[0]!.id });
+    if (household.members.length === 1) setScreen({ name: "consent", household, member: household.members[0]!.id });
     else setScreen({ name: "who", household });
   };
 
@@ -52,7 +53,8 @@ export function App() {
       <main key={screen.name === "cases" ? "cases" : `${screen.name}-${screen.household.id}`} className="screen">
         {error ? <p className="error">{error}</p> : null}
         {screen.name === "cases" ? <CasePicker cases={cases} onPick={pickCase} /> : null}
-        {screen.name === "who" ? <WhoPicker household={screen.household} onPick={(member) => setScreen({ name: "intro", household: screen.household, member })} /> : null}
+        {screen.name === "who" ? <WhoPicker household={screen.household} onPick={(member) => setScreen({ name: "consent", household: screen.household, member })} /> : null}
+        {screen.name === "consent" ? <ConsentScreen household={screen.household} member={screen.member} onDone={() => setScreen({ ...screen, name: "intro" })} /> : null}
         {screen.name === "intro" ? (
           <FutureSelfIntro household={screen.household} member={screen.member} onStart={() => setScreen({ ...screen, name: "feed" })} />
         ) : null}
@@ -230,7 +232,15 @@ function Feed({ household, member, onDone }: { household: CaseSummary; member: s
       setBusy(true);
       setPending(PENDING[reaction]);
       try {
-        const r = await api.react(household.id, { member, topicId: capsule.topicId, level: capsule.level, reaction, dwellMs: Date.now() - shownAt.current });
+        const r = await api.react(household.id, {
+          member,
+          topicId: capsule.topicId,
+          level: capsule.level,
+          reaction,
+          dwellMs: Date.now() - shownAt.current,
+          // Which re-explanation this answers, so the advisor sees what finally landed.
+          ...(capsule.level === "simple" ? { attempt: current?.attempt ?? 0 } : {}),
+        });
         if (!r.next) onDone();
         else go(r.next);
       } catch (e) {
@@ -239,7 +249,7 @@ function Feed({ household, member, onDone }: { household: CaseSummary; member: s
         setPending(null);
       }
     },
-    [capsule, household.id, member, onDone, go],
+    [capsule, current, household.id, member, onDone, go],
   );
 
   const step = capsule ? topics.findIndex((t) => t.id === capsule.topicId) + 1 : 0;
