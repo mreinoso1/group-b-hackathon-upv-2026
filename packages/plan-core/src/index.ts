@@ -10,3 +10,5 @@ export * from "./explain.ts";
 export * from "./future-self.ts";
 export * from "./first-step.ts";
 export * from "./future-lines.ts";
+export * from "./priorities.ts";
+export * from "./agreement.ts";

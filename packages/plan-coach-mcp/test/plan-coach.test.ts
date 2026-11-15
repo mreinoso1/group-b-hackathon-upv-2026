@@ -201,22 +201,23 @@ describe("first step and check-ins", () => {
     expect(c.futureSelfLine).toMatch(/our road from 38 to 60/);
   });
 
-  it("offers the plan's moves with the first one suggested", async () => {
+  it("offers the plan's priorities, in the plan's order", async () => {
     const r = parse(await call("get_first_step", { caseId: WEAH, member: "timothy" }));
     expect(r.suggested).toBe(0);
-    expect(r.moves[0].title).toBe("Pay down revolving card");
+    expect(r.suggestedBecause).toBe("plan_order");
+    expect(r.priorities.map((p: { label: string }) => p.label)).toContain("Start saving for college");
     expect(r.commitment).toBeNull();
   });
 
-  it("aligns the suggestion with the future self when savings run out", async () => {
+  it("when savings run out, starts with the plan's first priority about savings", async () => {
     const r = parse(await call("get_first_step", { caseId: "michael-carter", member: "michael" }));
     expect(r.suggestedBecause).toBe("future_self");
-    expect(r.moves[r.suggested].plainTitle).toBe("Take less from your savings each year");
+    expect(r.priorities[r.suggested].label).toBe("Save more for retirement");
   });
 
   it("stores a commitment, then a check-in that leads back to the explanation", async () => {
-    const c = parse(await call("commit_step", { caseId: WEAH, member: "timothy", moveIndex: 0, dueDate: inDays(5) }));
-    expect(c.commitment).toMatchObject({ moveTitle: "Pay down revolving card" });
+    const c = parse(await call("commit_step", { caseId: WEAH, member: "timothy", priorityIndex: 2, dueDate: inDays(5) }));
+    expect(c.commitment).toMatchObject({ label: "Pay down the credit card" });
     const step = parse(await call("get_first_step", { caseId: WEAH, member: "timothy" }));
     expect(step.commitment.dueDate).toBe(inDays(5));
     const notYet = parse(await call("record_checkin", { caseId: WEAH, member: "timothy", status: "not_yet" }));
@@ -227,8 +228,34 @@ describe("first step and check-ins", () => {
   });
 
   it("rejects dates in the past or more than a year ahead, and check-ins without a commitment", async () => {
-    expect(parse(await call("commit_step", { caseId: WEAH, member: "timothy", moveIndex: 0, dueDate: inDays(-2) })).error.code).toBe("INVALID_INPUT");
-    expect(parse(await call("commit_step", { caseId: WEAH, member: "timothy", moveIndex: 0, dueDate: inDays(400) })).error.code).toBe("INVALID_INPUT");
+    expect(parse(await call("commit_step", { caseId: WEAH, member: "timothy", priorityIndex: 0, dueDate: inDays(-2) })).error.code).toBe("INVALID_INPUT");
+    expect(parse(await call("commit_step", { caseId: WEAH, member: "timothy", priorityIndex: 0, dueDate: inDays(400) })).error.code).toBe("INVALID_INPUT");
     expect(parse(await call("record_checkin", { caseId: WEAH, member: "melanie", status: "done" })).error.code).toBe("INVALID_INPUT");
+  });
+});
+
+describe("couple agreement and questions", () => {
+  it("waits for both partners, then shows where they agree and suggests their shared first", async () => {
+    expect(parse(await call("get_agreement", { caseId: WEAH })).status).toBe("waiting");
+    expect(parse(await call("submit_ranking", { caseId: WEAH, member: "timothy", order: [2, 0, 1, 3, 4] })).waitingFor).toEqual(["melanie"]);
+    expect(parse(await call("submit_ranking", { caseId: WEAH, member: "melanie", order: [0, 3, 1, 4, 2] })).waitingFor).toEqual([]);
+    const a = parse(await call("get_agreement", { caseId: WEAH }));
+    expect(a).toMatchObject({ status: "ready", sharedFirst: 0, seeDifferently: [2] });
+    const step = parse(await call("get_first_step", { caseId: WEAH, member: "together" }));
+    expect(step).toMatchObject({ suggested: 0, suggestedBecause: "agreement" });
+  });
+
+  it("refuses incomplete orders and orders for 'together'", async () => {
+    expect(parse(await call("submit_ranking", { caseId: WEAH, member: "timothy", order: [0, 1] })).error.code).toBe("INVALID_INPUT");
+    expect(parse(await call("submit_ranking", { caseId: WEAH, member: "together", order: [0, 1, 2, 3, 4] })).error.code).toBe("INVALID_INPUT");
+  });
+
+  it("is not used for people who live alone", async () => {
+    expect(parse(await call("get_agreement", { caseId: "michael-carter" })).status).toBe("single_member");
+  });
+
+  it("logs a question for the advisor, without HTML", async () => {
+    expect(parse(await call("log_question", { caseId: WEAH, member: "melanie", topicId: "advice.debt", text: "Why <b>18%</b>?" })).ok).toBe(true);
+    expect(store.list(WEAH).at(-1)).toMatchObject({ type: "question", member: "melanie", text: "Why 18%?" });
   });
 });

@@ -12,8 +12,9 @@ import {
   futureSelf,
   futureSelfLine,
   futureSelves,
-  planMoves,
-  suggestMove,
+  agreement,
+  planPriorities,
+  suggestPriority,
   caseSummary,
   LEVELS,
   members,
@@ -32,7 +33,7 @@ import {
 } from "@bite/plan-core";
 import { audited, type AuditLog } from "./audit.ts";
 import { capsuleAudio, simpleCapsule, speak, type CoachDeps } from "./coach.ts";
-import { isCheckin, isCommitment, isReaction, type EventStore } from "./store.ts";
+import { isCheckin, isCommitment, isRanking, isReaction, type EventStore } from "./store.ts";
 
 export interface PlanCoachDeps extends CoachDeps {
   source: CaseSource;
@@ -214,15 +215,30 @@ export function createPlanCoachServer(deps: PlanCoachDeps): McpServer {
     ),
   );
 
+  // ---- First step, couple agreement, check-ins, questions ------------------------------
+
+  /** Latest order per partner. */
+  const rankingsOf = (caseId: string) => {
+    const orders: Record<string, number[]> = {};
+    for (const e of store.list(caseId).filter(isRanking)) orders[e.member] = e.order;
+    return orders;
+  };
+  const agreementFor = (raw: RawCase) =>
+    agreement(
+      planPriorities(raw),
+      members(raw).map((m) => ({ id: m.id, name: m.name })),
+      rankingsOf(raw.id),
+    );
+
   server.registerTool(
     "get_first_step",
     {
       title: "Get the first step",
       description:
-        "The plan's own top moves (score.top_moves) with effort, score before → after, whether they lift a cap, the " +
-        "combinations that include them (score.combined_moves), a plain-words title and the capsule that explains each. " +
-        "`suggested` is the plan's first move, or, when the plan shows savings running out, the plan's move that does most for " +
-        "savings (`suggestedBecause`). The family may choose another. Also returns this member's latest commitment and check-ins.",
+        "The plan's priorities (narrative.summary_recommendations, in the plan's order): a plain label, the plan's own sentence, " +
+        "the capsule that explains it and, where the plan scores a matching move, the score before → after and the best " +
+        "combination. `suggested` follows the plan's order; when savings run out, the first priority about savings; for a couple " +
+        "reading together who both ranked, the one they put highest together. Plus the member's commitment and check-ins.",
       inputSchema: { caseId: CASE_ID, member: MEMBER.optional() },
       annotations: { readOnlyHint: true },
     },
@@ -231,11 +247,16 @@ export function createPlanCoachServer(deps: PlanCoachDeps): McpServer {
         const raw = await source.getCase(args.caseId);
         checkMember(raw, args.member);
         const events = store.list(args.caseId).filter((e) => !args.member || e.member === args.member);
-        const moves = planMoves(raw);
-        const self = args.member && args.member !== "together" ? futureSelf(raw, args.member) : futureSelves(raw)[0];
-        const suggestion = suggestMove(moves, self);
+        const priorities = planPriorities(raw);
+        const together = !args.member || args.member === "together";
+        const self = together ? futureSelves(raw)[0] : futureSelf(raw, args.member!);
+        const agreed = together ? agreementFor(raw) : null;
+        const suggestion =
+          agreed?.status === "ready" && agreed.sharedFirst !== null
+            ? { index: agreed.sharedFirst, because: "agreement" as const }
+            : suggestPriority(priorities, self);
         return {
-          moves,
+          priorities,
           suggested: suggestion.index,
           suggestedBecause: suggestion.because,
           commitment: events.filter(isCommitment).at(-1) ?? null,
@@ -246,23 +267,61 @@ export function createPlanCoachServer(deps: PlanCoachDeps): McpServer {
   );
 
   server.registerTool(
-    "commit_step",
+    "submit_ranking",
     {
-      title: "Commit to a step",
-      description: "Stores \"I'll do it by <date>\" for a member: one of the plan's top moves and a date from today up to a year ahead.",
-      inputSchema: {
-        caseId: CASE_ID,
-        member: MEMBER,
-        moveIndex: z.number().int().min(0).max(20),
-        dueDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).describe("YYYY-MM-DD"),
-      },
+      title: "Order the priorities",
+      description: "Stores one partner's order of the plan's priorities (indexes from get_first_step, first to last). Returns who still has to order.",
+      inputSchema: { caseId: CASE_ID, member: MEMBER, order: z.array(z.number().int().min(0).max(20)).min(1).max(20) },
     },
-    audited(audit, "tool", "commit_step", async (args: { caseId: string; member: string; moveIndex: number; dueDate: string }) =>
+    audited(audit, "tool", "submit_ranking", async (args: { caseId: string; member: string; order: number[] }) =>
       guard(async () => {
         const raw = await source.getCase(args.caseId);
         checkMember(raw, args.member);
-        const move = planMoves(raw).find((m) => m.index === args.moveIndex);
-        if (!move) throw new InvalidInputError(`No step ${args.moveIndex} in this plan`);
+        if (args.member === "together") throw new InvalidInputError("Each partner orders the priorities on their own");
+        const indexes = planPriorities(raw).map((p) => p.index);
+        const full = args.order.length === indexes.length && indexes.every((i) => args.order.includes(i));
+        if (!full) throw new InvalidInputError("Order every priority once");
+        store.append({ type: "ranking", at: new Date().toISOString(), caseId: args.caseId, member: args.member, order: args.order });
+        return { ok: true, waitingFor: agreementFor(raw).waitingFor };
+      }),
+    ),
+  );
+
+  server.registerTool(
+    "get_agreement",
+    {
+      title: "Get the agreement point",
+      description:
+        "Where the partners agree and differ on the plan's priorities: each item with every partner's position, the one they put " +
+        "highest together, those both put in their top two and those three or more places apart, with a plain summary. It never " +
+        "ranks for them. status is waiting (with waitingFor), ready, or single_member.",
+      inputSchema: { caseId: CASE_ID },
+      annotations: { readOnlyHint: true },
+    },
+    audited(audit, "tool", "get_agreement", async (args: { caseId: string }) =>
+      guard(async () => agreementFor(await source.getCase(args.caseId))),
+    ),
+  );
+
+  server.registerTool(
+    "commit_step",
+    {
+      title: "Commit to a step",
+      description:
+        "Stores \"I'll do it by <date>\": one of the plan's priorities, for a member or the couple (together), from today up to a year ahead.",
+      inputSchema: {
+        caseId: CASE_ID,
+        member: MEMBER,
+        priorityIndex: z.number().int().min(0).max(20),
+        dueDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).describe("YYYY-MM-DD"),
+      },
+    },
+    audited(audit, "tool", "commit_step", async (args: { caseId: string; member: string; priorityIndex: number; dueDate: string }) =>
+      guard(async () => {
+        const raw = await source.getCase(args.caseId);
+        checkMember(raw, args.member);
+        const priority = planPriorities(raw).find((p) => p.index === args.priorityIndex);
+        if (!priority) throw new InvalidInputError(`No priority ${args.priorityIndex} in this plan`);
         const today = new Date().toISOString().slice(0, 10);
         const limit = new Date(Date.now() + 366 * 86_400_000).toISOString().slice(0, 10);
         if (args.dueDate < today || args.dueDate > limit) throw new InvalidInputError("Pick a date between today and one year from now");
@@ -271,8 +330,8 @@ export function createPlanCoachServer(deps: PlanCoachDeps): McpServer {
           at: new Date().toISOString(),
           caseId: args.caseId,
           member: args.member,
-          moveIndex: move.index,
-          moveTitle: move.title,
+          priorityIndex: priority.index,
+          label: priority.label,
           dueDate: args.dueDate,
         };
         store.append(commitment);
@@ -286,7 +345,7 @@ export function createPlanCoachServer(deps: PlanCoachDeps): McpServer {
     {
       title: "Record a check-in answer",
       description:
-        "The member's answer when their future self asks \"Did you do it?\". not_yet returns the capsule that explains the step, at the simple level.",
+        "The answer when the future self asks \"Did you do it?\". not_yet returns the capsule that explains the step, at the simple level.",
       inputSchema: { caseId: CASE_ID, member: MEMBER, status: z.enum(["done", "not_yet"]) },
     },
     audited(audit, "tool", "record_checkin", async (args: { caseId: string; member: string; status: "done" | "not_yet" }) =>
@@ -295,9 +354,28 @@ export function createPlanCoachServer(deps: PlanCoachDeps): McpServer {
         checkMember(raw, args.member);
         const commitment = store.list(args.caseId).filter(isCommitment).filter((e) => e.member === args.member).at(-1);
         if (!commitment) throw new InvalidInputError("No step committed yet");
-        store.append({ type: "checkin", at: new Date().toISOString(), caseId: args.caseId, member: args.member, moveTitle: commitment.moveTitle, status: args.status });
-        const move = planMoves(raw).find((m) => m.index === commitment.moveIndex);
-        return { ok: true, next: args.status === "not_yet" && move ? { topicId: move.topicId, level: "simple" as const, attempt: 0 } : null };
+        store.append({ type: "checkin", at: new Date().toISOString(), caseId: args.caseId, member: args.member, label: commitment.label, status: args.status });
+        const priority = planPriorities(raw).find((p) => p.index === commitment.priorityIndex);
+        return { ok: true, next: args.status === "not_yet" && priority ? { topicId: priority.topicId, level: "simple" as const, attempt: 0 } : null };
+      }),
+    ),
+  );
+
+  server.registerTool(
+    "log_question",
+    {
+      title: "Ask the advisor",
+      description:
+        "Stores a question the person asked that the plan on screen didn't answer. It goes to the advisor's brief; nothing is answered automatically.",
+      inputSchema: { caseId: CASE_ID, member: MEMBER, topicId: TOPIC_ID, text: z.string().min(3).max(500) },
+    },
+    audited(audit, "tool", "log_question", async (args: { caseId: string; member: string; topicId: string; text: string }) =>
+      guard(async () => {
+        const raw = await source.getCase(args.caseId);
+        checkMember(raw, args.member);
+        const text = args.text.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim();
+        store.append({ type: "question", at: new Date().toISOString(), caseId: args.caseId, member: args.member, topicId: args.topicId, text });
+        return { ok: true };
       }),
     ),
   );
