@@ -1213,3 +1213,8 @@ video.media-slot {
   padding: 1px 8px;
   vertical-align: 1px;
 }
+
+.plan-says {
+  font-weight: 600;
+  color: var(--muted);
+}

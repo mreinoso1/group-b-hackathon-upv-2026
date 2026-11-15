@@ -208,6 +208,12 @@ describe("first step and check-ins", () => {
     expect(r.commitment).toBeNull();
   });
 
+  it("aligns the suggestion with the future self when savings run out", async () => {
+    const r = parse(await call("get_first_step", { caseId: "michael-carter", member: "michael" }));
+    expect(r.suggestedBecause).toBe("future_self");
+    expect(r.moves[r.suggested].plainTitle).toBe("Take less from your savings each year");
+  });
+
   it("stores a commitment, then a check-in that leads back to the explanation", async () => {
     const c = parse(await call("commit_step", { caseId: WEAH, member: "timothy", moveIndex: 0, dueDate: inDays(5) }));
     expect(c.commitment).toMatchObject({ moveTitle: "Pay down revolving card" });
