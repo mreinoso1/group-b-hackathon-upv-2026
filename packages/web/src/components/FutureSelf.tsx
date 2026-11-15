@@ -32,7 +32,7 @@ export function Bubble({ name, children, tone = "self" }: { name: string; childr
 
 // ---- media slot -----------------------------------------------------------------------------
 
-type Media = { kind: "video"; src: string } | { kind: "audio"; src: string; avatar: string | null } | { kind: "none" };
+type Media = { kind: "video"; src: string } | { kind: "audio"; src: string; avatar: string | null } | { kind: "none"; avatar: string | null };
 
 /** The dev server answers unknown paths with index.html, so a file "exists" only with the right type. */
 async function exists(url: string, type: string): Promise<boolean> {
@@ -44,17 +44,22 @@ async function exists(url: string, type: string): Promise<boolean> {
   }
 }
 
+async function firstExisting(urls: string[], type: string): Promise<string | null> {
+  for (const url of urls) if (await exists(url, type)) return url;
+  return null;
+}
+
 function useMedia(caseId: string, memberId: string): Media | null {
   const [media, setMedia] = useState<Media | null>(null);
   useEffect(() => {
     let live = true;
     const key = `${caseId}-${memberId}`;
     void (async () => {
-      let m: Media = { kind: "none" };
+      let m: Media;
       if (await exists(`/video/${key}.mp4`, "video/")) m = { kind: "video", src: `/video/${key}.mp4` };
-      else if (await exists(`/audio/${key}.mp3`, "audio/")) {
-        const avatar = (await exists(`/avatars/${key}.png`, "image/")) ? `/avatars/${key}.png` : null;
-        m = { kind: "audio", src: `/audio/${key}.mp3`, avatar };
+      else {
+        const avatar = await firstExisting([`/avatars/${key}.jpg`, `/avatars/${key}.png`], "image/");
+        m = (await exists(`/audio/${key}.mp3`, "audio/")) ? { kind: "audio", src: `/audio/${key}.mp3`, avatar } : { kind: "none", avatar };
       }
       if (live) setMedia(m);
     })();
@@ -83,9 +88,13 @@ function MediaSlot({ household, self }: { household: CaseSummary; self: FutureSe
     );
   return (
     <div className="media-slot plain">
-      <span className="big-avatar" aria-hidden="true">
-        {initials(self.name)}
-      </span>
+      {media.avatar ? (
+        <img src={media.avatar} alt={`${self.name} at ${self.age}`} />
+      ) : (
+        <span className="big-avatar" aria-hidden="true">
+          {initials(self.name)}
+        </span>
+      )}
       <ListenButton onListen={() => futureApi.introAudio(household.id, self.memberId)} />
     </div>
   );
@@ -163,6 +172,7 @@ export function FirstStepScreen({ household, member, onCommitted }: { household:
   const move = data.moves.find((m) => m.index === chosen) ?? data.moves[0];
   if (!move) return <p className="lede">Your plan doesn't list a first step yet: your advisor can help you choose one.</p>;
   const best = move.combos[0];
+  const biggest = Math.max(...data.moves.map((m) => m.scoreAfter));
 
   const commit = async () => {
     try {
@@ -211,7 +221,10 @@ export function FirstStepScreen({ household, member, onCommitted }: { household:
               {data.moves.map((m) => (
                 <li key={m.index}>
                   <button className={`step-option ${m.index === chosen ? "on" : ""}`} onClick={() => setChosen(m.index)} aria-pressed={m.index === chosen}>
-                    <span>{m.title}</span>
+                    <span>
+                      {m.title}
+                      {m.scoreAfter === biggest && data.moves.filter((x) => x.scoreAfter === biggest).length === 1 ? <span className="lift-tag">Biggest lift</span> : null}
+                    </span>
                     <span className="muted">
                       {m.scoreBefore} → {m.scoreAfter} · {m.effort} effort
                     </span>
@@ -285,7 +298,11 @@ export function CheckInScreen({ household, member, onRestart }: { household: Cas
               <Bubble name={self.name} tone="me">
                 Done
               </Bubble>
-              <Bubble name={self.name}>That's one real step closer to {self.age}. I'll check in again before the next big date.</Bubble>
+              <Bubble name={self.name}>
+                {self.reason === "savings_run_out"
+                  ? `That's one real step toward making our savings last past ${self.age}. I'll check in again before the next big date.`
+                  : `That's one real step closer to ${self.age}. I'll check in again before the next big date.`}
+              </Bubble>
             </>
           ) : null}
           {answer === "not_yet" ? (
