@@ -13,3 +13,5 @@ export * from "./future-lines.ts";
 export * from "./priorities.ts";
 export * from "./agreement.ts";
 export * from "./order.ts";
+export * from "./events.ts";
+export * from "./advisor.ts";
