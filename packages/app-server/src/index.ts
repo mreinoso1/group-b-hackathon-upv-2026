@@ -1,12 +1,14 @@
 // Backend for the web app. Holds the keys (from D2 on), talks to plan-coach over MCP,
 // and serves the built web app. The browser never sees a key or the raw plan files.
 import { existsSync, readFileSync } from "node:fs";
+import { open } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { serve } from "@hono/node-server";
 import { serveStatic } from "@hono/node-server/serve-static";
 import { Hono } from "hono";
 import { bodyLimit } from "hono/body-limit";
+import { stream } from "hono/streaming";
 import { CoachError, connectCoach } from "./coach.ts";
 
 // API_PORT, not PORT: dev tools often set PORT for the web dev server.
@@ -38,32 +40,10 @@ app.get("/api/cases/:caseId/topics", async (c) => c.json(await coach.readJson(`p
 
 /**
  * Prefetches run here, in the background, and the browser gets 202 at once: a request held open
- * for a 40 s voice generation would take one of the browser's six connections and make taps wait.
- * Voice prefetches run one at a time, and only the latest waiting one is kept: skimming through
- * capsules prepares the one being read, not every one passed on the way.
+ * for a slow generation would take one of the browser's six connections and make taps wait.
  */
-let voiceRunning = false;
-let voiceNext: (() => Promise<unknown>) | null = null;
-
-function runVoice(job: () => Promise<unknown>) {
-  voiceRunning = true;
-  void job()
-    .catch(() => undefined)
-    .finally(() => {
-      voiceRunning = false;
-      const next = voiceNext;
-      voiceNext = null;
-      if (next) runVoice(next);
-    });
-}
-
-function background(job: () => Promise<unknown>, voice = false): boolean {
-  if (!voice) {
-    void job().catch(() => undefined);
-    return true;
-  }
-  if (voiceRunning) voiceNext = job;
-  else runVoice(job);
+function background(job: () => Promise<unknown>): boolean {
+  void job().catch(() => undefined);
   return true;
 }
 
@@ -111,10 +91,52 @@ app.post("/api/cases/:caseId/audio", bodyLimit({ maxSize: 4 * 1024 }), async (c)
     ...(typeof body.member === "string" ? { member: body.member } : {}),
     ...(typeof body.attempt === "number" ? { attempt: body.attempt } : {}),
     ...(body.intro === true ? { intro: true } : {}),
+    stream: true,
   };
-  if (body.prefetch === true) return c.json({ started: background(() => coach.call("get_audio", args), true) }, 202);
   const result = await coach.call<{ kind: string; audioId?: string; text?: string }>("get_audio", args);
-  return c.json(result.kind === "audio" ? { kind: "audio", url: `/api/audio/${result.audioId}` } : result);
+  if (result.kind === "audio") return c.json({ kind: "audio", url: `/api/audio/${result.audioId}` });
+  if (result.kind === "stream") return c.json({ kind: "stream", url: `/api/audio/${result.audioId}/stream` });
+  return c.json(result);
+});
+
+/**
+ * The voice while it is being generated: raw 16-bit PCM at 24 kHz, sent as plan-coach writes it
+ * (`<id>.part`), then the rest from the finished WAV. Playback starts in a second or two instead
+ * of waiting for the whole reading. Ends early if the generation fails (the part disappears).
+ */
+app.get("/api/audio/:id/stream", (c) => {
+  const id = c.req.param("id");
+  if (!/^[a-f0-9]{32}$/.test(id)) return c.json({ error: { code: "BAD_ID", message: "Unknown audio" } }, 400);
+  const part = resolve(AUDIO_DIR, `${id}.part`);
+  const done = resolve(AUDIO_DIR, `${id}.wav`);
+  c.header("content-type", "audio/L16; rate=24000; channels=1");
+  c.header("cache-control", "no-store");
+  return stream(c, async (out) => {
+    let sent = 0; // PCM bytes
+    const started = Date.now();
+    const readFrom = async (file: string, offset: number, upTo?: number) => {
+      const fh = await open(file, "r");
+      try {
+        const size = upTo ?? (await fh.stat()).size;
+        if (size <= offset) return 0;
+        const buf = Buffer.alloc(size - offset);
+        await fh.read(buf, 0, buf.length, offset);
+        await out.write(new Uint8Array(buf));
+        return buf.length;
+      } finally {
+        await fh.close();
+      }
+    };
+    while (!out.aborted && Date.now() - started < 180_000) {
+      if (existsSync(done)) {
+        sent += await readFrom(done, 44 + sent); // the WAV is header + the same PCM
+        return;
+      }
+      if (existsSync(part)) sent += await readFrom(part, sent);
+      else if (Date.now() - started > 15_000) return; // never started, or failed and was removed
+      await out.sleep(120);
+    }
+  });
 });
 
 // Cached mp3s, by content hash only: no paths from the client reach the file system.

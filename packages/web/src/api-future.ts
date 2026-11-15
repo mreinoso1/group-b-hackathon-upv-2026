@@ -1,6 +1,6 @@
 // API calls for the future-self thread, the first step and check-ins.
 import type { Capsule, FutureSelf, Level, Milestone, PlanMove } from "@bite/plan-core";
-import { request } from "./api.ts";
+import { request, type AudioAnswer } from "./api.ts";
 
 export type { FutureSelf, PlanMove };
 export type CheckIn = Milestone & { checkInLabel: string };
@@ -33,7 +33,7 @@ export const futureApi = {
   checkin: (caseId: string, member: string, status: "done" | "not_yet") =>
     request<{ ok: true; next: { topicId: string; level: Level; attempt: number } | null }>(`${base(caseId)}/checkins`, json({ member, status })),
   introAudio: (caseId: string, member: string) =>
-    request<{ kind: "audio"; url: string } | { kind: "browser"; text: string; reason: string }>(
+    request<AudioAnswer>(
       `${base(caseId)}/audio`,
       json({ topicId: "overview.score", member, intro: true }),
     ),

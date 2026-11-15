@@ -5,7 +5,7 @@ import type { AiClient } from "../src/ai.ts";
 import { FileBudget } from "../src/budget.ts";
 import { MemoryCache } from "../src/cache.ts";
 import { capsuleAudio, simpleCapsule, spokenText } from "../src/coach.ts";
-import { plausibleLength, saidTheText, wav } from "../src/voice.ts";
+import { maxSpeechBytes, plausibleLength, saidTheText, wav } from "../src/voice.ts";
 
 const source = new LocalCaseSource(fileURLToPath(new URL("../../../cases", import.meta.url)));
 const weah = await source.getCase("timothy-melanie-weah");
@@ -193,5 +193,55 @@ describe("voice models without a transcript (Gemini)", () => {
     ai.voice.mockResolvedValue({ pcm: new Uint8Array(pcmFor(8.7)), transcript: "", usd: 0.005 });
     const capsule = { ...buildCapsule(weah, { topicId: "advice.debt", level: "standard" }), title: "Hey Melanie", blocks: [{ text: text.slice(13), source: "x" }] };
     expect(await capsuleAudio(capsule, deps(ai))).toMatchObject({ kind: "audio", format: "wav" });
+  });
+});
+
+describe("streamed voice", () => {
+  const capsule = buildCapsule(weah, { topicId: "advice.protection.umbrella", level: "standard" });
+  const seconds = (s: number) => Math.round(s * 24000 * 2);
+
+  it("answers at once, writes the audio as it comes, then keeps the WAV", async () => {
+    const ai = fakeAi([""]);
+    ai.speech.mockRejectedValue(new Error("AI proxy /v1/audio/speech answered 500: upstream"));
+    const total = seconds(spokenText(capsule).split(/\s+/).length / 2.5);
+    let release!: () => void;
+    const gate = new Promise<void>((r) => (release = r));
+    ai.voice.mockImplementation(async (_text: string, onChunk?: (pcm: Uint8Array) => void) => {
+      onChunk?.(new Uint8Array(total / 2));
+      await gate; // still generating
+      onChunk?.(new Uint8Array(total / 2));
+      return { pcm: new Uint8Array(total), transcript: "", usd: 0.01 };
+    });
+    const d = deps(ai);
+    const r = await capsuleAudio(capsule, d, { stream: true });
+    expect(r.kind).toBe("stream");
+    const id = (r as { audioId: string }).audioId;
+    await Promise.resolve();
+    expect(d.cache.getBytes("audio", id, "part")?.length).toBe(total / 2);
+    release();
+    await vi.waitFor(() => expect(d.cache.has("audio", id, "wav")).toBe(true));
+    expect(await capsuleAudio(capsule, d, { stream: true })).toMatchObject({ kind: "audio", cached: true });
+  });
+
+  it("removes the partial audio when the voice fails", async () => {
+    const ai = fakeAi([""]);
+    ai.speech.mockRejectedValue(new Error("AI proxy /v1/audio/speech answered 500: upstream"));
+    ai.voice.mockImplementation(async (_t: string, onChunk?: (pcm: Uint8Array) => void) => {
+      onChunk?.(new Uint8Array(100));
+      throw new Error("voice ran far longer than the text");
+    });
+    const d = deps(ai);
+    const r = await capsuleAudio(capsule, d, { stream: true });
+    const id = (r as { audioId: string }).audioId;
+    await vi.waitFor(() => expect(d.cache.has("audio", id, "part")).toBe(false));
+    expect(d.cache.has("audio", id, "wav")).toBe(false);
+  });
+});
+
+describe("maxSpeechBytes", () => {
+  it("allows a slow reading of the text, not a long ramble", () => {
+    const text = "Hey Melanie. It's you, at 60, the year we retire. Here's what got us here, and the one thing to do this week.";
+    expect(maxSpeechBytes(text)).toBeGreaterThan(Math.round(8.7 * 48000));
+    expect(maxSpeechBytes(text)).toBeLessThan(30 * 48000);
   });
 });

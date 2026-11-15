@@ -27,8 +27,21 @@ const INSTRUCTIONS =
   "You are a text-to-speech voice. Read the user's message aloud exactly as written, word for word, " +
   "in warm, calm American English at an easy pace. Do not add, drop or change any word, and do not reply to it.";
 
-/** Voice models stream at about real time: allow the reading time plus a margin. */
-export function realtimeSpeech(text: string, cfg: VoiceConfig, timeoutMs = 20_000 + words(text).length * 800): Promise<VoiceResult> {
+/** The longest a faithful reading of the text can be (slow pace + margin), in PCM bytes. */
+export function maxSpeechBytes(text: string, rate = RATE): number {
+  return Math.ceil((words(text).length / 1.8 + 2) * rate * 2);
+}
+
+/**
+ * Voice models stream at about real time: allow the reading time plus a margin. `onChunk` gets
+ * the audio as it arrives; past `maxSpeechBytes` the reading is cut, since it can't be the text.
+ */
+export function realtimeSpeech(
+  text: string,
+  cfg: VoiceConfig,
+  onChunk?: (pcm: Uint8Array) => void,
+  timeoutMs = 20_000 + words(text).length * 800,
+): Promise<VoiceResult> {
   const model = cfg.model ?? "gpt-realtime-2.1-mini";
   const url = `${cfg.baseUrl.replace(/\/$/, "").replace(/^http/, "ws")}/v1/realtime?model=${model}`;
   return new Promise((resolve, reject) => {
@@ -73,7 +86,12 @@ export function realtimeSpeech(text: string, cfg: VoiceConfig, timeoutMs = 20_00
       } catch {
         return;
       }
-      if ((ev.type === "response.output_audio.delta" || ev.type === "response.audio.delta") && ev.delta) chunks.push(Buffer.from(ev.delta, "base64"));
+      if ((ev.type === "response.output_audio.delta" || ev.type === "response.audio.delta") && ev.delta) {
+        const chunk = Buffer.from(ev.delta, "base64");
+        chunks.push(chunk);
+        if (chunks.reduce((n, c) => n + c.length, 0) > maxSpeechBytes(text)) return finish(new Error("voice ran far longer than the text"));
+        onChunk?.(new Uint8Array(chunk));
+      }
       if ((ev.type === "response.output_audio_transcript.delta" || ev.type === "response.audio_transcript.delta") && ev.delta) transcript += ev.delta;
       if (ev.type === "error") finish(new Error(`voice model error: ${ev.error?.message ?? "unknown"}`));
       if (ev.type === "response.done") finish(null, costOf(ev.response?.usage));
