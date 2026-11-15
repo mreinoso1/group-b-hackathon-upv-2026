@@ -20,3 +20,6 @@ build/
 # Local app state (reactions, audit log)
 data/
 .claude/
+
+# Audio still being generated (streamed while it is made)
+cache/audio/*.part
