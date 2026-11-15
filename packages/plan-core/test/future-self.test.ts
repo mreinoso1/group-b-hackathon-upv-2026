@@ -27,6 +27,13 @@ describe("futureSelf", () => {
     ]);
   });
 
+  it("couples hear what the plan puts on the way to retirement", async () => {
+    const [timothy] = futureSelves(await source.getCase("timothy-melanie-weah"), TODAY);
+    expect(timothy!.introText).toContain("our home and college for Liam and Josh");
+    const [daniel] = futureSelves(await source.getCase("daniel-emily-johnson"), TODAY);
+    expect(daniel!.introText).toContain("college for Oliver and Sophia");
+  });
+
   it("every age in the intro comes from the plan", async () => {
     for (const id of await source.listIds()) {
       for (const f of futureSelves(await source.getCase(id), TODAY)) {
