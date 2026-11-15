@@ -168,16 +168,12 @@ export function FirstStepScreen({ household, member, onCommitted }: { household:
     ? `You already picked this one, for ${prettyDate(data.commitment.dueDate)}. Keep it, or choose another.`
     : data.suggestedBecause === "agreement"
       ? "This is the one you put highest together. Want to start here this week?"
-      : data.suggestedBecause === "future_self" && self
-        ? `That's the whole plan. Our savings run low by ${self.age}, so this is where I'd start, this week.`
-        : "That's the whole plan. If you do one thing this week, here's the one your plan puts first.";
+      : "That's the whole plan. If you do one thing this week, here's the one your plan puts first.";
   const kicker = !isSuggested
     ? "The step you chose"
     : data.suggestedBecause === "agreement"
       ? "Your shared first step"
-      : data.suggestedBecause === "future_self"
-        ? "Where your future self would start"
-        : "Your plan's first priority";
+      : "Your plan's first priority";
 
   const commit = async () => {
     try {
@@ -201,9 +197,6 @@ export function FirstStepScreen({ household, member, onCommitted }: { household:
         <ScoreLine p={p} />
         <p className="source">From your plan · Recommendations</p>
       </article>
-      {data.suggestedBecause === "future_self" && isSuggested && data.priorities[0] && data.priorities[0].index !== p.index ? (
-        <p className="step-note">Your plan lists “{data.priorities[0].label.toLowerCase()}” first. The order is yours.</p>
-      ) : null}
 
       <div className="other-steps">
         <button className="link" onClick={() => setPicking((v) => !v)} aria-expanded={picking}>

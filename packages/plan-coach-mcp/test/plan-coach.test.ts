@@ -209,10 +209,10 @@ describe("first step and check-ins", () => {
     expect(r.commitment).toBeNull();
   });
 
-  it("when savings run out, starts with the plan's first priority about savings", async () => {
+  it("keeps the plan's order when savings run out", async () => {
     const r = parse(await call("get_first_step", { caseId: "michael-carter", member: "michael" }));
-    expect(r.suggestedBecause).toBe("future_self");
-    expect(r.priorities[r.suggested].label).toBe("Save more for retirement");
+    expect(r.suggestedBecause).toBe("plan_order");
+    expect(r.priorities[r.suggested].label).toBe("Plan the home purchase with your cash");
   });
 
   it("stores a commitment, then a check-in that leads back to the explanation", async () => {

@@ -17,7 +17,7 @@ export interface Commitment {
 export interface FirstStep {
   priorities: Priority[];
   suggested: number;
-  suggestedBecause: "plan_order" | "future_self" | "agreement";
+  suggestedBecause: "plan_order" | "agreement";
   commitment: Commitment | null;
   checkins: { status: "done" | "not_yet"; at: string }[];
 }

@@ -2,7 +2,6 @@
 // order. They compete for the same money, and the family decides the order. Each gets a short
 // plain label, the capsule that explains it, and, when the plan scores a matching move, its
 // effect on the score.
-import type { FutureSelf } from "./future-self.ts";
 import { planMoves, type PlanMove } from "./first-step.ts";
 import { at, str, type RawCase } from "./load.ts";
 import { splitBullets } from "./text.ts";
@@ -45,6 +44,7 @@ const KINDS: [RegExp, string, string, boolean][] = [
   [/credit card/i, "Pay down the credit card", "advice.debt", false],
   [/college/i, "Start saving for college", "advice.savings", false],
   [/cash reserve|emergency/i, "Build your cash cushion", "advice.protection.emergency_fund", false],
+  [/retirement.*cash flow|cash flow.*retirement/i, "Weigh retirement saving against cash flow", "advice.retirement", true],
   [/retirement/i, "Save more for retirement", "advice.retirement", true],
   [/invested mix|stock mix|investments?/i, "Revisit your investment mix", "advice.investments", false],
 ];
@@ -95,12 +95,10 @@ export function planPriorities(raw: RawCase): Priority[] {
 }
 
 /**
- * Which priority to put first: the plan's own order. When the plan shows savings running out,
- * the future self starts with the plan's first priority about making savings last.
+ * Which priority to put first: always the plan's own order. The app never reorders the plan
+ * (an earlier version jumped to savings when they run out, and suggested "save more" to someone
+ * whose cash flow is negative). The family may pick another; a couple's shared ranking wins.
  */
-export function suggestPriority(priorities: Priority[], self?: FutureSelf): { index: number; because: "plan_order" | "future_self" } {
-  const first = priorities[0]?.index ?? 0;
-  if (self?.reason !== "savings_run_out") return { index: first, because: "plan_order" };
-  const savings = priorities.find((p) => p.aboutSavings);
-  return savings && savings.index !== first ? { index: savings.index, because: "future_self" } : { index: first, because: "plan_order" };
+export function suggestPriority(priorities: Priority[]): { index: number; because: "plan_order" } {
+  return { index: priorities[0]?.index ?? 0, because: "plan_order" };
 }
