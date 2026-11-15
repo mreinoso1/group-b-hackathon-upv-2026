@@ -64,6 +64,8 @@ function useMedia(caseId: string, memberId: string): Media | null {
           ? { kind: "audio", src: `/audio/${key}.mp3`, avatar }
           : { kind: "none", avatar };
       if (live) setMedia(m);
+      // No recording: have the server voice ready before they tap "Listen".
+      if (m.kind === "none") void futureApi.introAudio(caseId, memberId).catch(() => undefined);
     })();
     return () => {
       live = false;

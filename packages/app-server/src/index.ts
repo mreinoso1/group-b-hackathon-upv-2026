@@ -87,9 +87,10 @@ app.post("/api/cases/:caseId/audio", bodyLimit({ maxSize: 4 * 1024 }), async (c)
 app.get("/api/audio/:id", (c) => {
   const id = c.req.param("id");
   if (!/^[a-f0-9]{32}$/.test(id)) return c.json({ error: { code: "BAD_ID", message: "Unknown audio" } }, 400);
-  const file = resolve(AUDIO_DIR, `${id}.mp3`);
-  if (!existsSync(file)) return c.json({ error: { code: "NOT_FOUND", message: "Unknown audio" } }, 404);
-  return c.body(readFileSync(file), 200, { "content-type": "audio/mpeg", "cache-control": "public, max-age=31536000, immutable" });
+  const found = (["mp3", "wav"] as const).map((ext) => ({ ext, file: resolve(AUDIO_DIR, `${id}.${ext}`) })).find((f) => existsSync(f.file));
+  if (!found) return c.json({ error: { code: "NOT_FOUND", message: "Unknown audio" } }, 404);
+  const type = found.ext === "mp3" ? "audio/mpeg" : "audio/wav";
+  return c.body(readFileSync(found.file), 200, { "content-type": type, "cache-control": "public, max-age=31536000, immutable" });
 });
 
 app.post("/api/cases/:caseId/reactions", bodyLimit({ maxSize: 4 * 1024 }), async (c) => {

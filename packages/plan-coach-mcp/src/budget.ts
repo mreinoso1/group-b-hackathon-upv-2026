@@ -4,7 +4,8 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname } from "node:path";
 
-export type Service = "text" | "tts";
+/** text: gpt-5-mini · tts: ElevenLabs (team share $1.40) · voice: realtime voice models reading text aloud. */
+export type Service = "text" | "tts" | "voice";
 
 export interface Budget {
   canSpend(service: Service, estimateUsd: number): boolean;
@@ -13,7 +14,7 @@ export interface Budget {
 }
 
 export class FileBudget implements Budget {
-  private spent: Record<Service, number> = { text: 0, tts: 0 };
+  private spent: Record<Service, number> = { text: 0, tts: 0, voice: 0 };
 
   constructor(
     private readonly file: string | null,
@@ -44,6 +45,7 @@ export class FileBudget implements Budget {
     return {
       text: { spent: this.spent.text, cap: this.caps.text },
       tts: { spent: this.spent.tts, cap: this.caps.tts },
+      voice: { spent: this.spent.voice, cap: this.caps.voice },
     };
   }
 }

@@ -79,12 +79,28 @@ export function CapsuleCard({ capsule, step, total, onListen }: { capsule: Capsu
   );
 }
 
+/** The device's English voice, if it has one. Never a voice in another language reading English. */
+async function englishVoice(): Promise<SpeechSynthesisVoice | null> {
+  const synth = window.speechSynthesis;
+  if (!synth) return null;
+  let voices = synth.getVoices();
+  if (!voices.length) {
+    voices = await new Promise<SpeechSynthesisVoice[]>((resolve) => {
+      synth.onvoiceschanged = () => resolve(synth.getVoices());
+      setTimeout(() => resolve(synth.getVoices()), 1500);
+    });
+  }
+  const en = voices.filter((v) => v.lang.toLowerCase().startsWith("en"));
+  return en.find((v) => v.lang === "en-US" && !v.localService) ?? en.find((v) => v.lang === "en-US") ?? en[0] ?? null;
+}
+
 /**
- * Plays the capsule: a cached recording when there is one, otherwise the device's own voice.
+ * Plays the capsule: the server's English recording (generated once, cached). Only if the
+ * server can't make one does it use the device's English voice; with none, it says so.
  * Nothing plays until the person taps.
  */
 export function ListenButton({ onListen }: { onListen: () => Promise<AudioAnswer> }) {
-  const [state, setState] = useState<"idle" | "loading" | "playing">("idle");
+  const [state, setState] = useState<"idle" | "loading" | "playing" | "no_voice">("idle");
   const audio = useRef<HTMLAudioElement | null>(null);
 
   useEffect(
@@ -111,14 +127,17 @@ export function ListenButton({ onListen }: { onListen: () => Promise<AudioAnswer
         audio.current = el;
         el.onended = () => setState("idle");
         await el.play();
-      } else if ("speechSynthesis" in window) {
+      } else {
+        const voice = await englishVoice();
+        if (!voice) {
+          setState("no_voice");
+          return;
+        }
         const u = new SpeechSynthesisUtterance(answer.text);
-        u.lang = "en-US";
+        u.voice = voice;
+        u.lang = voice.lang;
         u.onend = () => setState("idle");
         window.speechSynthesis.speak(u);
-      } else {
-        setState("idle");
-        return;
       }
       setState("playing");
     } catch {
@@ -131,7 +150,7 @@ export function ListenButton({ onListen }: { onListen: () => Promise<AudioAnswer
       <span className="play-icon" aria-hidden="true">
         {state === "playing" ? "■" : "▶"}
       </span>
-      {state === "loading" ? "Getting the audio…" : state === "playing" ? "Stop" : "Listen"}
+      {state === "loading" ? "Getting the audio…" : state === "playing" ? "Stop" : state === "no_voice" ? "Audio not available right now" : "Listen"}
     </button>
   );
 }
