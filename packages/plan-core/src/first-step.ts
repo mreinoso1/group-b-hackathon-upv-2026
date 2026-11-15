@@ -46,7 +46,7 @@ export function topicForMove(title: string): string {
 // Plain headlines, matched on the plan's title and action. Order matters: the first match wins.
 const PLAIN_BY_MOVE: [RegExp, string][] = [
   [/homeowners/i, "Insure your home"],
-  [/revolving|credit card|card/i, "Pay down your credit card"],
+  [/revolving|credit card|\bcard\b/i, "Pay down your credit card"],
   [/life cover|mortality|life insurance/i, "Get more life insurance"],
   [/umbrella/i, "Add umbrella insurance"],
   [/withdrawal/i, "Take less from your savings each year"],

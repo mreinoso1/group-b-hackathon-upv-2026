@@ -141,3 +141,13 @@ describe("timeline chart", () => {
     expect(chartOf("timothy-melanie-weah").title).toMatch(/net worth/i);
   });
 });
+
+describe("score fallback", () => {
+  it("says the plan's number without repeating the plan's judgment about their life", () => {
+    const michael = all.find((r) => r.id === "michael-carter")!;
+    const c = buildCapsule(michael, { topicId: "overview.score", level: "simple", member: "michael" });
+    expect(c.blocks[0]!.text).toMatch(/^Your Financial Health Score is 26 out of 100\./);
+    expect(c.blocks[0]!.text).not.toMatch(/fulfilling|well-being/);
+    expect(c.planWords[0]!.text).toMatch(/fulfilling life/); // the plan's own words stay one tap away
+  });
+});

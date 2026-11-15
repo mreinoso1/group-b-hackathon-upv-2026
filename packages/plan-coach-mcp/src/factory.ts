@@ -2,6 +2,7 @@ import { existsSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { type CaseSource, LocalCaseSource } from "@bite/plan-core";
 import { createAiClient } from "./ai.ts";
+import type { CoachDeps } from "./coach.ts";
 import { JsonlAuditLog } from "./audit.ts";
 import { FileBudget } from "./budget.ts";
 import { DiskCache } from "./cache.ts";
@@ -32,8 +33,8 @@ function caseSource(): CaseSource {
   return new FallbackCaseSource(new SherpasCaseSource({ url, token }), local, log);
 }
 
-/** The server as the app runs it: cases from the Sherpas MCP or disk, events/audit/budget in data/, model output in cache/. */
-export function createDefaultServer() {
+/** The model, cache and budget as the app uses them (also used by `npm run explanations`). */
+export function createDefaultDeps(): CoachDeps {
   const key = process.env.TEAM_KEY;
   const baseUrl = process.env.LLM_PROXY_URL;
   const ai =
@@ -49,10 +50,8 @@ export function createDefaultServer() {
           realtimeVoice: process.env.VOICE_NAME,
         })
       : undefined;
-  return createPlanCoachServer({
-    source: caseSource(),
-    store: new JsonlEventStore(join(config.dataDir, "events.jsonl")),
-    audit: new JsonlAuditLog(join(config.dataDir, "audit.jsonl")),
+  return {
+    ai,
     cache: new DiskCache(config.cacheDir),
     budget: new FileBudget(join(config.dataDir, "budget.json"), {
       text: Number(process.env.TEXT_BUDGET_USD ?? 2),
@@ -60,11 +59,20 @@ export function createDefaultServer() {
       tts: Number(process.env.TTS_BUDGET_USD ?? 1),
       voice: Number(process.env.VOICE_BUDGET_USD ?? 3),
     }),
-    ai,
     textModel: process.env.TEXT_MODEL,
     ttsModel: process.env.TTS_MODEL,
     voice: process.env.TTS_VOICE,
     log,
+  };
+}
+
+/** The server as the app runs it: cases from the Sherpas MCP or disk, events/audit/budget in data/, model output in cache/. */
+export function createDefaultServer() {
+  return createPlanCoachServer({
+    ...createDefaultDeps(),
+    source: caseSource(),
+    store: new JsonlEventStore(join(config.dataDir, "events.jsonl")),
+    audit: new JsonlAuditLog(join(config.dataDir, "audit.jsonl")),
   });
 }
 

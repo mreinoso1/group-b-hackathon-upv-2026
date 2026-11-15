@@ -5,6 +5,7 @@ import {
   buildExplainPrompt,
   checkNumbers,
   checkPeople,
+  checkTone,
   extractNumbers,
   fallbackSimple,
   LocalCaseSource,
@@ -39,6 +40,16 @@ describe("checkNumbers", () => {
   });
   it("lets small structural numbers through", () => {
     expect(checkNumbers("Two steps: 1 check, 2 decide.", allowed).ok).toBe(true);
+  });
+});
+
+describe("checkTone", () => {
+  it("rejects a leaked label, an advisor's voice, a push to seek help and the plan's judgments", () => {
+    expect(checkTone("Way in: your score is 26.").ok).toBe(false);
+    expect(checkTone("Let me help you take control.").ok).toBe(false);
+    expect(checkTone("It's crucial to seek expert guidance now.").ok).toBe(false);
+    expect(checkTone("This is preventing you from achieving a fulfilling life.").ok).toBe(false);
+    expect(checkTone("Your score is 26. It shows where your money is stretched today.").ok).toBe(true);
   });
 });
 
