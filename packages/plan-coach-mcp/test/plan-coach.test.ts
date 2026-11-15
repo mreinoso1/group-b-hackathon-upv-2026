@@ -294,3 +294,51 @@ describe("each person's order and voice", () => {
     expect(names).toEqual(["Timothy", "Melanie", "Timothy", "Melanie"]);
   });
 });
+
+describe("consent and the advisor brief", () => {
+  const brief = async () => parse(await call("get_advisor_brief", { caseId: WEAH }));
+  const lost = (member: string, topicId: string) => call("record_reaction", { caseId: WEAH, member, topicId, level: "standard", reaction: "lost" });
+
+  it("records each partner's choice; the latest counts; together cannot choose for them", async () => {
+    expect(parse(await call("get_consent", { caseId: WEAH })).consent).toEqual({ timothy: null, melanie: null });
+    await call("set_consent", { caseId: WEAH, member: "melanie", share: true });
+    await call("set_consent", { caseId: WEAH, member: "timothy", share: false });
+    expect(parse(await call("get_consent", { caseId: WEAH })).consent).toEqual({ timothy: false, melanie: true });
+    const r = await call("set_consent", { caseId: WEAH, member: "together", share: true });
+    expect(r.isError).toBe(true);
+  });
+
+  it("shows only what each person chose to share, plus questions they sent", async () => {
+    await lost("melanie", "advice.debt");
+    await lost("timothy", "advice.debt");
+    await call("log_question", { caseId: WEAH, member: "timothy", topicId: "advice.debt", text: "Why keep the card if we have cash?" });
+    await call("set_consent", { caseId: WEAH, member: "melanie", share: true });
+    const b = await brief();
+    const mel = b.people.find((p: { memberId: string }) => p.memberId === "melanie");
+    const tim = b.people.find((p: { memberId: string }) => p.memberId === "timothy");
+    expect(mel.stuck.map((s: { topicId: string }) => s.topicId)).toEqual(["advice.debt"]);
+    expect(tim.shared).toBe(false);
+    expect(tim.stuck).toEqual([]);
+    expect(tim.questions[0].text).toBe("Why keep the card if we have cash?");
+    expect(b.couple.status).toBe("not_shared");
+    expect(b.agenda[0]).toMatchObject({ kind: "lost", personaPredicted: { id: "T3" } });
+  });
+
+  it("records which re-explanation landed", async () => {
+    await call("set_consent", { caseId: WEAH, member: "melanie", share: true });
+    await lost("melanie", "advice.debt");
+    await call("record_reaction", { caseId: WEAH, member: "melanie", topicId: "advice.debt", level: "simple", reaction: "got_it", attempt: 0 });
+    const debt = (await brief()).people[1].stuck[0];
+    expect(debt).toMatchObject({ resolved: true, landed: "plain" });
+  });
+
+  it("is also a resource, and reset_case starts the family over", async () => {
+    await call("set_consent", { caseId: WEAH, member: "melanie", share: true });
+    await lost("melanie", "advice.debt");
+    const viaResource = await readJson(`plan://${WEAH}/advisor-brief`);
+    expect(viaResource.agenda).toHaveLength(1);
+    expect(parse(await call("reset_case", { caseId: WEAH })).removed).toBe(2);
+    expect((await brief()).agenda).toEqual([]);
+    expect(parse(await call("get_consent", { caseId: WEAH })).consent.melanie).toBeNull();
+  });
+});

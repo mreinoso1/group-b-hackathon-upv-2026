@@ -13,6 +13,8 @@ import {
   futureSelfLine,
   futureSelves,
   agreement,
+  advisorBrief,
+  consents,
   planPriorities,
   suggestPriority,
   caseSummary,
@@ -42,7 +44,7 @@ export interface PlanCoachDeps extends CoachDeps {
   audit: AuditLog;
 }
 
-export const RESOURCE_KINDS = ["overview", "advice", "living-map", "topics", "persona"] as const;
+export const RESOURCE_KINDS = ["overview", "advice", "living-map", "topics", "persona", "advisor-brief"] as const;
 type ResourceKind = (typeof RESOURCE_KINDS)[number];
 
 class InvalidMemberError extends Error {
@@ -104,7 +106,8 @@ export function createPlanCoachServer(deps: PlanCoachDeps): McpServer {
     {
       title: "Plan section",
       description:
-        "One piece of a family's plan: overview, advice, living-map, topics (capsule catalog) or persona (advisor-only: tone and order, never shown to the family)",
+        "One piece of a family's plan: overview, advice, living-map, topics (capsule catalog), persona (advisor-only: tone and order, never shown to the family) " +
+        "or advisor-brief (advisor-only: what the family understood, got stuck on, asked and chose, as far as each person chose to share)",
       mimeType: "application/json",
     },
     audited(audit, "resource", "plan://{caseId}/{kind}", async (uri: URL, vars: Record<string, string | string[]>) => {
@@ -112,7 +115,7 @@ export function createPlanCoachServer(deps: PlanCoachDeps): McpServer {
       const kind = String(vars.kind) as ResourceKind;
       if (!RESOURCE_KINDS.includes(kind)) throw new Error(`Unknown section "${kind}". Use one of ${RESOURCE_KINDS.join(", ")}`);
       const raw = await source.getCase(caseId);
-      return json(uri.href, section(raw, kind));
+      return json(uri.href, kind === "advisor-brief" ? advisorBrief(raw, store.list(caseId)) : section(raw, kind));
     }),
   );
 
@@ -179,13 +182,14 @@ export function createPlanCoachServer(deps: PlanCoachDeps): McpServer {
         level: LEVEL,
         reaction: z.enum(REACTIONS as [string, ...string[]]),
         dwellMs: z.number().int().min(0).max(3_600_000).optional(),
+        attempt: ATTEMPT.optional().describe("For a simple capsule: which re-explanation this reaction answers"),
       },
     },
     audited(
       audit,
       "tool",
       "record_reaction",
-      async (args: { caseId: string; member: string; topicId: string; level: Level; reaction: string; dwellMs?: number }) =>
+      async (args: { caseId: string; member: string; topicId: string; level: Level; reaction: string; dwellMs?: number; attempt?: number }) =>
         guard(async () => {
           const raw = await source.getCase(args.caseId);
           checkMember(raw, args.member);
@@ -200,6 +204,7 @@ export function createPlanCoachServer(deps: PlanCoachDeps): McpServer {
             level: args.level,
             reaction,
             dwellMs: args.dwellMs,
+            ...(args.level === "simple" && args.attempt !== undefined ? { attempt: args.attempt } : {}),
           });
           // Each "I'm lost" in a row on the same idea asks for a different way in; any other
           // reaction ends the streak, so coming back later starts again with plain words.
@@ -403,6 +408,81 @@ export function createPlanCoachServer(deps: PlanCoachDeps): McpServer {
     ),
   );
 
+  // ---- Consent and the advisor brief ---------------------------------------------------
+
+  server.registerTool(
+    "set_consent",
+    {
+      title: "Share with the advisor (or not)",
+      description:
+        "One person's choice to share how it went with their advisor: where they got lost, what they wanted more on, their " +
+        "first step and check-ins. Without it the advisor brief shows them as \"has not shared yet\". The latest choice counts. " +
+        "Couple items (where partners agree and differ) need both partners' consent. A question sent with log_question is " +
+        "shared on its own.",
+      inputSchema: { caseId: CASE_ID, member: MEMBER, share: z.boolean() },
+    },
+    audited(audit, "tool", "set_consent", async (args: { caseId: string; member: string; share: boolean }) =>
+      guard(async () => {
+        const raw = await source.getCase(args.caseId);
+        checkMember(raw, args.member);
+        if (args.member === "together") throw new InvalidInputError("Each partner chooses for themselves");
+        store.append({ type: "consent", at: new Date().toISOString(), caseId: args.caseId, member: args.member, share: args.share });
+        return { ok: true, member: args.member, share: args.share };
+      }),
+    ),
+  );
+
+  server.registerTool(
+    "get_consent",
+    {
+      title: "Who chose to share",
+      description: "Each adult's latest choice: true shares, false does not, null not asked yet.",
+      inputSchema: { caseId: CASE_ID },
+      annotations: { readOnlyHint: true },
+    },
+    audited(audit, "tool", "get_consent", async (args: { caseId: string }) =>
+      guard(async () => {
+        const raw = await source.getCase(args.caseId);
+        const chosen = consents(store.list(args.caseId));
+        return { consent: Object.fromEntries(members(raw).map((m) => [m.id, chosen.get(m.id) ?? null])) };
+      }),
+    ),
+  );
+
+  server.registerTool(
+    "get_advisor_brief",
+    {
+      title: "Get the advisor brief",
+      description:
+        "For the advisor, before the meeting. Per person: ideas understood (skip them), where they said \"I'm lost\" (how often, and " +
+        "which re-explanation landed), where they wanted more, what they skipped or did not reach, their questions verbatim, their " +
+        "first step and check-in. For a couple: where their orders of the plan's priorities agree and differ, quoting the plan. A " +
+        "suggested agenda of up to three items, each citing the events it comes from, flagged when the persona predicted it. Built " +
+        "only from recorded events and plan data; anyone who has not chosen to share shows as not shared, with only the questions they sent.",
+      inputSchema: { caseId: CASE_ID },
+      annotations: { readOnlyHint: true },
+    },
+    audited(audit, "tool", "get_advisor_brief", async (args: { caseId: string }) =>
+      guard(async () => advisorBrief(await source.getCase(args.caseId), store.list(args.caseId))),
+    ),
+  );
+
+  server.registerTool(
+    "reset_case",
+    {
+      title: "Start a family over",
+      description: "Deletes everything recorded for one family (reactions, choices, questions, steps, check-ins). For demos and rehearsals.",
+      inputSchema: { caseId: CASE_ID },
+      annotations: { destructiveHint: true },
+    },
+    audited(audit, "tool", "reset_case", async (args: { caseId: string }) =>
+      guard(async () => {
+        await source.getCase(args.caseId);
+        return { ok: true, removed: store.clear(args.caseId) };
+      }),
+    ),
+  );
+
   server.registerTool(
     "get_audio",
     {
@@ -537,6 +617,8 @@ function section(raw: RawCase, kind: ResourceKind): unknown {
       return { topics: TOPICS.map((t) => topicInfo(t, raw)) };
     case "persona":
       return { audience: "advisor-only", ...personaProfile(raw) };
+    case "advisor-brief":
+      return null; // built from the event store, in the resource handler
   }
 }
 
