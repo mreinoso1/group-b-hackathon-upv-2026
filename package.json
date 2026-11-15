@@ -15,7 +15,8 @@
     "mcp:http": "npm run start:http -w @bite/plan-coach-mcp",
     "mcp:stdio": "npm run start:stdio -w @bite/plan-coach-mcp",
     "test": "vitest run",
-    "typecheck": "tsc -p tsconfig.json --noEmit"
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "voices": "node --import tsx scripts/voice-scripts.ts"
   },
   "devDependencies": {
     "@types/node": "^26.6.6",
