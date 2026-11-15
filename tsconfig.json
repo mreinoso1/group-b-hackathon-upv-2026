@@ -15,5 +15,5 @@
     "isolatedModules": true,
     "types": ["node"]
   },
-  "include": ["packages/*/src", "packages/*/test"]
+  "include": ["packages/*/src", "packages/*/test", "scripts"]
 }
