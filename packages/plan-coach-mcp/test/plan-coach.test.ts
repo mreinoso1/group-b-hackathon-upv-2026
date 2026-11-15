@@ -135,7 +135,7 @@ describe("calibration", () => {
   it("without a key, the simple level is the plan's own words", async () => {
     const c = parse(await call("get_capsule", { caseId: WEAH, topicId: "advice.debt", level: "simple", member: "melanie", attempt: 1 })) as Capsule;
     expect(c.generatedBy).toBe("fallback");
-    expect(c.style).toBe("steps");
+    expect(c.style).toBe("one_number");
   });
 
   it("without a key, audio is handed to the browser's voice", async () => {
@@ -270,6 +270,19 @@ describe("each person's order and voice", () => {
     const together = await order(WEAH, "together");
     expect(together).toEqual(TOPICS.map((t) => t.id));
     expect((await order(WEAH, "melanie")).at(-1)).toBe("advice.priorities");
+  });
+
+  it("opens with the plan's summary, not a red score (problem 6 of the brief)", async () => {
+    const order = async (caseId: string, member: string) =>
+      (await readJson(`plan://${caseId}/topics/${member}`)).topics.map((t: { id: string }) => t.id);
+    expect((await order("michael-carter", "michael")).slice(0, 2)).toEqual(["overview.big_picture", "overview.score"]);
+    expect((await order("daniel-emily-johnson", "together"))[0]).toBe("overview.big_picture");
+    expect((await order(WEAH, "melanie"))[0]).toBe("overview.score");
+    const first = parse(await call("get_capsule", { caseId: "michael-carter", topicId: "overview.big_picture", member: "michael" })) as Capsule;
+    expect(first.blocks[0]!.text).toMatch(/strong position/);
+    expect(first.futureSelfLine).toMatch(/^It's me, Michael/);
+    const second = parse(await call("get_capsule", { caseId: "michael-carter", topicId: "overview.score", member: "michael" })) as Capsule;
+    expect(second.futureSelfLine).not.toMatch(/^It's me/);
   });
 
   it("reading together, the partners' future selves take turns", async () => {

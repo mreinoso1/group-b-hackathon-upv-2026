@@ -1,13 +1,21 @@
-// Each person's own order of capsules. The overview and the living map open, the plan's
+// Each person's own order of capsules. The overview and the living map open (the summary
+// before the score when the score is red), the plan's
 // priorities close; in between, the advice comes in the order that fits the reader:
 // steadier profiles start with protection, growth profiles with debt and investments, and
 // when the plan shows savings running out, retirement comes first. Together: the plan's order.
 import { futureSelf } from "./future-self.ts";
 import { members } from "./household.ts";
-import type { RawCase } from "./load.ts";
+import { at, type RawCase } from "./load.ts";
 import { TOPICS } from "./topics.ts";
 
 const OPENING = ["overview.score", "overview.big_picture", "map.timeline"];
+// Hard news makes people look away (problem 6 of the brief). When the plan colours the score red,
+// open with the plan's own summary, which starts from their strengths, and show the score second.
+const OPENING_GENTLE = ["overview.big_picture", "overview.score", "map.timeline"];
+
+function opening(raw: RawCase): string[] {
+  return at(raw.financialHealth, "score.colour") === "red" ? OPENING_GENTLE : OPENING;
+}
 const CLOSING = ["advice.priorities"];
 
 const PROTECTION_FIRST = [
@@ -33,15 +41,16 @@ const GROWTH_FIRST = [
 ];
 
 export function topicOrder(raw: RawCase, member?: string | null): string[] {
-  const planOrder = TOPICS.map((t) => t.id);
+  const first = opening(raw);
+  const planOrder = [...first, ...TOPICS.map((t) => t.id).filter((t) => !first.includes(t))];
   const me = member && member !== "together" ? members(raw).find((m) => m.id === member) : undefined;
   if (!me) return planOrder;
   let advice = /growth|aggressive/i.test(me.riskProfile ?? "") ? [...GROWTH_FIRST] : [...PROTECTION_FIRST];
   if (futureSelf(raw, me.id)?.reason === "savings_run_out") advice = ["advice.retirement", ...advice.filter((t) => t !== "advice.retirement")];
-  const order = [...OPENING, ...advice, ...CLOSING];
+  const order = [...first, ...advice, ...CLOSING];
   // Anything new in the catalog still appears, before the closing priorities.
   const missing = planOrder.filter((t) => !order.includes(t));
-  return [...OPENING, ...advice, ...missing, ...CLOSING];
+  return [...first, ...advice, ...missing, ...CLOSING];
 }
 
 export function nextTopicFor(raw: RawCase, member: string | null | undefined, currentId: string): string | null {
