@@ -13,6 +13,7 @@ import {
   futureSelfLine,
   futureSelves,
   planMoves,
+  suggestMove,
   caseSummary,
   LEVELS,
   members,
@@ -219,8 +220,9 @@ export function createPlanCoachServer(deps: PlanCoachDeps): McpServer {
       title: "Get the first step",
       description:
         "The plan's own top moves (score.top_moves) with effort, score before → after, whether they lift a cap, the " +
-        "combinations that include them (score.combined_moves) and the capsule that explains each. The plan's first move is " +
-        "`suggested`; the family may choose another. Also returns this member's latest commitment and check-ins.",
+        "combinations that include them (score.combined_moves), a plain-words title and the capsule that explains each. " +
+        "`suggested` is the plan's first move, or, when the plan shows savings running out, the plan's move that does most for " +
+        "savings (`suggestedBecause`). The family may choose another. Also returns this member's latest commitment and check-ins.",
       inputSchema: { caseId: CASE_ID, member: MEMBER.optional() },
       annotations: { readOnlyHint: true },
     },
@@ -229,9 +231,13 @@ export function createPlanCoachServer(deps: PlanCoachDeps): McpServer {
         const raw = await source.getCase(args.caseId);
         checkMember(raw, args.member);
         const events = store.list(args.caseId).filter((e) => !args.member || e.member === args.member);
+        const moves = planMoves(raw);
+        const self = args.member && args.member !== "together" ? futureSelf(raw, args.member) : futureSelves(raw)[0];
+        const suggestion = suggestMove(moves, self);
         return {
-          moves: planMoves(raw),
-          suggested: 0,
+          moves,
+          suggested: suggestion.index,
+          suggestedBecause: suggestion.because,
           commitment: events.filter(isCommitment).at(-1) ?? null,
           checkins: events.filter(isCheckin),
         };

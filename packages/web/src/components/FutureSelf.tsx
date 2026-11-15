@@ -44,23 +44,25 @@ async function exists(url: string, type: string): Promise<boolean> {
   }
 }
 
-async function firstExisting(urls: string[], type: string): Promise<string | null> {
-  for (const url of urls) if (await exists(url, type)) return url;
-  return null;
-}
-
 function useMedia(caseId: string, memberId: string): Media | null {
   const [media, setMedia] = useState<Media | null>(null);
   useEffect(() => {
     let live = true;
     const key = `${caseId}-${memberId}`;
     void (async () => {
-      let m: Media;
-      if (await exists(`/video/${key}.mp4`, "video/")) m = { kind: "video", src: `/video/${key}.mp4` };
-      else {
-        const avatar = await firstExisting([`/avatars/${key}.jpg`, `/avatars/${key}.png`], "image/");
-        m = (await exists(`/audio/${key}.mp3`, "audio/")) ? { kind: "audio", src: `/audio/${key}.mp3`, avatar } : { kind: "none", avatar };
-      }
+      // All checks at once: the entry screen waits for the slowest, not the sum.
+      const [video, audio, jpg, png] = await Promise.all([
+        exists(`/video/${key}.mp4`, "video/"),
+        exists(`/audio/${key}.mp3`, "audio/"),
+        exists(`/avatars/${key}.jpg`, "image/"),
+        exists(`/avatars/${key}.png`, "image/"),
+      ]);
+      const avatar = jpg ? `/avatars/${key}.jpg` : png ? `/avatars/${key}.png` : null;
+      const m: Media = video
+        ? { kind: "video", src: `/video/${key}.mp4` }
+        : audio
+          ? { kind: "audio", src: `/audio/${key}.mp3`, avatar }
+          : { kind: "none", avatar };
       if (live) setMedia(m);
     })();
     return () => {
@@ -173,6 +175,9 @@ export function FirstStepScreen({ household, member, onCommitted }: { household:
   if (!move) return <p className="lede">Your plan doesn't list a first step yet: your advisor can help you choose one.</p>;
   const best = move.combos[0];
   const biggest = Math.max(...data.moves.map((m) => m.scoreAfter));
+  const plain = (title: string) => data.moves.find((m) => m.title === title)?.plainTitle ?? title;
+  const byFutureSelf = data.suggestedBecause === "future_self";
+  const planFirst = data.moves[0];
 
   const commit = async () => {
     try {
@@ -185,11 +190,24 @@ export function FirstStepScreen({ household, member, onCommitted }: { household:
 
   return (
     <section className="first-step">
-      {self ? <Bubble name={self.name}>That's the whole plan. If you do one thing this week, here's the one the plan puts first.</Bubble> : null}
+      {self ? (
+        <Bubble name={self.name}>
+          {data.commitment
+            ? `You already picked this one, for ${prettyDate(data.commitment.dueDate)}. Keep it, or choose another.`
+            : byFutureSelf
+              ? `That's the whole plan. Our savings run low by ${self.age}, so this is where I'd start, this week.`
+              : "That's the whole plan. If you do one thing this week, here's the one the plan puts first."}
+        </Bubble>
+      ) : null}
       <article className="step-card">
-        <p className="kicker">{move.index === data.suggested ? "Your plan's first step" : "The step you chose"}</p>
-        <h2>{move.title}</h2>
-        <p className="step-action">{move.action}</p>
+        <p className="kicker">
+          {move.index !== data.suggested ? "The step you chose" : byFutureSelf ? "Where your future self would start" : "Your plan's first step"}
+        </p>
+        <h2>{move.plainTitle}</h2>
+        <p className="step-action">
+          <span className="plan-says">In your plan's words: </span>
+          {move.action}
+        </p>
         <dl className="step-facts">
           <div>
             <dt>Effort</dt>
@@ -205,11 +223,21 @@ export function FirstStepScreen({ household, member, onCommitted }: { household:
         {move.liftsACap ? <p className="step-note">It also removes one of the limits holding your score down.</p> : null}
         {best ? (
           <p className="step-note">
-            Together with {best.moves.filter((m) => m !== move.title).join(" and ")}, your plan puts the score at <strong>{best.scoreAfter}</strong>.
+            Together with{" "}
+            {best.moves
+              .filter((m) => m !== move.title)
+              .map((m) => plain(m).charAt(0).toLowerCase() + plain(m).slice(1))
+              .join(" and ")}
+            , your plan puts the score at <strong>{best.scoreAfter}</strong>.
           </p>
         ) : null}
         <p className="source">From your plan · Financial Health Score</p>
       </article>
+      {byFutureSelf && move.index === data.suggested && planFirst && planFirst.index !== move.index ? (
+        <p className="step-note">
+          Your plan lists “{planFirst.plainTitle.toLowerCase()}” first. The order is yours.
+        </p>
+      ) : null}
 
       {data.moves.length > 1 ? (
         <div className="other-steps">
@@ -222,7 +250,7 @@ export function FirstStepScreen({ household, member, onCommitted }: { household:
                 <li key={m.index}>
                   <button className={`step-option ${m.index === chosen ? "on" : ""}`} onClick={() => setChosen(m.index)} aria-pressed={m.index === chosen}>
                     <span>
-                      {m.title}
+                      {m.plainTitle}
                       {m.scoreAfter === biggest && data.moves.filter((x) => x.scoreAfter === biggest).length === 1 ? <span className="lift-tag">Biggest lift</span> : null}
                     </span>
                     <span className="muted">
@@ -281,7 +309,8 @@ export function CheckInScreen({ household, member, onRestart }: { household: Cas
       {c ? (
         <>
           <Bubble name={self.name}>
-            Hey {self.name}. You said you'd do this by {prettyDate(c.dueDate)}: <strong>{c.moveTitle.toLowerCase()}</strong>. Did you do it?
+            Hey {self.name}. You said you'd do this by {prettyDate(c.dueDate)}:{" "}
+            <strong>{(data.moves.find((m) => m.index === c.moveIndex)?.plainTitle ?? c.moveTitle).toLowerCase()}</strong>. Did you do it?
           </Bubble>
           {answer === null ? (
             <div className="reply-row">

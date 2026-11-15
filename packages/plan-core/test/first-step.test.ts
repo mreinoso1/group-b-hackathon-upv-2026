@@ -8,6 +8,7 @@ import {
   futureSelves,
   LocalCaseSource,
   planMoves,
+  suggestMove,
   TOPICS,
   topicForMove,
 } from "../src/index.ts";
@@ -41,6 +42,42 @@ describe("planMoves", () => {
     expect(topicForMove("Add umbrella cover")).toBe("advice.protection.umbrella");
     expect(topicForMove("Lower the withdrawal rate")).toBe("advice.retirement");
     expect(topicForMove("Raise growth allocation toward glide")).toBe("advice.investments");
+  });
+});
+
+describe("plain step titles", () => {
+  it("every family's steps have a plain headline without jargon or numbers", () => {
+    for (const raw of cases) {
+      for (const m of planMoves(raw)) {
+        expect(m.plainTitle, `${raw.id}: ${m.title}`).not.toMatch(/\d|gate|anchor|glide|mortality|revolving|integrity|band/i);
+        expect(m.plainTitle).not.toBe(m.title);
+      }
+    }
+  });
+  it("reads naturally", () => {
+    const weah = planMoves(cases.find((c) => c.id === "timothy-melanie-weah")!);
+    expect(weah.map((m) => m.plainTitle)).toEqual(["Pay down your credit card", "Get more life insurance", "Add umbrella insurance"]);
+    const samantha = planMoves(cases.find((c) => c.id === "samantha-lewis")!);
+    expect(samantha[0]!.plainTitle).toBe("Insure your home");
+  });
+});
+
+describe("suggestMove", () => {
+  const get = (id: string) => cases.find((c) => c.id === id)!;
+  it("keeps the plan's first step by default", () => {
+    const raw = get("timothy-melanie-weah");
+    expect(suggestMove(planMoves(raw), futureSelves(raw, TODAY)[0])).toEqual({ index: 0, because: "plan_order" });
+  });
+  it("starts with what makes savings last when the future self speaks from that year", () => {
+    const raw = get("michael-carter");
+    const moves = planMoves(raw);
+    const s = suggestMove(moves, futureSelves(raw, TODAY)[0]);
+    expect(s.because).toBe("future_self");
+    expect(moves[s.index]).toMatchObject({ title: "Lower the withdrawal rate", scoreAfter: 62 });
+  });
+  it("falls back to the plan's order when no step is about savings", () => {
+    const raw = get("samantha-lewis");
+    expect(suggestMove(planMoves(raw), futureSelves(raw, TODAY)[0])).toEqual({ index: 0, because: "plan_order" });
   });
 });
 
