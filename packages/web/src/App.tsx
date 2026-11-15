@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { api, type Capsule, type CaseSummary, type Level, type Reaction, type TopicInfo } from "./api.ts";
 import { CapsuleCard, ReactionBar } from "./components/CapsuleCard.tsx";
-import { Bubble, CheckInScreen, FirstStepScreen, FutureSelfIntro } from "./components/FutureSelf.tsx";
+import { Bubble, FutureSelfIntro } from "./components/FutureSelf.tsx";
+import { AgreementScreen, CheckInScreen, FirstStepScreen } from "./components/Steps.tsx";
 
-type Step = "intro" | "feed" | "step" | "checkin";
+type Step = "intro" | "feed" | "agree" | "step" | "checkin";
 type Screen = { name: "cases" } | { name: "who"; household: CaseSummary } | { name: Step; household: CaseSummary; member: string };
 
 export function App() {
@@ -55,7 +56,15 @@ export function App() {
         {screen.name === "intro" ? (
           <FutureSelfIntro household={screen.household} member={screen.member} onStart={() => setScreen({ ...screen, name: "feed" })} />
         ) : null}
-        {screen.name === "feed" ? <Feed household={screen.household} member={screen.member} onDone={() => setScreen({ ...screen, name: "step" })} /> : null}
+        {screen.name === "feed" ? (
+          <Feed
+            household={screen.household}
+            member={screen.member}
+            // A couple reading together first finds where they agree; everyone else goes to the step.
+            onDone={() => setScreen({ ...screen, name: screen.member === "together" && screen.household.members.length > 1 ? "agree" : "step" })}
+          />
+        ) : null}
+        {screen.name === "agree" ? <AgreementScreen household={screen.household} onDone={() => setScreen({ ...screen, name: "step" })} /> : null}
         {screen.name === "step" ? (
           <FirstStepScreen household={screen.household} member={screen.member} onCommitted={() => setScreen({ ...screen, name: "checkin" })} />
         ) : null}

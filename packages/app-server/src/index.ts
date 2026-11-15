@@ -73,7 +73,21 @@ app.get("/api/cases/:caseId/first-step", async (c) => {
 app.post("/api/cases/:caseId/commitments", bodyLimit({ maxSize: 2 * 1024 }), async (c) => {
   const body = await c.req.json<Record<string, unknown>>();
   return c.json(
-    await coach.call("commit_step", { caseId: c.req.param("caseId"), member: body.member, moveIndex: body.moveIndex, dueDate: body.dueDate }),
+    await coach.call("commit_step", { caseId: c.req.param("caseId"), member: body.member, priorityIndex: body.priorityIndex, dueDate: body.dueDate }),
+  );
+});
+
+app.post("/api/cases/:caseId/rankings", bodyLimit({ maxSize: 2 * 1024 }), async (c) => {
+  const body = await c.req.json<Record<string, unknown>>();
+  return c.json(await coach.call("submit_ranking", { caseId: c.req.param("caseId"), member: body.member, order: body.order }));
+});
+
+app.get("/api/cases/:caseId/agreement", async (c) => c.json(await coach.call("get_agreement", { caseId: c.req.param("caseId") })));
+
+app.post("/api/cases/:caseId/questions", bodyLimit({ maxSize: 4 * 1024 }), async (c) => {
+  const body = await c.req.json<Record<string, unknown>>();
+  return c.json(
+    await coach.call("log_question", { caseId: c.req.param("caseId"), member: body.member, topicId: body.topicId, text: body.text }),
   );
 });
 

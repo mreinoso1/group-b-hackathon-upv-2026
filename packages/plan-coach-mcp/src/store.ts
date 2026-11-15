@@ -13,15 +13,34 @@ export interface ReactionEvent {
   dwellMs?: number;
 }
 
-/** "I'll do it by…": the step a member chose from the plan's top moves, and their date. */
+/** "I'll do it by…": the plan priority a member (or the couple, "together") chose, and their date. */
 export interface CommitmentEvent {
   type: "commitment";
   at: string;
   caseId: string;
   member: string;
-  moveIndex: number;
-  moveTitle: string;
+  priorityIndex: number;
+  label: string;
   dueDate: string; // YYYY-MM-DD
+}
+
+/** A partner's order of the plan's priorities (indexes, first to last). */
+export interface RankingEvent {
+  type: "ranking";
+  at: string;
+  caseId: string;
+  member: string;
+  order: number[];
+}
+
+/** A question the plan could not answer on screen; it goes to the advisor brief. */
+export interface QuestionEvent {
+  type: "question";
+  at: string;
+  caseId: string;
+  member: string;
+  topicId: string;
+  text: string;
 }
 
 /** The answer to a future-self check-in ("Did you do it?"). */
@@ -30,15 +49,17 @@ export interface CheckinEvent {
   at: string;
   caseId: string;
   member: string;
-  moveTitle: string;
+  label: string;
   status: "done" | "not_yet";
 }
 
-export type PlanEvent = ReactionEvent | CommitmentEvent | CheckinEvent;
+export type PlanEvent = ReactionEvent | CommitmentEvent | CheckinEvent | RankingEvent | QuestionEvent;
 
 export const isReaction = (e: PlanEvent): e is ReactionEvent => e.type === "reaction";
 export const isCommitment = (e: PlanEvent): e is CommitmentEvent => e.type === "commitment";
 export const isCheckin = (e: PlanEvent): e is CheckinEvent => e.type === "checkin";
+export const isRanking = (e: PlanEvent): e is RankingEvent => e.type === "ranking";
+export const isQuestion = (e: PlanEvent): e is QuestionEvent => e.type === "question";
 
 /** What the family did, as an append-only log. Reactions feed the advisor brief later. */
 export interface EventStore {
