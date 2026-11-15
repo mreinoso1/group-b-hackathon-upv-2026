@@ -65,7 +65,7 @@ function useMedia(caseId: string, memberId: string): Media | null {
           : { kind: "none", avatar };
       if (live) setMedia(m);
       // No recording: have the server voice ready before they tap "Listen".
-      if (m.kind === "none") void futureApi.introAudio(caseId, memberId).catch(() => undefined);
+      if (m.kind === "none") void api.prefetchAudio(caseId, { topicId: "overview.score", level: "standard", member: memberId, attempt: 0, intro: true });
     })();
     return () => {
       live = false;

@@ -298,9 +298,95 @@ h2 {
   }
 }
 
+/* ---- motion: short, no bounce; off when the device asks for less motion ---- */
+
+.screen {
+  animation: rise 0.26s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.bubble-row {
+  animation: pop 0.28s ease-out both;
+}
+
+.bubble-row + .bubble-row {
+  animation-delay: 0.12s;
+}
+
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.98);
+  }
+}
+
+.step-card,
+.future-card .media-slot {
+  animation: rise 0.3s 0.08s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.meter-fill {
+  animation: grow 0.6s 0.1s ease-out both;
+}
+
+@keyframes grow {
+  from {
+    width: 0;
+  }
+}
+
+.chart .mark,
+.chart .mark-focus {
+  transform-box: fill-box;
+  transform-origin: left center;
+  animation: bar-in 0.5s 0.05s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+@keyframes bar-in {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+.chart .line {
+  stroke-dasharray: 1;
+  animation: draw 0.9s ease-out both;
+}
+
+@keyframes draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+}
+
+.chart path[fill="url(#nw-wash)"] {
+  animation: fade 0.6s 0.3s ease-out both;
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+
+.progress button::before,
+.progress span::before {
+  transition: background-color 0.25s ease;
+}
+
+:is(.reaction, .primary, .ghost, .case, .who, .back, .play, .step-option) {
+  transition: transform 0.1s ease, background-color 0.15s ease, border-color 0.15s ease;
+}
+
+:is(.reaction, .primary, .ghost, .case, .who, .back, .play, .step-option):active {
+  transform: scale(0.97);
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .capsule {
-    animation: none;
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
   }
 }
 

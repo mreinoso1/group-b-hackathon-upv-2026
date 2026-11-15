@@ -36,16 +36,48 @@ app.get("/api/cases", async (c) => c.json(await coach.readJson("plan://cases")))
 
 app.get("/api/cases/:caseId/topics", async (c) => c.json(await coach.readJson(`plan://${enc(c.req.param("caseId"))}/topics`)));
 
+/**
+ * Prefetches run here, in the background, and the browser gets 202 at once: a request held open
+ * for a 40 s voice generation would take one of the browser's six connections and make taps wait.
+ * Voice prefetches run one at a time, and only the latest waiting one is kept: skimming through
+ * capsules prepares the one being read, not every one passed on the way.
+ */
+let voiceRunning = false;
+let voiceNext: (() => Promise<unknown>) | null = null;
+
+function runVoice(job: () => Promise<unknown>) {
+  voiceRunning = true;
+  void job()
+    .catch(() => undefined)
+    .finally(() => {
+      voiceRunning = false;
+      const next = voiceNext;
+      voiceNext = null;
+      if (next) runVoice(next);
+    });
+}
+
+function background(job: () => Promise<unknown>, voice = false): boolean {
+  if (!voice) {
+    void job().catch(() => undefined);
+    return true;
+  }
+  if (voiceRunning) voiceNext = job;
+  else runVoice(job);
+  return true;
+}
+
 app.get("/api/cases/:caseId/capsule", async (c) => {
   const q = c.req.query();
-  const capsule = await coach.call("get_capsule", {
+  const args = {
     caseId: c.req.param("caseId"),
     topicId: q.topic ?? "",
     level: q.level ?? "standard",
     ...(q.member ? { member: q.member } : {}),
     ...(q.attempt ? { attempt: Number(q.attempt) } : {}),
-  });
-  return c.json(capsule);
+  };
+  if (q.prefetch) return c.json({ started: background(() => coach.call("get_capsule", args)) }, 202);
+  return c.json(await coach.call("get_capsule", args));
 });
 
 app.get("/api/cases/:caseId/future-self", async (c) => {
@@ -72,14 +104,16 @@ app.post("/api/cases/:caseId/checkins", bodyLimit({ maxSize: 2 * 1024 }), async 
 
 app.post("/api/cases/:caseId/audio", bodyLimit({ maxSize: 4 * 1024 }), async (c) => {
   const body = await c.req.json<Record<string, unknown>>();
-  const result = await coach.call<{ kind: string; audioId?: string; text?: string }>("get_audio", {
+  const args = {
     caseId: c.req.param("caseId"),
     topicId: body.topicId,
     level: body.level ?? "standard",
     ...(typeof body.member === "string" ? { member: body.member } : {}),
     ...(typeof body.attempt === "number" ? { attempt: body.attempt } : {}),
     ...(body.intro === true ? { intro: true } : {}),
-  });
+  };
+  if (body.prefetch === true) return c.json({ started: background(() => coach.call("get_audio", args), true) }, 202);
+  const result = await coach.call<{ kind: string; audioId?: string; text?: string }>("get_audio", args);
   return c.json(result.kind === "audio" ? { kind: "audio", url: `/api/audio/${result.audioId}` } : result);
 });
 

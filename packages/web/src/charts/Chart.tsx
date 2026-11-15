@@ -329,7 +329,7 @@ function TimelineChart({ spec, simple }: { spec: Extract<ChartSpec, { kind: "tim
             </text>
           ))}
           <path d={area} fill="url(#nw-wash)" />
-          <path d={line} className="line" />
+          <path d={line} className="line" pathLength={1} />
           {retireYear ? <line x1={sx(retireYear)} x2={sx(retireYear)} y1={plotTop} y2={plotBottom} className="retire-line" /> : null}
           {groups.map((m) => (
             <g key={`icon-${m.year}-${m.label}`} transform={`translate(${sx(m.year)} ${plotBottom - 11})`} className={`event ${m.icon === "retirement" ? "event-focus" : ""}`}>

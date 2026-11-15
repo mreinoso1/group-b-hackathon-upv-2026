@@ -47,7 +47,8 @@ export function App() {
         {screen.name !== "cases" ? <span className="who-chip">{whoLabel(screen)}</span> : null}
       </header>
 
-      <main>
+      {/* Keyed by screen: each new screen enters with a short fade-up. */}
+      <main key={screen.name === "cases" ? "cases" : `${screen.name}-${screen.household.id}`} className="screen">
         {error ? <p className="error">{error}</p> : null}
         {screen.name === "cases" ? <CasePicker cases={cases} onPick={pickCase} /> : null}
         {screen.name === "who" ? <WhoPicker household={screen.household} onPick={(member) => setScreen({ name: "intro", household: screen.household, member })} /> : null}
@@ -185,9 +186,10 @@ function Feed({ household, member, onDone }: { household: CaseSummary; member: s
           shownAt.current = Date.now();
           window.scrollTo({ top: 0, behavior: "smooth" });
           // While they read, prepare "I'm lost" so it answers at once (cached server-side, budget-capped).
-          if (c.level === "standard") void api.capsule(household.id, c.topicId, "simple", member, 0).catch(() => undefined);
-          // Same for "Listen": the voice is generated once, server-side, while they read.
-          void api.audio(household.id, { topicId: c.topicId, level: c.level, member, attempt: current.attempt ?? 0 }).catch(() => undefined);
+          // While they read, the server prepares "I'm lost" and the voice for "Listen" (not for the
+          // long expert detail, which is rarely listened to). Both return at once.
+          if (c.level === "standard") void api.prefetchCapsule(household.id, c.topicId, "simple", member, 0);
+          if (c.level !== "expert") void api.prefetchAudio(household.id, { topicId: c.topicId, level: c.level, member, attempt: current.attempt ?? 0 });
         },
         (e: Error) => !cancelled && setError(e.message),
       )
