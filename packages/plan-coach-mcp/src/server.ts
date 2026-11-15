@@ -19,7 +19,8 @@ import {
   LEVELS,
   members,
   milestones,
-  nextTopic,
+  nextTopicFor,
+  topicOrder,
   personaProfile,
   planBlocks,
   REACTIONS,
@@ -115,6 +116,23 @@ export function createPlanCoachServer(deps: PlanCoachDeps): McpServer {
     }),
   );
 
+  server.registerResource(
+    "member-topics",
+    new ResourceTemplate("plan://{caseId}/topics/{member}", { list: undefined }),
+    {
+      title: "Capsules in this person's order",
+      description: "The capsule catalog in the order that fits one reader (their risk profile and future self), or the plan's order for 'together'.",
+      mimeType: "application/json",
+    },
+    audited(audit, "resource", "plan://{caseId}/topics/{member}", async (uri: URL, vars: Record<string, string | string[]>) => {
+      const raw = await source.getCase(String(vars.caseId));
+      const member = String(vars.member);
+      checkMember(raw, member);
+      const byId = new Map(TOPICS.map((t) => [t.id, t]));
+      return json(uri.href, { topics: topicOrder(raw, member).map((id) => topicInfo(byId.get(id)!, raw)) });
+    }),
+  );
+
   // ---- Tools ---------------------------------------------------------------------------
 
   server.registerTool(
@@ -135,8 +153,14 @@ export function createPlanCoachServer(deps: PlanCoachDeps): McpServer {
         if (args.level === "simple") return simpleCapsule(raw, args.topicId, args.member ?? null, args.attempt ?? 0, coach);
         const capsule = buildCapsule(raw, { topicId: args.topicId, level: args.level, member: args.member ?? null });
         // The reader's future self introduces each idea (together: the first adult's).
-        const speaker = args.member && args.member !== "together" ? futureSelf(raw, args.member) : futureSelves(raw)[0];
-        return args.level === "standard" && speaker ? { ...capsule, futureSelfLine: futureSelfLine(speaker, args.topicId) } : capsule;
+        // The reader's future self introduces each idea; reading together, the partners take turns.
+        const selves = futureSelves(raw);
+        const turn = topicOrder(raw).indexOf(args.topicId);
+        const speaker =
+          args.member && args.member !== "together" ? futureSelf(raw, args.member) : selves[Math.max(0, turn) % Math.max(1, selves.length)];
+        return args.level === "standard" && speaker
+          ? { ...capsule, futureSelfLine: futureSelfLine(speaker, args.topicId), futureSelfName: speaker.name }
+          : capsule;
       }),
     ),
   );
@@ -187,7 +211,7 @@ export function createPlanCoachServer(deps: PlanCoachDeps): McpServer {
               ? { topicId: args.topicId, level: "simple" as const, attempt: Math.min(5, Math.max(0, lostSoFar - 1)) }
               : reaction === "tell_me_more"
                 ? { topicId: args.topicId, level: "expert" as const }
-                : nextOrNull(args.topicId);
+                : nextOrNull(raw, args.member, args.topicId);
           return { ok: true, next };
         }),
     ),
@@ -479,8 +503,8 @@ export function createPlanCoachServer(deps: PlanCoachDeps): McpServer {
 
 // ---- helpers ---------------------------------------------------------------------------
 
-function nextOrNull(topicId: string) {
-  const id = nextTopic(topicId);
+function nextOrNull(raw: RawCase, member: string, topicId: string) {
+  const id = nextTopicFor(raw, member, topicId);
   return id ? { topicId: id, level: "standard" as const } : null;
 }
 

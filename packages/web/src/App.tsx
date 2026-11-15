@@ -158,7 +158,7 @@ function Feed({ household, member, onDone }: { household: CaseSummary; member: s
   const current = stack[pos] ?? null;
 
   useEffect(() => {
-    api.topics(household.id).then(
+    api.topics(household.id, member).then(
       (r) => {
         setTopics(r.topics);
         if (r.topics[0]) {
@@ -169,7 +169,7 @@ function Feed({ household, member, onDone }: { household: CaseSummary; member: s
       },
       (e: Error) => setError(e.message),
     );
-  }, [household.id]);
+  }, [household.id, member]);
 
   // Browser / phone back and forward move through the capsules already shown.
   useEffect(() => {
@@ -274,7 +274,7 @@ function Feed({ household, member, onDone }: { household: CaseSummary; member: s
         </p>
       ) : null}
       {capsule?.futureSelfLine && capsule.level === "standard" ? (
-        <Bubble name={speakerName(household, member)}>{capsule.futureSelfLine}</Bubble>
+        <Bubble name={capsule.futureSelfName ?? speakerName(household, member)}>{capsule.futureSelfLine}</Bubble>
       ) : null}
       {capsule ? (
         <CapsuleCard
