@@ -159,7 +159,7 @@ export function createPlanCoachServer(deps: PlanCoachDeps): McpServer {
         const speaker =
           args.member && args.member !== "together" ? futureSelf(raw, args.member) : selves[Math.max(0, turn) % Math.max(1, selves.length)];
         return args.level === "standard" && speaker
-          ? { ...capsule, futureSelfLine: futureSelfLine(speaker, args.topicId), futureSelfName: speaker.name }
+          ? { ...capsule, futureSelfLine: futureSelfLine(speaker, args.topicId, topicOrder(raw, args.member)[0] === args.topicId), futureSelfName: speaker.name }
           : capsule;
       }),
     ),
@@ -202,7 +202,7 @@ export function createPlanCoachServer(deps: PlanCoachDeps): McpServer {
             dwellMs: args.dwellMs,
           });
           // Each "I'm lost" in a row on the same idea asks for a different way in; any other
-          // reaction ends the streak, so coming back later starts again with the analogy.
+          // reaction ends the streak, so coming back later starts again with plain words.
           const mine = store.list(args.caseId).filter(isReaction).filter((e) => e.member === args.member && e.topicId === args.topicId);
           let lostSoFar = 0;
           for (let i = mine.length - 1; i >= 0 && mine[i]!.reaction === "lost"; i--) lostSoFar++;
@@ -452,7 +452,7 @@ export function createPlanCoachServer(deps: PlanCoachDeps): McpServer {
         caseId: z.string().describe("Case id"),
         topicId: z.string().describe("Topic id"),
         member: z.string().optional().describe("Member id or 'together'"),
-        attempt: z.string().optional().describe("0 analogy, 1 steps, 2 one number"),
+        attempt: z.string().optional().describe("0 plain words, 1 one number, 2 analogy"),
       },
     },
     audited(audit, "prompt", "explain_simple", async (args: { caseId: string; topicId: string; member?: string; attempt?: string }) => {

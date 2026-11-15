@@ -7,7 +7,7 @@ import type { Milestone } from "./types.ts";
 type Line = (f: FutureSelf) => string;
 
 const LINES: Record<string, Line> = {
-  "overview.score": (f) => `It's me, ${f.name}, at ${f.age}. Before anything else, here's where we stood when we started.`,
+  "overview.score": () => "Here's where we stood when we started.",
   "overview.big_picture": (f) => `This is the whole picture we were working with at ${f.ageNow}.`,
   "map.timeline": (f) => `This is our road from ${f.ageNow} to ${f.age}. Each dot is something we planned for.`,
   "advice.protection.life_insurance": () => "Look at this one with care: it's about protecting the people who count on us.",
@@ -23,14 +23,16 @@ const LINES: Record<string, Line> = {
 
 /** When the plan shows savings running out, a few lines say so: honestly, and with hope. */
 const RUN_OUT_LINES: Record<string, Line> = {
-  "overview.score": (f) => `It's me, ${f.name}, at ${f.age}. The plan shows our savings running low by then, and we have time to change that.`,
+  "overview.score": () => "The plan shows our savings running low by then, and we have time to change that.",
   "map.timeline": (f) => `This is our road from ${f.ageNow} to ${f.age}. The savings thin out near the end: that's the part we can still change.`,
   "advice.retirement": (f) => `This is the part I care about most: making our savings last past ${f.age}.`,
 };
 
-export function futureSelfLine(f: FutureSelf, topicId: string): string {
+/** `opens`: this is the first capsule the reader sees, so the future self introduces itself. */
+export function futureSelfLine(f: FutureSelf, topicId: string, opens = false): string {
   const line = (f.reason === "savings_run_out" ? RUN_OUT_LINES[topicId] : undefined) ?? LINES[topicId];
-  return line ? line(f) : "Here's the next piece of our plan.";
+  const text = line ? line(f) : "Here's the next piece of our plan.";
+  return opens ? `It's me, ${f.name}, at ${f.age}. ${text}` : text;
 }
 
 /** The numbers a future-self line may use. */
