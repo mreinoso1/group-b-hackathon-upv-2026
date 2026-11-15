@@ -16,6 +16,7 @@ import {
 import { PRICES, type AiClient } from "./ai.ts";
 import type { Budget } from "./budget.ts";
 import { cacheKey, type Cache } from "./cache.ts";
+import { plausibleLength, saidTheText, wav } from "./voice.ts";
 
 export interface CoachDeps {
   ai?: AiClient;
@@ -110,50 +111,85 @@ function asModelCapsule(base: Capsule, value: CachedExplain): Capsule {
 }
 
 export type AudioResult =
-  | { kind: "audio"; audioId: string; cached: boolean; chars: number }
+  | { kind: "audio"; audioId: string; format: "mp3" | "wav"; cached: boolean; chars: number }
   | { kind: "browser"; text: string; reason: "no_key" | "budget" | "error" | "unavailable" };
 
-/** After the voice service refuses us (e.g. 401 upstream), stop asking for a while. */
-let ttsPausedUntil = 0;
-const TTS_PAUSE_MS = 10 * 60_000;
+/** After ElevenLabs refuses us (e.g. 401 upstream), stop asking it for a while. */
+let elevenPausedUntil = 0;
+const PAUSE_MS = 10 * 60_000;
+const VOICE_ESTIMATE_USD = 0.03; // a long capsule read by a voice model: about 2 cents
 
 /** What would be read aloud for a capsule: its title and its words, without markdown. */
 export function spokenText(c: Capsule): string {
   return [c.title, ...c.blocks.map((b) => b.text)].join(". ").replace(/\*\*/g, "").replace(/\.\./g, ".");
 }
 
-/**
- * Audio for a capsule, generated on first request and cached. When there is no key or the TTS
- * budget would be exceeded, the caller gets the text for the browser's own voice instead.
- */
+/** Audio for a capsule, generated on first request and cached. */
 export async function capsuleAudio(capsule: Capsule, deps: CoachDeps): Promise<AudioResult> {
   return speak(spokenText(capsule), deps);
 }
 
-/** Speech for any plan-derived text (a capsule, the future self's opening line). */
+/**
+ * Speech for any plan-derived text (a capsule, the future self's opening line), in English:
+ * ElevenLabs when it works, otherwise a realtime voice model whose transcript must match the
+ * text. One cached clip per text. Only when neither is possible does the caller fall back to
+ * the device's voice.
+ */
 export async function speak(text: string, deps: CoachDeps): Promise<AudioResult> {
-  const model = deps.ttsModel ?? "eleven-flash-v2.5";
-  const voice = deps.voice ?? "alloy";
-  const audioId = cacheKey({ v: CACHE_VERSION, model, voice, text });
-  if (deps.cache.has("audio", audioId, "mp3")) return { kind: "audio", audioId, cached: true, chars: text.length };
-  if (!deps.ai) return { kind: "browser", text, reason: "no_key" };
-  if (Date.now() < ttsPausedUntil) return { kind: "browser", text, reason: "unavailable" };
-  const estimate = text.length * PRICES["eleven-flash-v2.5"].perChar;
-  if (!deps.budget.canSpend("tts", estimate)) return { kind: "browser", text, reason: "budget" };
-  try {
-    const bytes = await deps.ai.speech(text);
-    deps.budget.record("tts", estimate);
-    deps.cache.putBytes("audio", audioId, "mp3", bytes);
-    return { kind: "audio", audioId, cached: false, chars: text.length };
-  } catch (e) {
-    const message = (e as Error).message;
-    deps.log?.(`tts failed: ${message.slice(0, 120)}`);
-    if (/ 40[13]/.test(message)) {
-      ttsPausedUntil = Date.now() + TTS_PAUSE_MS;
-      deps.log?.("voice service refused the request: using the browser's voice for 10 minutes");
-    }
-    return { kind: "browser", text, reason: "error" };
+  const audioId = cacheKey({ v: CACHE_VERSION, kind: "speech", text });
+  for (const format of ["mp3", "wav"] as const) {
+    if (deps.cache.has("audio", audioId, format)) return { kind: "audio", audioId, format, cached: true, chars: text.length };
   }
+  if (!deps.ai) return { kind: "browser", text, reason: "no_key" };
+  // A prefetch and a tap for the same text share one generation.
+  let job = speaking.get(audioId);
+  if (!job) {
+    job = generateSpeech(text, audioId, deps);
+    speaking.set(audioId, job);
+    void job.finally(() => speaking.delete(audioId));
+  }
+  return job;
+}
+
+const speaking = new Map<string, Promise<AudioResult>>();
+
+async function generateSpeech(text: string, audioId: string, deps: CoachDeps): Promise<AudioResult> {
+  if (!deps.ai) return { kind: "browser", text, reason: "no_key" };
+
+  if (Date.now() >= elevenPausedUntil) {
+    const estimate = text.length * PRICES["eleven-flash-v2.5"].perChar;
+    if (deps.budget.canSpend("tts", estimate)) {
+      try {
+        const bytes = await deps.ai.speech(text);
+        deps.budget.record("tts", estimate);
+        deps.cache.putBytes("audio", audioId, "mp3", bytes);
+        return { kind: "audio", audioId, format: "mp3", cached: false, chars: text.length };
+      } catch (e) {
+        const message = (e as Error).message;
+        deps.log?.(`elevenlabs failed: ${message.slice(0, 120)}`);
+        if (/ 40[13]/.test(message)) elevenPausedUntil = Date.now() + PAUSE_MS;
+      }
+    }
+  }
+
+  for (let attempt = 0; attempt < 2; attempt++) {
+    if (!deps.budget.canSpend("voice", VOICE_ESTIMATE_USD)) return { kind: "browser", text, reason: "budget" };
+    try {
+      const r = await deps.ai.voice(text);
+      deps.budget.record("voice", r.usd);
+      // With a transcript, words and numbers must match; without one (Gemini), the length must fit.
+      const faithful = r.transcript ? saidTheText(text, r.transcript) : plausibleLength(text, r.pcm.length);
+      if (r.pcm.length && faithful) {
+        deps.cache.putBytes("audio", audioId, "wav", wav(r.pcm));
+        return { kind: "audio", audioId, format: "wav", cached: false, chars: text.length };
+      }
+      deps.log?.(`voice model strayed from the text: "${r.transcript.slice(0, 80)}"`);
+    } catch (e) {
+      deps.log?.(`voice model failed: ${(e as Error).message.slice(0, 120)}`);
+      return { kind: "browser", text, reason: "error" };
+    }
+  }
+  return { kind: "browser", text, reason: "error" };
 }
 
 export function capsuleFor(raw: RawCase, topicId: string, level: Level, member: string | null): Capsule {

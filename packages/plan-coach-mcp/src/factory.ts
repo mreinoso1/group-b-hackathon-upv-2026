@@ -28,6 +28,8 @@ export function createDefaultServer() {
           reasoning: process.env.TEXT_REASONING,
           ttsModel: process.env.TTS_MODEL,
           voice: process.env.TTS_VOICE,
+          voiceModel: process.env.VOICE_MODEL,
+          realtimeVoice: process.env.VOICE_NAME,
         })
       : undefined;
   return createPlanCoachServer({
@@ -39,6 +41,7 @@ export function createDefaultServer() {
       text: Number(process.env.TEXT_BUDGET_USD ?? 2),
       // The team shares $1.40 of ElevenLabs; stay under it by default.
       tts: Number(process.env.TTS_BUDGET_USD ?? 1),
+      voice: Number(process.env.VOICE_BUDGET_USD ?? 3),
     }),
     ai,
     textModel: process.env.TEXT_MODEL,

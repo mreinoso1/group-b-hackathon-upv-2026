@@ -1,6 +1,7 @@
 // Client for the hackathon AI proxy (OpenAI-compatible). Lives only in plan-coach, the one
 // process that reads TEAM_KEY. Shared limiter keeps us inside the team quota.
 import type { ChatMessage } from "@bite/plan-core";
+import { realtimeSpeech, type VoiceResult } from "./voice.ts";
 
 export interface ChatResult {
   text: string;
@@ -10,7 +11,10 @@ export interface ChatResult {
 
 export interface AiClient {
   chat(messages: ChatMessage[]): Promise<ChatResult>;
+  /** ElevenLabs text-to-speech (mp3). */
   speech(input: string): Promise<Uint8Array>;
+  /** A realtime voice model reading the text aloud (PCM + transcript of what it said). */
+  voice(input: string): Promise<VoiceResult>;
 }
 
 export interface AiConfig {
@@ -21,6 +25,8 @@ export interface AiConfig {
   reasoning?: string;
   ttsModel?: string;
   voice?: string;
+  voiceModel?: string;
+  realtimeVoice?: string;
 }
 
 /** At most `concurrency` calls at once and `perMinute` starts per rolling minute. */
@@ -59,6 +65,8 @@ export class Limiter {
 
 // Team limits are 4 concurrent / 60 per minute; one slot stays free for a voice session.
 const limiter = new Limiter(3, 50);
+/** Voice models the proxy refused recently (e.g. an expired upstream key). */
+const deadUntil = new Map<string, number>();
 
 export function createAiClient(cfg: AiConfig): AiClient {
   const base = cfg.baseUrl.replace(/\/$/, "");
@@ -89,6 +97,21 @@ export function createAiClient(cfg: AiConfig): AiClient {
     async speech(input) {
       const res = await post("/v1/audio/speech", { model: cfg.ttsModel ?? "eleven-flash-v2.5", voice: cfg.voice ?? "alloy", input, response_format: "mp3" }, 45_000);
       return new Uint8Array(await res.arrayBuffer());
+    },
+    async voice(input) {
+      // Try voice models in order; one the proxy refuses is skipped for a while.
+      const models = (cfg.voiceModel ?? "gpt-realtime-2.1-mini,gemini-3.8-live").split(",").map((m) => m.trim());
+      let last: Error = new Error("no voice model available");
+      for (const model of models) {
+        if ((deadUntil.get(model) ?? 0) > Date.now()) continue;
+        try {
+          return await limiter.run(() => realtimeSpeech(input, { baseUrl: base, key: cfg.key, model, voice: cfg.realtimeVoice }));
+        } catch (e) {
+          last = e as Error;
+          if (/expired|refused|HTTP 4\d\d|invalid/i.test(last.message)) deadUntil.set(model, Date.now() + 10 * 60_000);
+        }
+      }
+      throw last;
     },
   };
 }

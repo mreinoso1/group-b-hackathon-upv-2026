@@ -19,7 +19,7 @@ let audit: MemoryAuditLog;
 beforeEach(async () => {
   store = new MemoryEventStore();
   audit = new MemoryAuditLog();
-  const server = createPlanCoachServer({ source: new LocalCaseSource(CASES), store, audit, cache: new MemoryCache(), budget: new FileBudget(null, { text: 1, tts: 1 }) });
+  const server = createPlanCoachServer({ source: new LocalCaseSource(CASES), store, audit, cache: new MemoryCache(), budget: new FileBudget(null, { text: 1, tts: 1, voice: 1 }) });
   const [a, b] = InMemoryTransport.createLinkedPair();
   client = new Client({ name: "test", version: "0.0.0" });
   await Promise.all([server.connect(a), client.connect(b)]);
