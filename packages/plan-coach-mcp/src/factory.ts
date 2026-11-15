@@ -1,12 +1,13 @@
 import { existsSync } from "node:fs";
 import { join, resolve } from "node:path";
-import { LocalCaseSource } from "@bite/plan-core";
+import { type CaseSource, LocalCaseSource } from "@bite/plan-core";
 import { createAiClient } from "./ai.ts";
 import { JsonlAuditLog } from "./audit.ts";
 import { FileBudget } from "./budget.ts";
 import { DiskCache } from "./cache.ts";
 import { config, REPO_ROOT } from "./config.ts";
 import { createPlanCoachServer } from "./server.ts";
+import { FallbackCaseSource, SherpasCaseSource } from "./sherpas.ts";
 import { JsonlEventStore } from "./store.ts";
 
 // Keys are read here, in plan-coach only: never by the web app, never logged.
@@ -15,7 +16,23 @@ if (existsSync(envFile)) process.loadEnvFile(envFile);
 
 const log = (msg: string) => console.error(`[plan-coach] ${msg}`);
 
-/** The server as the app runs it: cases from disk, events/audit/budget in data/, model output in cache/. */
+/**
+ * Cases come from the Sherpas MCP when MCP_URL and MCP_TOKEN are set, with cases/ as the
+ * fallback (the token lasts 72 hours). CASES_SOURCE=local skips the MCP.
+ */
+function caseSource(): CaseSource {
+  const local = new LocalCaseSource(config.casesDir);
+  const url = process.env.MCP_URL;
+  const token = process.env.MCP_TOKEN;
+  if (process.env.CASES_SOURCE === "local" || !url || !token || token.includes("...")) {
+    log("cases: cases/ folder");
+    return local;
+  }
+  log(`cases: Sherpas MCP (${new URL(url).host}), falling back to cases/`);
+  return new FallbackCaseSource(new SherpasCaseSource({ url, token }), local, log);
+}
+
+/** The server as the app runs it: cases from the Sherpas MCP or disk, events/audit/budget in data/, model output in cache/. */
 export function createDefaultServer() {
   const key = process.env.TEAM_KEY;
   const baseUrl = process.env.LLM_PROXY_URL;
@@ -33,7 +50,7 @@ export function createDefaultServer() {
         })
       : undefined;
   return createPlanCoachServer({
-    source: new LocalCaseSource(config.casesDir),
+    source: caseSource(),
     store: new JsonlEventStore(join(config.dataDir, "events.jsonl")),
     audit: new JsonlAuditLog(join(config.dataDir, "audit.jsonl")),
     cache: new DiskCache(config.cacheDir),
