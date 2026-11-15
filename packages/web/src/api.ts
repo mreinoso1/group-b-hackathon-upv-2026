@@ -38,6 +38,18 @@ export const api = {
       `/api/cases/${encodeURIComponent(caseId)}/capsule?` +
         new URLSearchParams({ topic: topicId, level, member, attempt: String(attempt) }).toString(),
     ),
+  /** Ask the server to prepare something in the background; returns at once. */
+  prefetchCapsule: (caseId: string, topicId: string, level: Level, member: string, attempt = 0) =>
+    fetch(
+      `/api/cases/${encodeURIComponent(caseId)}/capsule?` +
+        new URLSearchParams({ topic: topicId, level, member, attempt: String(attempt), prefetch: "1" }).toString(),
+    ).catch(() => undefined),
+  prefetchAudio: (caseId: string, body: { topicId: string; level: Level; member: string; attempt: number; intro?: boolean }) =>
+    fetch(`/api/cases/${encodeURIComponent(caseId)}/audio`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ ...body, prefetch: true }),
+    }).catch(() => undefined),
   audio: (caseId: string, body: { topicId: string; level: Level; member: string; attempt: number }) =>
     request<AudioAnswer>(`/api/cases/${encodeURIComponent(caseId)}/audio`, {
       method: "POST",
