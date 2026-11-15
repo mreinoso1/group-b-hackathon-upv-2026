@@ -117,3 +117,27 @@ describe("topics", () => {
     }
   });
 });
+
+describe("timeline chart", () => {
+  const chartOf = (id: string) => {
+    const c = buildCapsule(all.find((r) => r.id === id)!, { topicId: "map.timeline", level: "standard" }).chart;
+    if (c?.kind !== "timeline") throw new Error("no timeline");
+    return c;
+  };
+
+  it("when savings run out, draws savings (not net worth), crossing zero in the year the marker shows", () => {
+    const runOut = all.filter((r) => milestones(r).some((m) => m.distress));
+    expect(runOut.map((r) => r.id)).toContain("michael-carter");
+    for (const raw of runOut) {
+      const c = chartOf(raw.id);
+      expect(c.title).toMatch(/savings and investments/i);
+      const marker = c.milestones.find((m) => m.distress)!;
+      const firstBelow = c.points.find((p) => p.value <= 0);
+      expect(firstBelow?.year, raw.id).toBe(marker.year);
+    }
+  });
+
+  it("otherwise draws net worth in today's dollars", () => {
+    expect(chartOf("timothy-melanie-weah").title).toMatch(/net worth/i);
+  });
+});
