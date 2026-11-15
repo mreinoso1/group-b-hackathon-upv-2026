@@ -1304,3 +1304,148 @@ video.media-slot {
   font-weight: 600;
   color: var(--muted);
 }
+
+/* ---- agreement, priorities, questions ---- */
+
+.agreement h1 {
+  margin-top: 4px;
+}
+
+.rank-list,
+.agree-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 14px;
+  display: grid;
+  gap: 8px;
+}
+
+.rank-option {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 32px 1fr;
+  gap: 12px;
+  align-items: start;
+  text-align: left;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  border-radius: 14px;
+  padding: 12px 14px;
+}
+
+.rank-option.on {
+  border-color: var(--blue);
+  background: var(--blue-wash);
+}
+
+.rank-num {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1.5px dashed var(--soft);
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  color: var(--blue);
+}
+
+.rank-option.on .rank-num {
+  border: 0;
+  background: var(--blue);
+  color: #fff;
+}
+
+.rank-text {
+  display: block;
+  font-size: 13px;
+  line-height: 1.4;
+  margin-top: 2px;
+}
+
+.agree-list li {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 12px 14px;
+  display: grid;
+  gap: 6px;
+}
+
+.agree-list li.agree {
+  border-color: #b7e2c6;
+  background: #f0faf3;
+}
+
+.agree-list li.differ {
+  border-color: #f3d2b8;
+  background: #fff7f0;
+}
+
+.agree-label {
+  font-weight: 600;
+}
+
+.agree-ranks {
+  display: flex;
+  gap: 6px;
+}
+
+.rank-chip {
+  font-size: 12px;
+  font-weight: 600;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 1px 8px;
+}
+
+.plan-quote {
+  font-size: 13px;
+  color: var(--ink-2);
+}
+
+.score-lines {
+  margin: 4px 0 2px;
+}
+
+.step-facts-line {
+  font-family: var(--heading);
+  font-weight: 600;
+  font-size: 20px;
+  margin: 0 0 6px;
+}
+
+.step-facts-line strong {
+  color: var(--good);
+}
+
+.ask {
+  display: grid;
+  gap: 8px;
+  margin: 12px 0 20px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface);
+}
+
+.ask label {
+  font-weight: 600;
+}
+
+.ask textarea {
+  font: inherit;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 10px 12px;
+  resize: vertical;
+}
+
+.ask .ghost:disabled {
+  opacity: 0.5;
+}
+
+.sent-note {
+  color: var(--good);
+  font-weight: 600;
+  margin: 12px 0 20px;
+}

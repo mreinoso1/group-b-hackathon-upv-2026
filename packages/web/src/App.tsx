@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { api, type Capsule, type CaseSummary, type Level, type Reaction, type TopicInfo } from "./api.ts";
 import { CapsuleCard, ReactionBar } from "./components/CapsuleCard.tsx";
 import { Bubble, FutureSelfIntro } from "./components/FutureSelf.tsx";
-import { AgreementScreen, CheckInScreen, FirstStepScreen } from "./components/Steps.tsx";
+import { AgreementScreen, AskAdvisor, CheckInScreen, FirstStepScreen } from "./components/Steps.tsx";
 
 type Step = "intro" | "feed" | "agree" | "step" | "checkin";
 type Screen = { name: "cases" } | { name: "who"; household: CaseSummary } | { name: Step; household: CaseSummary; member: string };
@@ -84,7 +84,7 @@ function CasePicker({ cases, onPick }: { cases: CaseSummary[] | null; onPick: (c
   return (
     <section className="intro">
       <h1>Your plan, one bite at a time</h1>
-      <p className="lede">One idea a day, in under a minute. Tell us how it landed and we explain it your way.</p>
+      <p className="lede">One idea at a time, each in under a minute. Tell us how it landed and we explain it your way.</p>
       {!cases ? <p className="muted">Loading families…</p> : null}
       <ul className="case-list">
         {cases?.map((c) => (
@@ -287,6 +287,8 @@ function Feed({ household, member, onDone }: { household: CaseSummary; member: s
       ) : (
         <p className="muted">Loading…</p>
       )}
+      {/* After "I'm lost": a way to ask a real question, which goes to the advisor's brief. */}
+      {capsule?.level === "simple" ? <AskAdvisor key={`ask-${capsule.id}-${pos}`} caseId={household.id} member={member} topicId={capsule.topicId} /> : null}
       {capsule ? <ReactionBar onReact={react} busy={busy} /> : null}
     </section>
   );

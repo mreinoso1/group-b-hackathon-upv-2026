@@ -11,6 +11,22 @@ import type { Block } from "./types.ts";
 export const EXPLAIN_STYLES = ["analogy", "steps", "one_number"] as const;
 export type ExplainStyle = (typeof EXPLAIN_STYLES)[number];
 
+/** An image that fits each idea, so analogies don't all sound the same. */
+const ANALOGY_BY_TOPIC: Record<string, string> = {
+  "overview.score": "a yearly health check-up",
+  "overview.big_picture": "a map of where everything sits in a house",
+  "map.timeline": "a road trip with planned stops",
+  "advice.protection.life_insurance": "a seatbelt for the people who depend on you",
+  "advice.protection.umbrella": "a roof that covers more than one room",
+  "advice.debt": "a leaky bucket",
+  "advice.protection.emergency_fund": "a spare tire",
+  "advice.savings": "planting a garden",
+  "advice.retirement": "a long hike and the water you carry",
+  "advice.assets": "a backpack: what you carry and what you could use",
+  "advice.investments": "a recipe and its ingredients",
+  "advice.priorities": "one paycheck and several bills asking for it",
+};
+
 /** Each new "I'm lost" on the same idea tries a different way in. */
 export function styleFor(attempt: number): ExplainStyle {
   return EXPLAIN_STYLES[Math.min(Math.max(0, attempt), EXPLAIN_STYLES.length - 1)]!;
@@ -35,7 +51,7 @@ export interface ExplainPrompt {
 }
 
 const STYLE_GUIDE: Record<ExplainStyle, string> = {
-  analogy: "Use one everyday analogy (a household budget, a car, an umbrella, groceries) to make the idea click, then tie it back to the plan.",
+  analogy: "Use one everyday analogy to make the idea click, then tie it back to the plan.",
   steps: "Explain it as two or three very short plain sentences, in order: what you have now, what the plan says would be enough, what the difference means.",
   one_number: "Focus on the single most important figure in the text and say plainly why it matters to them. Two sentences at most.",
 };
@@ -108,7 +124,7 @@ export function buildExplainPrompt(raw: RawCase, topicId: string, memberId: stri
     "- Do not tell them what to do first: the order of their priorities is their own decision.",
     "- Plain English, no jargon. 2 to 4 short sentences, under 70 words. No headings, lists, links or markdown.",
     "- Calm and encouraging, never alarming.",
-    `Way in: ${STYLE_GUIDE[style]}`,
+    `Way in: ${STYLE_GUIDE[style]}${style === "analogy" ? ` A good image for this idea: ${ANALOGY_BY_TOPIC[topicId] ?? "something from everyday life"}. Avoid comparing it to a household budget.` : ""}`,
     ...(tone.length ? [`Voice: ${tone.join(", ")}.`] : []),
   ].join("\n");
 

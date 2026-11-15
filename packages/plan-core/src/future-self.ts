@@ -73,7 +73,7 @@ export function futureSelves(raw: RawCase, today = new Date()): FutureSelf[] {
   const todayIso = today.toISOString().slice(0, 10);
   const checkIns = milestones(raw)
     .filter((ms) => !ms.distress && ms.type !== "VACATION" && ms.date >= todayIso)
-    .slice(0, 3);
+    .slice(0, 6);
 
   const out: FutureSelf[] = [];
   for (const m of members(raw)) {
