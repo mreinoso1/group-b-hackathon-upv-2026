@@ -5,6 +5,7 @@ import {
   buildExplainPrompt,
   checkNumbers,
   checkPeople,
+  checkTone,
   readSeconds,
   sanitizeModelText,
   wordCount,
@@ -29,7 +30,7 @@ export interface CoachDeps {
 }
 
 const TEXT_ESTIMATE_USD = 0.005; // generous per-call estimate for the budget check
-const CACHE_VERSION = 6;
+const CACHE_VERSION = 7;
 const MAX_NUMBERS = 3; // "at most two" asked; a range like "$750,000 to $1,500,000" may need three
 const MAX_WORDS = 90;
 
@@ -42,13 +43,17 @@ interface CachedExplain {
 /** Requests for the same explanation that are already running (a prefetch, then a tap). */
 const inflight = new Map<string, Promise<CachedExplain | null>>();
 
+/** Where an "I'm lost" explanation is cached: changes whenever the prompt, model or version changes. */
+export function explainKey(prompt: { messages: ChatMessage[] }, deps: Pick<CoachDeps, "textModel">): string {
+  return cacheKey({ v: CACHE_VERSION, model: deps.textModel ?? "gpt-5-mini", reasoning: process.env.TEXT_REASONING ?? "low", messages: prompt.messages });
+}
+
 /** A simple capsule: a checked re-explanation when possible, otherwise the plan-based fallback. */
 export async function simpleCapsule(raw: RawCase, topicId: string, member: string | null, attempt: number, deps: CoachDeps): Promise<Capsule> {
   const base = buildCapsule(raw, { topicId, level: "simple", member });
   const prompt = buildExplainPrompt(raw, topicId, member, attempt);
   const withStyle = { ...base, style: prompt.style };
-  const model = deps.textModel ?? "gpt-5-mini";
-  const key = cacheKey({ v: CACHE_VERSION, model, reasoning: process.env.TEXT_REASONING ?? "low", messages: prompt.messages });
+  const key = explainKey(prompt, deps);
 
   const hit = deps.cache.getJson<CachedExplain>("explain", key);
   if (hit) return asModelCapsule(withStyle, hit);
@@ -71,7 +76,7 @@ export async function simpleCapsule(raw: RawCase, topicId: string, member: strin
   return value ? asModelCapsule(withStyle, value) : withStyle;
 }
 
-/** Asks the model, checks numbers, people and length; one corrective retry. Null means fall back. */
+/** Asks the model, checks numbers, people, tone and length; one corrective retry. Null means fall back. */
 async function generateExplain(prompt: ReturnType<typeof buildExplainPrompt>, topicId: string, deps: CoachDeps): Promise<CachedExplain | null> {
   const ai = deps.ai!;
   const messages: ChatMessage[] = [...prompt.messages];
@@ -82,19 +87,26 @@ async function generateExplain(prompt: ReturnType<typeof buildExplainPrompt>, to
       const text = sanitizeModelText(res.text);
       const guard = checkNumbers(text, prompt.allowed);
       const people = checkPeople(text, prompt.people.allowed, prompt.people.household);
-      // Safety (numbers and people from the plan) is always required. Brevity is asked for once
-      // more, then accepted: a slightly long but correct answer beats the fallback.
+      const tone = checkTone(text);
+      // Sometimes the model returns two drafts of the same answer, one per paragraph.
+      const oneAnswer = !text.includes("\n");
+      // Safety (numbers and people from the plan), tone and a single answer are always required.
+      // Brevity is asked for once more, then accepted: a slightly long but correct answer beats the fallback.
       const tooBusy = guard.checked > MAX_NUMBERS || wordCount(text) > MAX_WORDS;
-      if (text && guard.ok && people.ok && (!tooBusy || round > 0)) {
+      if (text && guard.ok && people.ok && tone.ok && oneAnswer && (!tooBusy || round > 0)) {
         return { text, numbersChecked: guard.checked, style: prompt.style };
       }
       const problem = !guard.ok
         ? `These numbers are not in the plan text: ${guard.unknown.join(", ")}. Rewrite it using only ALLOWED NUMBERS, or no numbers at all.`
         : !people.ok
           ? `The plan text does not mention ${people.unknown.join(" or ")} here. Rewrite it without naming them.`
-          : !text
-            ? "The answer was empty. Write the explanation."
-            : `Too much at once (${guard.checked} numbers, ${wordCount(text)} words). Rewrite it with at most two numbers and under 70 words.`;
+          : !tone.ok
+            ? `Rewrite it without ${tone.problems.join(" or ")}: calm, plain, and only what the plan measures.`
+            : !text
+              ? "The answer was empty. Write the explanation."
+              : !oneAnswer
+                ? "Give one answer only: a single paragraph that says each thing once."
+                : `Too much at once (${guard.checked} numbers, ${wordCount(text)} words). Rewrite it with at most two numbers and under 70 words.`;
       deps.log?.(`retrying ${topicId}: ${problem.split(".")[0]}`);
       messages.push({ role: "assistant", content: res.text }, { role: "user", content: problem });
     } catch (e) {

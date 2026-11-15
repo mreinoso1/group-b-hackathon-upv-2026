@@ -54,7 +54,7 @@ export interface ExplainPrompt {
 
 const STYLE_GUIDE: Record<ExplainStyle, string> = {
   analogy: "Use one everyday analogy to make the idea click, then tie it back to the plan.",
-  plain: "Say the same idea again in two or three short, plain sentences, the way you would explain it to a friend: what the plan sees, then what it means for them. No images or comparisons.",
+  plain: "Say the same idea again in two or three short, plain sentences, the way you would tell a friend: the fact itself first (do not start with \"The plan\"), then what it means for them. No images or comparisons.",
   one_number: "Focus on the single most important figure in the text and say plainly why it matters to them. Two sentences at most.",
 };
 
@@ -124,10 +124,11 @@ export function buildExplainPrompt(raw: RawCase, topicId: string, memberId: stri
         ? ["- They live alone in this plan: do not mention a partner."]
         : []),
     "- Do not tell them what to do first: the order of their priorities is their own decision.",
-    "- Plain English, no jargon. 2 to 4 short sentences, under 70 words. No headings, lists, links or markdown.",
+    "- Plain English, no jargon. One paragraph of 2 to 4 short sentences, under 70 words; say each thing once. No headings, lists, links or markdown.",
     "- Calm and encouraging, never alarming. If the plan text sounds harsh, keep its facts but say them calmly; add no urgency.",
     "- You are not their advisor: never write \"let me\", \"let's\" or \"we\", and never tell them to seek help.",
-    `Way in: ${STYLE_GUIDE[style]}${style === "analogy" ? ` A good image for this idea: ${ANALOGY_BY_TOPIC[topicId] ?? "something from everyday life"}. Avoid comparing it to a household budget.` : ""}`,
+    "- Leave out the plan's judgments about their well-being, stress or life; keep to what the plan measures and what it means for them.",
+    `- ${STYLE_GUIDE[style]}${style === "analogy" ? ` A good image for this idea: ${ANALOGY_BY_TOPIC[topicId] ?? "something from everyday life"}. Avoid comparing it to a household budget.` : ""}`,
     ...(tone.length ? [`Voice: ${tone.join(", ")}.`] : []),
   ].join("\n");
 

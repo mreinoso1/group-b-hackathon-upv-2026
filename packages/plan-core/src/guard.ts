@@ -84,6 +84,21 @@ function round(n: number): number {
   return Math.round(n * 100) / 100;
 }
 
+// Phrases a re-explanation must not have: a leaked prompt label, an advisor's voice ("let me"),
+// a push to seek help, or the plan's own judgments about their life copied back at them.
+const OFF_TONE: [RegExp, string][] = [
+  [/\bway in\s*:/i, "a prompt label"],
+  [/\blet me\b|\blet's\b/i, "speaking as their advisor"],
+  [/\bseek\b|expert guidance/i, "telling them to seek help"],
+  [/fulfilling life|well-being|wellbeing/i, "the plan's judgment about their life"],
+];
+
+/** The tone guard: re-explanations stay calm, plain and in the plan's place, not the advisor's. */
+export function checkTone(text: string): { ok: boolean; problems: string[] } {
+  const problems = OFF_TONE.filter(([re]) => re.test(text)).map(([, why]) => why);
+  return { ok: problems.length === 0, problems };
+}
+
 /**
  * The people guard: the answer may only name people the plan text names (plus the reader).
  * Stops a model from handing a debt or policy to the wrong partner.

@@ -1,4 +1,4 @@
-import { at, isRecord, str, type RawCase } from "./load.ts";
+import { at, isRecord, num, str, type RawCase } from "./load.ts";
 import { sectionOf } from "./sections.ts";
 import { fallbackSimple } from "./explain.ts";
 import { members } from "./household.ts";
@@ -71,7 +71,14 @@ export function buildCapsule(raw: RawCase, req: CapsuleRequest): Capsule {
   } else if (req.level === "simple") {
     // Deterministic fallback; the MCP server swaps in a checked re-explanation when it can.
     const name = members(raw).find((m) => m.id === req.member)?.name;
-    blocks = fallbackSimple(standard, name);
+    const score = num(at(raw.financialHealth, "score.published_score"));
+    // The plan's sentence about the score is a judgment about their life ("preventing you from
+    // achieving a fulfilling life"): repeating it to someone who is already lost makes them look away.
+    // The score's fallback is a template with the plan's number only.
+    blocks =
+      topic.id === "overview.score" && score !== undefined
+        ? [{ text: `Your Financial Health Score is ${score} out of 100. It measures where your money stands today, and the next ideas show what your plan suggests to raise it.`, source: "financial-health:score.published_score" }]
+        : fallbackSimple(standard, name);
     planWords = standard;
     generatedBy = "fallback";
   }
