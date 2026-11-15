@@ -1080,10 +1080,11 @@ h2 {
 
 video.media-slot {
   padding: 0;
-  background: #000;
-  aspect-ratio: 9 / 16;
+  background: transparent;
+  width: 100%;
+  height: auto;
   max-height: 420px;
-  object-fit: cover;
+  object-fit: contain;
 }
 
 .media-slot.loading {
