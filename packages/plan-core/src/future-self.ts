@@ -60,9 +60,30 @@ function lastYearWithSavings(raw: RawCase): YearRow | undefined {
   return rows[firstNegative - 1];
 }
 
-function intro(m: Member, age: number, reason: FutureSelfReason): string {
-  return reason === "savings_run_out"
-    ? `Hey ${m.name}. It's you, at ${age}. The plan shows our savings running out around now, and we still have time to change that. Let's start this week.`
+/** Names joined for speech: "Liam", "Liam and Josh", "Ava, Ethan and Liam". */
+function joinNames(names: string[]): string {
+  return names.length <= 1 ? (names[0] ?? "") : `${names.slice(0, -1).join(", ")} and ${names.at(-1)}`;
+}
+
+/**
+ * What the plan puts on the way to retirement, in plain words: the home purchase and the children's
+ * college, only if they fall before that year. Years and names come from the plan's milestones.
+ */
+function onTheWay(ms: Milestone[], untilYear: number): string | undefined {
+  const before = ms.filter((x) => !x.distress && x.year < untilYear);
+  const parts: string[] = [];
+  const home = before.find((x) => x.type === "PURCHASE" && (x.subType === "REAL_ESTATE_PURCHASE" || /home|house/i.test(x.label)));
+  if (home) parts.push("our home");
+  const kids = before.filter((x) => x.type === "COLLEGE").map((x) => x.label.replace(/^college\s+/i, "").trim()).filter(Boolean);
+  if (kids.length) parts.push(`college for ${joinNames(kids)}`);
+  return parts.length ? parts.join(" and ") : undefined;
+}
+
+function intro(m: Member, age: number, reason: FutureSelfReason, way?: string): string {
+  if (reason === "savings_run_out")
+    return `Hey ${m.name}. It's you, at ${age}. The plan shows our savings running out around now, and we still have time to change that. Let's start this week.`;
+  return way
+    ? `Hey ${m.name}. It's you, at ${age}, the year we retire. The plan gets us here with ${way} along the way. It all starts with one thing this week.`
     : `Hey ${m.name}. It's you, at ${age}, the year we retire. Here's what got us here, and the one thing to do this week.`;
 }
 
@@ -71,7 +92,8 @@ export function futureSelves(raw: RawCase, today = new Date()): FutureSelf[] {
   const depletion = lastYearWithSavings(raw);
   const rows = yearly(raw);
   const todayIso = today.toISOString().slice(0, 10);
-  const checkIns = milestones(raw)
+  const allMilestones = milestones(raw);
+  const checkIns = allMilestones
     .filter((ms) => !ms.distress && ms.type !== "VACATION" && ms.date >= todayIso)
     .slice(0, 6);
 
@@ -95,7 +117,7 @@ export function futureSelves(raw: RawCase, today = new Date()): FutureSelf[] {
       age,
       year: row.year,
       reason: reason!,
-      introText: intro(m, age, reason!),
+      introText: intro(m, age, reason!, reason! === "retirement" ? onTheWay(allMilestones, row.year) : undefined),
       checkIns,
     });
   }
