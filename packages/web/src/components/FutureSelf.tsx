@@ -32,7 +32,7 @@ export function Bubble({ name, children, tone = "self" }: { name: string; childr
 
 // ---- media slot -----------------------------------------------------------------------------
 
-type Media = { kind: "video"; src: string } | { kind: "audio"; src: string; avatar: string | null } | { kind: "none"; avatar: string | null };
+type Media = { kind: "video"; src: string; avatar: string | null } | { kind: "audio"; src: string; avatar: string | null } | { kind: "none"; avatar: string | null };
 
 /** The dev server answers unknown paths with index.html, so a file "exists" only with the right type. */
 async function exists(url: string, type: string): Promise<boolean> {
@@ -59,7 +59,7 @@ function useMedia(caseId: string, memberId: string): Media | null {
       ]);
       const avatar = jpg ? `/avatars/${key}.jpg` : png ? `/avatars/${key}.png` : null;
       const m: Media = video
-        ? { kind: "video", src: `/video/${key}.mp4` }
+        ? { kind: "video", src: `/video/${key}.mp4`, avatar }
         : audio
           ? { kind: "audio", src: `/audio/${key}.mp3`, avatar }
           : { kind: "none", avatar };
@@ -77,7 +77,7 @@ function MediaSlot({ household, self }: { household: CaseSummary; self: FutureSe
   if (!media) return <div className="media-slot loading" aria-hidden="true" />;
   if (media.kind === "video")
     return (
-      <video className="media-slot" src={media.src} controls playsInline preload="metadata">
+      <video className="media-slot" src={media.src} poster={media.avatar ?? undefined} controls playsInline preload="metadata">
         <track kind="captions" />
       </video>
     );
