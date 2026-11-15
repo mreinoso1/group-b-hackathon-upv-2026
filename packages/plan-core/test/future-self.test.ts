@@ -34,6 +34,15 @@ describe("futureSelf", () => {
     expect(daniel!.introText).toContain("college for Oliver and Sophia");
   });
 
+  it("never claims the plan gets us there when it shows a retirement shortfall", async () => {
+    const [timothy] = futureSelves(await source.getCase("timothy-melanie-weah"), TODAY);
+    expect(timothy!.introText).toContain("The plan gets us here"); // Weah: no retirement gap
+    for (const f of futureSelves(await source.getCase("daniel-emily-johnson"), TODAY)) {
+      expect(f.introText).not.toContain("gets us here"); // Johnson: $1,427,456 retirement gap
+      expect(f.introText).toContain("a gap in our retirement savings still to close");
+    }
+  });
+
   it("every age in the intro comes from the plan", async () => {
     for (const id of await source.listIds()) {
       for (const f of futureSelves(await source.getCase(id), TODAY)) {

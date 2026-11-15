@@ -79,9 +79,19 @@ function onTheWay(ms: Milestone[], untilYear: number): string | undefined {
   return parts.length ? parts.join(" and ") : undefined;
 }
 
-function intro(m: Member, age: number, reason: FutureSelfReason, way?: string): string {
+/** The plan's retirement shortfall, if it shows one (0 means the plan funds retirement). */
+function retirementGap(raw: RawCase): number {
+  return num(at(raw.financialHealth, "key_metrics.protection.emergencyFund.retirementAndEducationGaps.retirementGap")) ?? 0;
+}
+
+function intro(m: Member, age: number, reason: FutureSelfReason, way?: string, shortfall = false): string {
   if (reason === "savings_run_out")
     return `Hey ${m.name}. It's you, at ${age}. The plan shows our savings running out around now, and we still have time to change that. Let's start this week.`;
+  // When the plan shows a retirement shortfall, the future self doesn't claim the plan gets us there.
+  if (shortfall)
+    return way
+      ? `Hey ${m.name}. It's you, at ${age}, the year we retire. Before then, the plan includes ${way}, and a gap in our retirement savings still to close. It all starts with one thing this week.`
+      : `Hey ${m.name}. It's you, at ${age}, the year we retire. The plan shows a gap in our retirement savings still to close. It all starts with one thing this week.`;
   return way
     ? `Hey ${m.name}. It's you, at ${age}, the year we retire. The plan gets us here with ${way} along the way. It all starts with one thing this week.`
     : `Hey ${m.name}. It's you, at ${age}, the year we retire. Here's what got us here, and the one thing to do this week.`;
@@ -117,7 +127,7 @@ export function futureSelves(raw: RawCase, today = new Date()): FutureSelf[] {
       age,
       year: row.year,
       reason: reason!,
-      introText: intro(m, age, reason!, reason! === "retirement" ? onTheWay(allMilestones, row.year) : undefined),
+      introText: intro(m, age, reason!, reason! === "retirement" ? onTheWay(allMilestones, row.year) : undefined, retirementGap(raw) > 0),
       checkIns,
     });
   }
