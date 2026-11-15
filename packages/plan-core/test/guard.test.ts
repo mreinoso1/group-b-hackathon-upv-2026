@@ -101,7 +101,7 @@ describe("explain prompt", () => {
     expect(user).toContain("About you (Melanie):\n- Melanie has $110,000");
   });
   it("tries another way in on each new 'I'm lost'", () => {
-    expect([0, 1, 2, 7].map(styleFor)).toEqual(["analogy", "steps", "one_number", "one_number"]);
+    expect([0, 1, 2, 7].map(styleFor)).toEqual(["plain", "one_number", "analogy", "analogy"]);
   });
 });
 

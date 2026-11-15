@@ -127,7 +127,7 @@ export interface Capsule {
   figures: Figure[];
   estSeconds: number;
   generatedBy: "verbatim" | "fallback" | "llm";
-  /** For a simple capsule: which way in was tried (analogy, steps, one_number). */
+  /** For a simple capsule: which way in was tried (plain, one_number, analogy). */
   style?: string;
   /** A first-person line from the reader's future self, shown before the capsule. */
   futureSelfLine?: string;

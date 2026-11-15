@@ -9,7 +9,7 @@ export function RichText({ text }: { text: string }) {
   return <>{parts.map((p, i) => (i % 2 ? <strong key={i}>{p}</strong> : p))}</>;
 }
 
-const STYLE_TAG: Record<string, string> = { analogy: "Said another way", steps: "Step by step", one_number: "The one number that matters" };
+const STYLE_TAG: Record<string, string> = { plain: "In plain words", one_number: "The one number that matters", analogy: "Said another way" };
 
 function levelTag(c: Capsule): string | null {
   if (c.level === "expert") return "The full detail";
