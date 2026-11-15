@@ -236,17 +236,50 @@ function positionsVisual(raw: RawCase): Visual {
   };
 }
 
+/**
+ * The plan's yearly projection. Normally net worth in today's dollars. When the plan marks that
+ * savings run out, net worth is misleading (it still counts the home, so the line stays high while
+ * the marker says "run out"): then the line is the plan's savings and investments
+ * (investable_assets), which cross zero in that same year.
+ */
 function timeline(raw: RawCase, opts: { onlyRetirement?: boolean }): Visual {
+  let ms = milestones(raw);
+  const runsOut = ms.some((m) => m.distress);
+  const yearly = arr(at(raw.financialHealth, "projections.yearly"));
+  const savingsSeries = runsOut && yearly.some((y) => isRecord(y) && num(y.investable_assets) !== undefined);
+  const field = savingsSeries ? "investable_assets" : "net_worth_todays_dollars";
   const points: { year: number; value: number; age?: number }[] = [];
-  arr(at(raw.financialHealth, "projections.yearly")).forEach((y) => {
-    if (isRecord(y) && num(y.year) !== undefined && num(y.net_worth_todays_dollars) !== undefined)
-      points.push({ year: num(y.year)!, value: num(y.net_worth_todays_dollars)!, age: num(y.age_client) });
+  const rows: number[] = [];
+  yearly.forEach((y, i) => {
+    if (isRecord(y) && num(y.year) !== undefined && num(y[field]) !== undefined) {
+      points.push({ year: num(y.year)!, value: num(y[field])!, age: num(y.age_client) });
+      rows.push(i);
+    }
   });
   if (!points.length) return { chart: null, figures: [], missing: [`${FH}projections.yearly`] };
-  let ms = milestones(raw);
   if (opts.onlyRetirement) ms = ms.filter((m) => m.type === "RETIREMENT" || m.distress);
   const first = points[0]!;
   const last = points[points.length - 1]!;
+  const fig = (label: string, k: number) => ({ label, value: points[k]!.value, unit: "USD" as const, source: `${FH}projections.yearly[${rows[k]}].${field}` });
+  if (savingsSeries) {
+    // The last year the plan still shows savings left.
+    const lastLeft = points.findLastIndex((p, k) => p.value > 0 && (points[k + 1]?.value ?? 0) <= 0);
+    return {
+      chart: {
+        kind: "timeline",
+        title: "Your savings and investments, year by year (not counting your home)",
+        seriesLabel: "Savings and investments",
+        points,
+        milestones: ms,
+        source: `${FH}projections.yearly`,
+      },
+      figures: [
+        fig(`Savings and investments in ${first.year}`, 0),
+        ...(lastLeft > 0 ? [fig(`Savings and investments in ${points[lastLeft]!.year}, the last year with some left`, lastLeft)] : []),
+      ],
+      missing: [],
+    };
+  }
   return {
     chart: {
       kind: "timeline",
@@ -256,10 +289,7 @@ function timeline(raw: RawCase, opts: { onlyRetirement?: boolean }): Visual {
       milestones: ms,
       source: `${FH}projections.yearly`,
     },
-    figures: [
-      { label: `Net worth in ${first.year} (today's dollars)`, value: first.value, unit: "USD", source: `${FH}projections.yearly[0].net_worth_todays_dollars` },
-      { label: `Net worth in ${last.year} (today's dollars)`, value: last.value, unit: "USD", source: `${FH}projections.yearly[${points.length - 1}].net_worth_todays_dollars` },
-    ],
+    figures: [fig(`Net worth in ${first.year} (today's dollars)`, 0), fig(`Net worth in ${last.year} (today's dollars)`, points.length - 1)],
     missing: [],
   };
 }
