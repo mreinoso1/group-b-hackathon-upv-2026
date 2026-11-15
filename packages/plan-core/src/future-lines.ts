@@ -12,7 +12,7 @@ const LINES: Record<string, Line> = {
   "map.timeline": (f) => `This is our road from ${f.ageNow} to ${f.age}. Each dot is something we planned for.`,
   "advice.protection.life_insurance": () => "Look at this one with care: it's about protecting the people who count on us.",
   "advice.protection.umbrella": () => "A quiet one, but it guards everything we're building.",
-  "advice.debt": (f) => `Here's what we owed at ${f.ageNow}, and the piece that costs us the most.`,
+  "advice.debt": (f) => `Here's what we owed at ${f.ageNow}, and what each piece costs.`,
   "advice.protection.emergency_fund": () => "This is our safety cushion, next to what the plan recommends.",
   "advice.savings": (f) => `What we put aside every year is how we get to ${f.age}.`,
   "advice.retirement": (f) => `This is the part about me, at ${f.age}. Here's what the plan sees.`,
@@ -40,17 +40,18 @@ export function futureSelfNumbers(f: FutureSelf): number[] {
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-const BEFORE: Record<string, string> = {
-  REAL_ESTATE_PURCHASE: "Before your home purchase",
-  VEHICLE_PURCHASE: "Before your vehicle purchase",
-  COLLEGE: "Before college starts",
-  RETIREMENT: "Before retirement",
-};
-
-/** "Before your home purchase · Jan 2030", "Before college starts: College Liam · Aug 2038". */
+/** "Before your home purchase · Jan 2030", "Before Liam starts college · Aug 2038", "Before Emily's retirement · May 2044". */
 export function checkInLabel(m: Milestone): string {
   const when = `${MONTHS[Number(m.date.slice(5, 7)) - 1] ?? ""} ${m.year}`.trim();
-  const lead = BEFORE[m.subType ?? ""] ?? BEFORE[m.type];
-  if (!lead) return `Before ${m.label} · ${when}`;
-  return m.type === "COLLEGE" || m.type === "RETIREMENT" ? `${lead}: ${m.label} · ${when}` : `${lead} · ${when}`;
+  const what =
+    m.subType === "REAL_ESTATE_PURCHASE"
+      ? "your home purchase"
+      : m.subType === "VEHICLE_PURCHASE"
+        ? "your vehicle purchase"
+        : m.type === "COLLEGE"
+          ? `${m.label.replace(/^College\s+/i, "")} starts college`
+          : m.type === "RETIREMENT"
+            ? m.label.replace(/Retirement$/, "retirement")
+            : m.label.charAt(0).toLowerCase() + m.label.slice(1);
+  return `Before ${what} · ${when}`;
 }

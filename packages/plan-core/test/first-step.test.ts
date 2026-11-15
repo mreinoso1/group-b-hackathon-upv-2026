@@ -70,7 +70,10 @@ describe("checkInLabel", () => {
       "Before your home purchase · Jan 2030",
     );
     expect(checkInLabel({ date: "2038-08-01", year: 2038, type: "COLLEGE", label: "College Liam", distress: false })).toBe(
-      "Before college starts: College Liam · Aug 2038",
+      "Before Liam starts college · Aug 2038",
+    );
+    expect(checkInLabel({ date: "2044-05-01", year: 2044, type: "RETIREMENT", label: "Emily's Retirement", distress: false })).toBe(
+      "Before Emily's retirement · May 2044",
     );
   });
 });
