@@ -41,15 +41,15 @@ describe("planPriorities", () => {
 });
 
 describe("suggestPriority", () => {
-  it("keeps the plan's order, unless savings run out: then the first priority about savings", async () => {
-    const weah = await get("timothy-melanie-weah");
-    expect(suggestPriority(planPriorities(weah), futureSelves(weah, TODAY)[0])).toEqual({ index: 0, because: "plan_order" });
-    const michael = await get("michael-carter");
-    const m = suggestPriority(planPriorities(michael), futureSelves(michael, TODAY)[0]);
-    expect(planPriorities(michael)[m.index]!.label).toBe("Save more for retirement");
-    const samantha = await get("samantha-lewis");
-    const s = suggestPriority(planPriorities(samantha), futureSelves(samantha, TODAY)[0]);
-    expect(planPriorities(samantha)[s.index]!.label).toBe("Balance retirement and college saving");
+  it("always keeps the plan's order, even when savings run out", async () => {
+    for (const id of ["timothy-melanie-weah", "michael-carter", "samantha-lewis"]) {
+      expect(suggestPriority(planPriorities(await get(id)))).toEqual({ index: 0, because: "plan_order" });
+    }
+    const michael = planPriorities(await get("michael-carter"));
+    expect(michael[0]!.label).toBe("Plan the home purchase with your cash");
+    // His cash flow is negative: the plan says to weigh retirement saving, not to save more.
+    expect(michael.map((p) => p.label)).toContain("Weigh retirement saving against cash flow");
+    expect(michael.map((p) => p.label)).not.toContain("Save more for retirement");
   });
 });
 

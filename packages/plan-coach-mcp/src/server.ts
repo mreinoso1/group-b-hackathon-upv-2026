@@ -261,8 +261,8 @@ export function createPlanCoachServer(deps: PlanCoachDeps): McpServer {
       description:
         "The plan's priorities (narrative.summary_recommendations, in the plan's order): a plain label, the plan's own sentence, " +
         "the capsule that explains it and, where the plan scores a matching move, the score before → after and the best " +
-        "combination. `suggested` follows the plan's order; when savings run out, the first priority about savings; for a couple " +
-        "reading together who both ranked, the one they put highest together. Plus the member's commitment and check-ins.",
+        "combination. `suggested` follows the plan's order; for a couple reading together who both ranked, " +
+        "the one they put highest together. Plus the member's commitment and check-ins.",
       inputSchema: { caseId: CASE_ID, member: MEMBER.optional() },
       annotations: { readOnlyHint: true },
     },
@@ -273,12 +273,11 @@ export function createPlanCoachServer(deps: PlanCoachDeps): McpServer {
         const events = store.list(args.caseId).filter((e) => !args.member || e.member === args.member);
         const priorities = planPriorities(raw);
         const together = !args.member || args.member === "together";
-        const self = together ? futureSelves(raw)[0] : futureSelf(raw, args.member!);
         const agreed = together ? agreementFor(raw) : null;
         const suggestion =
           agreed?.status === "ready" && agreed.sharedFirst !== null
             ? { index: agreed.sharedFirst, because: "agreement" as const }
-            : suggestPriority(priorities, self);
+            : suggestPriority(priorities);
         return {
           priorities,
           suggested: suggestion.index,
