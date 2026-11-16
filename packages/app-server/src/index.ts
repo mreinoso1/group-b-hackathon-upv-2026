@@ -208,15 +208,19 @@ app.post("/api/cases/:caseId/reset", async (c) => c.json(await coach.call("reset
 /**
  * Where phones on the same Wi-Fi can open the app (for the demo page's QR codes): this machine's
  * private IPv4 addresses on the web port. Only works when the web server listens on the network
- * (npm run demo); `listening` says whether it does.
+ * (npm run demo); `listening` says whether it does. Virtual adapters (WSL, Hyper-V, VPNs, Docker)
+ * are left out: a phone can't reach them. Wi-Fi first.
  */
+const VIRTUAL = /vEthernet|WSL|Hyper-V|VirtualBox|VMware|docker|vboxnet|^br-|tailscale|zerotier|utun/i;
 app.get("/api/network", (c) => {
   const port = Number(process.env.WEB_PORT ?? 5173);
-  const ips = Object.values(networkInterfaces())
-    .flat()
-    .filter((n) => n && n.family === "IPv4" && !n.internal && /^(10|192\.168|172\.(1[6-9]|2\d|3[01]))\./.test(n.address))
-    .map((n) => n!.address);
-  return c.json({ urls: ips.map((ip) => `http://${ip}:${port}`), listening: process.env.LAN === "1" });
+  const ips = Object.entries(networkInterfaces())
+    .filter(([name]) => !VIRTUAL.test(name))
+    .flatMap(([name, list]) => (list ?? []).map((n) => ({ name, ...n })))
+    .filter((n) => n.family === "IPv4" && !n.internal && /^(10|192\.168|172\.(1[6-9]|2\d|3[01]))\./.test(n.address))
+    .sort((a, b) => Number(/wi-?fi|wlan|wireless/i.test(b.name)) - Number(/wi-?fi|wlan|wireless/i.test(a.name)))
+    .map((n) => n.address);
+  return c.json({ urls: ips.map((ip) => `http://${ip}:${port}`), listening: process.argv.includes("--lan") });
 });
 
 if (existsSync(WEB_DIST)) {
