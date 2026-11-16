@@ -29,6 +29,8 @@ npm run dev
 - **The family:** http://localhost:5173 (best in a phone-sized window). The first start takes a few seconds while the API launches `plan-coach`.
 - **The advisor:** http://localhost:5173/advisor/timothy-melanie-weah (any case id). It fills in every 2 seconds while the family uses the app; **Reset** starts that family over for the next demo.
 
+**Demo with phones (judges try it on their own phone).** Run `npm run demo` instead: the same app, listening on the Wi-Fi. Open http://localhost:5173/demo on the laptop, pick a family, and it creates a **room** (a 4-letter code) with a QR code per person and the advisor link for that room. Each phone that scans a QR opens straight at that person's start; whatever they tap stays in that room, so several groups can try the same family at once without mixing, and **Reset** on the advisor screen clears only that room. The laptop and the phones must be on the same Wi-Fi; the first time, allow Node through the Windows firewall when it asks. Without a room code the app uses the default room, as before.
+
 **It works without keys.** It reads the plan from `cases/`, and every *I'm lost* explanation is already in `cache/` (checked by `npm run explanations -- --check`), so the core of the app runs fully offline; *Listen* then uses the device's English voice. With keys, copy `.env.example` to `.env` at the repo root (git ignores it) and fill it in. Only the `plan-coach` process reads the keys; never put them in the web app.
 
 - `MCP_TOKEN`: the plan comes from the Sherpas MCP (`list_cases`, `get_case`). The token lasts 72 hours; when it is missing or refused, `plan-coach` logs it, reads the same JSON from `cases/` and tries the MCP again a minute later, so the app never stops. `plan://cases` reports which one answered (`dataSource`). `CASES_SOURCE=local` skips the MCP.
@@ -48,6 +50,7 @@ Other commands:
 | `npm run typecheck` | TypeScript check of all packages |
 | `npm run explanations` | Generates any missing *I'm lost* explanation (needs `TEAM_KEY`); `-- --check` only reports, `-- --prune` removes stale ones |
 | `npm run voices` | The exact line each future-self recording must say, and whether each recording matches it |
+| `npm run demo` | Like `npm run dev`, but phones on the same Wi-Fi can open it (for the QR codes on `/demo`) |
 | `npm start` | Builds the web app and serves it from the API on http://127.0.0.1:8080 |
 | `npm run mcp:http` | `plan-coach` alone over Streamable HTTP at http://127.0.0.1:8787/mcp (for MCP Inspector) |
 | `npm run mcp:stdio` | `plan-coach` alone over stdio (for Claude Desktop) |
@@ -98,6 +101,8 @@ advisor laptop ─┘                                               resources ·
 | `get_advisor_brief` | `caseId` | Per person: understood, stuck (and what landed), wanted more, skipped, not reached, questions, first step, check-in; the couple's agreement quoting the plan; an agenda of up to three items, each citing its events and flagged when a persona tension predicted it |
 | `reset_case` | `caseId` | Deletes everything recorded for one family (demos) |
 | `get_audio` | same as `get_capsule`, plus `intro?`, `stream?` | `{ kind: "audio" }` (cached), `{ kind: "stream" }` (being generated) or `{ kind: "browser", text }` |
+
+Every tool that reads or writes what the family did (`record_reaction`, `get_first_step`, `submit_ranking`, `get_agreement`, `commit_step`, `record_checkin`, `log_question`, `set_consent`, `get_consent`, `get_advisor_brief`, `reset_case`) also takes `room?`: a 4-letter demo room. What is recorded in one room never mixes with another; without it, the default room. The REST API reads it from `?room=`.
 
 **Prompts**
 
