@@ -17,7 +17,8 @@
     "test": "vitest run",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "voices": "node --import tsx scripts/voice-scripts.ts",
-    "explanations": "node --import tsx scripts/explanations.ts"
+    "explanations": "node --import tsx scripts/explanations.ts",
+    "demo": "concurrently -k -n api,web -c blue,magenta \"npm run dev -w @bite/app-server -- --lan\" \"npm run dev -w @bite/web -- --host\""
   },
   "devDependencies": {
     "@types/node": "^26.6.6",
