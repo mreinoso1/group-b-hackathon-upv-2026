@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import type { AgendaItem, CoupleBrief, Evidence, PersonBrief, StuckTopic, Tension } from "@bite/plan-core";
 import { advisorApi, type AdvisorBrief } from "../api-advisor.ts";
+import { ROOM } from "../room.ts";
 import "./advisor.css";
 
 const LANDED: Record<string, string> = { plain: "plain words", one_number: "the one number", analogy: "an analogy" };
@@ -59,6 +60,11 @@ export function AdvisorScreen({ caseId }: { caseId: string }) {
           <p className="adv-kicker">Before your meeting</p>
           <h1>{brief.household}</h1>
         </div>
+        {ROOM ? (
+          <p className="adv-score">
+            Room <strong>{ROOM}</strong>
+          </p>
+        ) : null}
         <p className="adv-score">
           Financial Health Score <strong>{brief.score}</strong> · {brief.band}
         </p>

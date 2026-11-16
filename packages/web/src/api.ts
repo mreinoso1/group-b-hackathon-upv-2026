@@ -1,4 +1,5 @@
 import type { Capsule, CaseSummary, Level, Reaction, TopicInfo } from "@bite/plan-core";
+import { ROOM, withRoom } from "./room.ts";
 
 export type { Capsule, CaseSummary, Level, Reaction, TopicInfo };
 
@@ -20,7 +21,7 @@ const RETRYABLE = new Set([502, 503, 504]);
 export async function request<T>(path: string, init?: RequestInit, retries = 2): Promise<T> {
   let res: Response;
   try {
-    res = await fetch(path, init);
+    res = await fetch(withRoom(path, ROOM), init);
   } catch (e) {
     if (retries > 0) return wait(1500).then(() => request<T>(path, init, retries - 1));
     throw new Error("Can't reach the server. Check your connection and try again.", { cause: e });

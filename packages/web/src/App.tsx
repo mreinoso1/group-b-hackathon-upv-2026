@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { api, type Capsule, type CaseSummary, type Level, type Reaction, type TopicInfo } from "./api.ts";
+import { joinTarget, ROOM } from "./room.ts";
 import { CapsuleCard, ReactionBar } from "./components/CapsuleCard.tsx";
 import { ConsentScreen } from "./components/Consent.tsx";
 import { Bubble, FutureSelfIntro, PortraitContext, portraitsFor } from "./components/FutureSelf.tsx";
@@ -19,7 +20,13 @@ export function App() {
     const load = async (attempt: number): Promise<void> => {
       try {
         const r = await api.cases();
-        if (!cancelled) setCases(r.cases);
+        if (cancelled) return;
+        setCases(r.cases);
+        // A join link (a QR on the demo page) opens straight at that person's start.
+        const join = joinTarget(window.location.pathname, window.location.search);
+        const household = join && r.cases.find((c) => c.id === join.caseId);
+        const member = household && (join.member === "together" ? "together" : household.members.find((m) => m.id === join.member)?.id);
+        if (household && member) setScreen({ name: "consent", household, member });
       } catch (e) {
         if (cancelled) return;
         if (attempt < 15) {
@@ -47,6 +54,7 @@ export function App() {
           Future You<span className="brand-dot">.</span>
         </button>
         {screen.name !== "cases" ? <span className="who-chip">{whoLabel(screen)}</span> : null}
+        {ROOM ? <span className="room-chip" title="Demo room: what you tap stays in this room">Room {ROOM}</span> : null}
       </header>
 
       {/* Keyed by screen: each new screen enters with a short fade-up. */}

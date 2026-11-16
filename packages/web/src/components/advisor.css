@@ -61,6 +61,20 @@
   font-weight: 600;
 }
 
+/* ---- the demo room's code, in the family app's header ---- */
+
+.room-chip {
+  margin-left: 8px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--blue-wash);
+  color: var(--blue);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+
 /* ---- advisor screen: desktop-first, one page ---- */
 
 .advisor-page {
