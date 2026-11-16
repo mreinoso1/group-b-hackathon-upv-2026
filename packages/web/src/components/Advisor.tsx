@@ -34,10 +34,19 @@ export function AdvisorScreen({ caseId }: { caseId: string }) {
     return () => clearInterval(id);
   }, [load]);
 
+  // Confirmed in the page: window.confirm() is silently blocked in some browsers and embedded
+  // views (it returns "cancel" without showing anything), which made Reset do nothing.
+  const [confirming, setConfirming] = useState(false);
+  const [resetNote, setResetNote] = useState<string | null>(null);
   const reset = async () => {
-    if (!window.confirm(`Delete everything recorded for ${brief?.household ?? "this family"}? This starts the demo over and cannot be undone.`)) return;
-    await advisorApi.reset(caseId);
-    await load();
+    setConfirming(false);
+    try {
+      const r = await advisorApi.reset(caseId);
+      setResetNote(`Started over: ${r.removed} recorded event${r.removed === 1 ? "" : "s"} deleted.`);
+      await load();
+    } catch (e) {
+      setError((e as Error).message);
+    }
   };
 
   if (!brief) return <div className="advisor-page">{error ? <p className="error">{error}</p> : <p className="muted">Loading the brief…</p>}</div>;
@@ -57,11 +66,34 @@ export function AdvisorScreen({ caseId }: { caseId: string }) {
           <span className="adv-dot" aria-hidden="true" />
           {brief.lastActivity ? `Live · last activity ${time(brief.lastActivity)}` : "Live · waiting for the family"}
         </p>
-        <button className="adv-reset" onClick={reset}>
-          Reset
-        </button>
+        {confirming ? (
+          <span className="adv-confirm" role="alertdialog" aria-label="Start this family over?">
+            Delete everything recorded for {brief.household}?
+            <button className="adv-reset danger" onClick={reset} autoFocus>
+              Yes, start over
+            </button>
+            <button className="adv-reset" onClick={() => setConfirming(false)}>
+              Cancel
+            </button>
+          </span>
+        ) : (
+          <button
+            className="adv-reset"
+            onClick={() => {
+              setResetNote(null);
+              setConfirming(true);
+            }}
+          >
+            Reset
+          </button>
+        )}
       </header>
       {error ? <p className="error">{error}</p> : null}
+      {resetNote ? (
+        <p className="adv-note" role="status">
+          {resetNote}
+        </p>
+      ) : null}
 
       {!brief.lastActivity ? (
         <Empty />
