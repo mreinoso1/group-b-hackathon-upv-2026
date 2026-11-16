@@ -342,3 +342,42 @@ describe("consent and the advisor brief", () => {
     expect(parse(await call("get_consent", { caseId: WEAH })).consent.melanie).toBeNull();
   });
 });
+
+describe("rooms", () => {
+  const brief = async (room?: string) => parse(await call("get_advisor_brief", { caseId: WEAH, ...(room ? { room } : {}) }));
+
+  it("keep each demo session apart: consent, reactions, rankings and the brief", async () => {
+    await call("set_consent", { caseId: WEAH, member: "melanie", share: true, room: "ABCD" });
+    await call("record_reaction", { caseId: WEAH, member: "melanie", topicId: "advice.debt", level: "standard", reaction: "lost", room: "ABCD" });
+    await call("submit_ranking", { caseId: WEAH, member: "melanie", order: [0, 1, 2, 3, 4], room: "ABCD" });
+
+    expect(parse(await call("get_consent", { caseId: WEAH, room: "ABCD" })).consent.melanie).toBe(true);
+    expect(parse(await call("get_consent", { caseId: WEAH, room: "WXYZ" })).consent.melanie).toBeNull();
+    expect(parse(await call("get_consent", { caseId: WEAH })).consent.melanie).toBeNull();
+    expect((await brief("ABCD")).agenda).toHaveLength(1);
+    expect((await brief("WXYZ")).lastActivity).toBeNull();
+    expect((await brief()).lastActivity).toBeNull();
+    expect(parse(await call("get_agreement", { caseId: WEAH, room: "ABCD" })).waitingFor).toEqual(["timothy"]);
+    expect(parse(await call("get_agreement", { caseId: WEAH })).waitingFor).toEqual(["timothy", "melanie"]);
+  });
+
+  it("each room has its own 'I'm lost' streak", async () => {
+    const lost = (room?: string) =>
+      call("record_reaction", { caseId: WEAH, member: "melanie", topicId: "advice.debt", level: "standard", reaction: "lost", ...(room ? { room } : {}) }).then(parse);
+    await lost("ABCD");
+    await lost("ABCD");
+    expect((await lost("WXYZ")).next.attempt).toBe(0);
+  });
+
+  it("reset clears one room only", async () => {
+    await call("set_consent", { caseId: WEAH, member: "melanie", share: true, room: "ABCD" });
+    await call("set_consent", { caseId: WEAH, member: "melanie", share: true });
+    expect(parse(await call("reset_case", { caseId: WEAH, room: "ABCD" })).removed).toBe(1);
+    expect(parse(await call("get_consent", { caseId: WEAH })).consent.melanie).toBe(true);
+  });
+
+  it("rejects a malformed room code", async () => {
+    const r = await call("get_consent", { caseId: WEAH, room: "abcd" });
+    expect(r.isError).toBe(true);
+  });
+});

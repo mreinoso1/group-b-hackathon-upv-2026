@@ -19,12 +19,14 @@ export {
   type ReactionEvent,
 } from "@bite/plan-core";
 
+const sameRoom = (e: PlanEvent, caseId: string, room?: string) => e.caseId === caseId && (e.room ?? "") === (room ?? "");
+
 /** What the family did, as an append-only log. Reactions feed the advisor brief later. */
 export interface EventStore {
   append(event: PlanEvent): void;
   list(caseId: string): PlanEvent[];
-  /** Forgets everything recorded for one family (the advisor screen's Reset, for demos). */
-  clear(caseId: string): number;
+  /** Forgets everything recorded for one family in one room (the advisor screen's Reset, for demos). */
+  clear(caseId: string, room?: string): number;
 }
 
 export class MemoryEventStore implements EventStore {
@@ -35,9 +37,9 @@ export class MemoryEventStore implements EventStore {
   list(caseId: string) {
     return this.events.filter((e) => e.caseId === caseId);
   }
-  clear(caseId: string) {
+  clear(caseId: string, room?: string) {
     const before = this.events.length;
-    this.events = this.events.filter((e) => e.caseId !== caseId);
+    this.events = this.events.filter((e) => !sameRoom(e, caseId, room));
     return before - this.events.length;
   }
 }
@@ -52,9 +54,9 @@ export class JsonlEventStore implements EventStore {
   list(caseId: string): PlanEvent[] {
     return this.all().filter((e) => e.caseId === caseId);
   }
-  clear(caseId: string): number {
+  clear(caseId: string, room?: string): number {
     const all = this.all();
-    const keep = all.filter((e) => e.caseId !== caseId);
+    const keep = all.filter((e) => !sameRoom(e, caseId, room));
     writeFileSync(this.file, keep.map((e) => `${JSON.stringify(e)}\n`).join(""), "utf8");
     return all.length - keep.length;
   }
