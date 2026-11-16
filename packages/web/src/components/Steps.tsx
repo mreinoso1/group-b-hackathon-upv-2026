@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { api, type Capsule, type CaseSummary } from "../api.ts";
 import { futureApi, type Agreement, type FirstStep, type Priority } from "../api-future.ts";
+import { buildIcs, downloadIcs, monthBefore } from "../calendar.ts";
 import { CapsuleCard } from "./CapsuleCard.tsx";
 import { Bubble, useFutureSelves } from "./FutureSelf.tsx";
 
@@ -272,6 +273,7 @@ export function CheckInScreen({ household, member, onRestart }: { household: Cas
   const [answer, setAnswer] = useState<"done" | "not_yet" | null>(null);
   const [explain, setExplain] = useState<Capsule | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [calendared, setCalendared] = useState(false);
   const { selves } = useFutureSelves(household.id, member);
   const self = selves?.[0];
   const names = together(member) ? household.members.map((m) => m.name).join(" and ") : self?.name;
@@ -292,8 +294,39 @@ export function CheckInScreen({ household, member, onRestart }: { household: Cas
   const step = c ? (data.priorities.find((p) => p.index === c.priorityIndex)?.label ?? c.label) : "";
   const youDid = together(member) ? "you two said you'd" : "you said you'd";
 
+  const addToCalendar = () => {
+    const today = new Date().toISOString().slice(0, 10);
+    const events = [
+      {
+        date: c!.dueDate,
+        title: `Your future self: ${step.toLowerCase()}`,
+        description: `${self.name} at ${self.age}: you told yourself you'd do this today.`,
+        allDay: false,
+      },
+      ...self.checkIns
+        .map((m) => ({ date: monthBefore(m.date), title: `Future You check-in: ${m.checkInLabel.split(" · ")[0]!.toLowerCase()}`, description: m.checkInLabel, allDay: true }))
+        .filter((e) => e.date > today),
+    ];
+    downloadIcs(`future-you-${household.id}.ics`, buildIcs(events, window.location.origin));
+    setCalendared(true);
+  };
+
   return (
     <section className="checkins">
+      {c ? (
+        <div className="calendar-card">
+          <div>
+            <p className="calendar-title">Make it real</p>
+            <p className="muted">
+              Your step on {prettyDate(c.dueDate)}
+              {self.checkIns.length ? ", and a reminder a month before each big date in your plan" : ""}.
+            </p>
+          </div>
+          <button className="primary" onClick={addToCalendar}>
+            {calendared ? "Added ✓" : "Add to my calendar"}
+          </button>
+        </div>
+      ) : null}
       <p className="sim-chip">Simulated · Day 3</p>
       {c ? (
         <>
