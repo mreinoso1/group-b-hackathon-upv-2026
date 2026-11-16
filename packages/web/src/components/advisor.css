@@ -151,6 +151,32 @@
   color: var(--critical);
 }
 
+.adv-reset.danger {
+  border-color: var(--critical);
+  background: var(--critical);
+  color: #fff;
+}
+
+.adv-reset.danger:hover {
+  color: #fff;
+  filter: brightness(0.92);
+}
+
+.adv-confirm {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 0.875rem;
+  color: var(--ink-2);
+}
+
+.adv-note {
+  margin: 10px 0 0;
+  color: var(--good);
+  font-size: 0.875rem;
+}
+
 .adv-reset:focus-visible {
   outline: 3px solid var(--blue);
   outline-offset: 2px;
