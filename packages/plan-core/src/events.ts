@@ -2,11 +2,16 @@
 // build the advisor brief; plan-coach stores them (data/events.jsonl).
 import type { Level, Reaction } from "./types.ts";
 
-export interface ReactionEvent {
-  type: "reaction";
+/** Fields every event has. `room` is a demo session's code; missing means the default room. */
+interface EventBase {
   at: string;
   caseId: string;
   member: string;
+  room?: string;
+}
+
+export interface ReactionEvent extends EventBase {
+  type: "reaction";
   topicId: string;
   level: Level;
   reaction: Reaction;
@@ -16,51 +21,36 @@ export interface ReactionEvent {
 }
 
 /** "I'll do it by…": the plan priority a member (or the couple, "together") chose, and their date. */
-export interface CommitmentEvent {
+export interface CommitmentEvent extends EventBase {
   type: "commitment";
-  at: string;
-  caseId: string;
-  member: string;
   priorityIndex: number;
   label: string;
   dueDate: string; // YYYY-MM-DD
 }
 
 /** A partner's order of the plan's priorities (indexes, first to last). */
-export interface RankingEvent {
+export interface RankingEvent extends EventBase {
   type: "ranking";
-  at: string;
-  caseId: string;
-  member: string;
   order: number[];
 }
 
 /** A question sent to the advisor. Sending it is consent to share that question, and only it. */
-export interface QuestionEvent {
+export interface QuestionEvent extends EventBase {
   type: "question";
-  at: string;
-  caseId: string;
-  member: string;
   topicId: string;
   text: string;
 }
 
 /** The answer to a future-self check-in ("Did you do it?"). */
-export interface CheckinEvent {
+export interface CheckinEvent extends EventBase {
   type: "checkin";
-  at: string;
-  caseId: string;
-  member: string;
   label: string;
   status: "done" | "not_yet";
 }
 
 /** A person's choice to share (or not) how it went with their advisor. The latest one counts. */
-export interface ConsentEvent {
+export interface ConsentEvent extends EventBase {
   type: "consent";
-  at: string;
-  caseId: string;
-  member: string;
   share: boolean;
 }
 

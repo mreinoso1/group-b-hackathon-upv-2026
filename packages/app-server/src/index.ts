@@ -1,12 +1,13 @@
 // Backend for the web app. Holds the keys (from D2 on), talks to plan-coach over MCP,
 // and serves the built web app. The browser never sees a key or the raw plan files.
 import { existsSync, readFileSync } from "node:fs";
+import { networkInterfaces } from "node:os";
 import { open } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { serve } from "@hono/node-server";
 import { serveStatic } from "@hono/node-server/serve-static";
-import { Hono } from "hono";
+import { Hono, type Context } from "hono";
 import { bodyLimit } from "hono/body-limit";
 import { stream } from "hono/streaming";
 import { CoachError, connectCoach } from "./coach.ts";
@@ -31,6 +32,12 @@ app.onError((err, c) => {
 });
 
 const enc = encodeURIComponent;
+
+/** The demo room from ?room=ABCD (4 capital letters), passed to every tool that reads or writes what the family did. */
+function room(c: Context): { room?: string } {
+  const r = c.req.query("room");
+  return r && /^[A-Z]{4}$/.test(r) ? { room: r } : {};
+}
 
 app.get("/api/health", (c) => c.json({ ok: true }));
 
@@ -71,33 +78,33 @@ app.get("/api/cases/:caseId/future-self", async (c) => {
 
 app.get("/api/cases/:caseId/first-step", async (c) => {
   const member = c.req.query("member");
-  return c.json(await coach.call("get_first_step", { caseId: c.req.param("caseId"), ...(member ? { member } : {}) }));
+  return c.json(await coach.call("get_first_step", { caseId: c.req.param("caseId"), ...(member ? { member } : {}), ...room(c) }));
 });
 
 app.post("/api/cases/:caseId/commitments", bodyLimit({ maxSize: 2 * 1024 }), async (c) => {
   const body = await c.req.json<Record<string, unknown>>();
   return c.json(
-    await coach.call("commit_step", { caseId: c.req.param("caseId"), member: body.member, priorityIndex: body.priorityIndex, dueDate: body.dueDate }),
+    await coach.call("commit_step", { caseId: c.req.param("caseId"), member: body.member, priorityIndex: body.priorityIndex, dueDate: body.dueDate, ...room(c) }),
   );
 });
 
 app.post("/api/cases/:caseId/rankings", bodyLimit({ maxSize: 2 * 1024 }), async (c) => {
   const body = await c.req.json<Record<string, unknown>>();
-  return c.json(await coach.call("submit_ranking", { caseId: c.req.param("caseId"), member: body.member, order: body.order }));
+  return c.json(await coach.call("submit_ranking", { caseId: c.req.param("caseId"), member: body.member, order: body.order, ...room(c) }));
 });
 
-app.get("/api/cases/:caseId/agreement", async (c) => c.json(await coach.call("get_agreement", { caseId: c.req.param("caseId") })));
+app.get("/api/cases/:caseId/agreement", async (c) => c.json(await coach.call("get_agreement", { caseId: c.req.param("caseId"), ...room(c) })));
 
 app.post("/api/cases/:caseId/questions", bodyLimit({ maxSize: 4 * 1024 }), async (c) => {
   const body = await c.req.json<Record<string, unknown>>();
   return c.json(
-    await coach.call("log_question", { caseId: c.req.param("caseId"), member: body.member, topicId: body.topicId, text: body.text }),
+    await coach.call("log_question", { caseId: c.req.param("caseId"), member: body.member, topicId: body.topicId, text: body.text, ...room(c) }),
   );
 });
 
 app.post("/api/cases/:caseId/checkins", bodyLimit({ maxSize: 2 * 1024 }), async (c) => {
   const body = await c.req.json<Record<string, unknown>>();
-  return c.json(await coach.call("record_checkin", { caseId: c.req.param("caseId"), member: body.member, status: body.status }));
+  return c.json(await coach.call("record_checkin", { caseId: c.req.param("caseId"), member: body.member, status: body.status, ...room(c) }));
 });
 
 app.post("/api/cases/:caseId/audio", bodyLimit({ maxSize: 4 * 1024 }), async (c) => {
@@ -177,25 +184,40 @@ app.post("/api/cases/:caseId/reactions", bodyLimit({ maxSize: 4 * 1024 }), async
     reaction: body.reaction,
     ...(typeof body.dwellMs === "number" ? { dwellMs: Math.round(body.dwellMs) } : {}),
     ...(typeof body.attempt === "number" ? { attempt: body.attempt } : {}),
+    ...room(c),
   });
   return c.json(result);
 });
 
 // ---- consent and the advisor's side --------------------------------------------------------
 
-app.get("/api/cases/:caseId/consent", async (c) => c.json(await coach.call("get_consent", { caseId: c.req.param("caseId") })));
+app.get("/api/cases/:caseId/consent", async (c) => c.json(await coach.call("get_consent", { caseId: c.req.param("caseId"), ...room(c) })));
 
 app.post("/api/cases/:caseId/consent", bodyLimit({ maxSize: 1024 }), async (c) => {
   const body = await c.req.json<Record<string, unknown>>();
-  return c.json(await coach.call("set_consent", { caseId: c.req.param("caseId"), member: body.member, share: body.share }));
+  return c.json(await coach.call("set_consent", { caseId: c.req.param("caseId"), member: body.member, share: body.share, ...room(c) }));
 });
 
 app.get("/api/cases/:caseId/advisor-brief", async (c) => {
   c.header("cache-control", "no-store");
-  return c.json(await coach.call("get_advisor_brief", { caseId: c.req.param("caseId") }));
+  return c.json(await coach.call("get_advisor_brief", { caseId: c.req.param("caseId"), ...room(c) }));
 });
 
-app.post("/api/cases/:caseId/reset", async (c) => c.json(await coach.call("reset_case", { caseId: c.req.param("caseId") })));
+app.post("/api/cases/:caseId/reset", async (c) => c.json(await coach.call("reset_case", { caseId: c.req.param("caseId"), ...room(c) })));
+
+/**
+ * Where phones on the same Wi-Fi can open the app (for the demo page's QR codes): this machine's
+ * private IPv4 addresses on the web port. Only works when the web server listens on the network
+ * (npm run demo); `listening` says whether it does.
+ */
+app.get("/api/network", (c) => {
+  const port = Number(process.env.WEB_PORT ?? 5173);
+  const ips = Object.values(networkInterfaces())
+    .flat()
+    .filter((n) => n && n.family === "IPv4" && !n.internal && /^(10|192\.168|172\.(1[6-9]|2\d|3[01]))\./.test(n.address))
+    .map((n) => n!.address);
+  return c.json({ urls: ips.map((ip) => `http://${ip}:${port}`), listening: process.env.LAN === "1" });
+});
 
 if (existsSync(WEB_DIST)) {
   app.use("/*", serveStatic({ root: WEB_DIST }));

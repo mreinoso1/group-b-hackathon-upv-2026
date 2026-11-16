@@ -36,7 +36,7 @@ import {
 } from "@bite/plan-core";
 import { audited, type AuditLog } from "./audit.ts";
 import { capsuleAudio, simpleCapsule, speak, type CoachDeps } from "./coach.ts";
-import { isCheckin, isCommitment, isRanking, isReaction, type EventStore } from "./store.ts";
+import { isCheckin, isCommitment, isRanking, isReaction, type EventStore, type PlanEvent } from "./store.ts";
 
 export interface PlanCoachDeps extends CoachDeps {
   source: CaseSource;
@@ -58,6 +58,11 @@ class InvalidInputError extends Error {
 const CASE_ID = z.string().regex(/^[a-z0-9-]+$/).describe("Case id from plan://cases, e.g. timothy-melanie-weah");
 const TOPIC_ID = z.string().describe("Topic id from plan://{caseId}/topics, e.g. advice.debt");
 const LEVEL = z.enum(LEVELS as [Level, ...Level[]]);
+const ROOM = z
+  .string()
+  .regex(/^[A-Z]{4}$/)
+  .optional()
+  .describe("Room code (4 capital letters): one demo session. What is recorded in one room never mixes with another; omit for the default room");
 const MEMBER = z.string().regex(/^[a-z]+$/).describe("Household member id (first name, lower case), or 'together'");
 const ATTEMPT = z
   .number()
@@ -77,6 +82,12 @@ export function createPlanCoachServer(deps: PlanCoachDeps): McpServer {
   );
   const { source, store, audit } = deps;
   const coach: CoachDeps = deps;
+
+  /** One room's events. A demo session's state never mixes with another's; no room is the default room. */
+  const inRoom = (room?: string) => ({
+    list: (caseId: string) => store.list(caseId).filter((e) => (e.room ?? "") === (room ?? "")),
+    append: (e: PlanEvent) => store.append(room ? { ...e, room } : e),
+  });
 
   // ---- Resources: the plan's three pieces, plus the capsule catalog -------------------
 
@@ -115,7 +126,7 @@ export function createPlanCoachServer(deps: PlanCoachDeps): McpServer {
       const kind = String(vars.kind) as ResourceKind;
       if (!RESOURCE_KINDS.includes(kind)) throw new Error(`Unknown section "${kind}". Use one of ${RESOURCE_KINDS.join(", ")}`);
       const raw = await source.getCase(caseId);
-      return json(uri.href, kind === "advisor-brief" ? advisorBrief(raw, store.list(caseId)) : section(raw, kind));
+      return json(uri.href, kind === "advisor-brief" ? advisorBrief(raw, inRoom().list(caseId)) : section(raw, kind));
     }),
   );
 
@@ -176,6 +187,7 @@ export function createPlanCoachServer(deps: PlanCoachDeps): McpServer {
         "Stores how a member reacted to a capsule (got_it, lost, tell_me_more) and returns what to show next: " +
         "lost → same topic, simple; tell_me_more → same topic, expert; got_it → next topic.",
       inputSchema: {
+        room: ROOM,
         caseId: CASE_ID,
         member: MEMBER,
         topicId: TOPIC_ID,
@@ -189,13 +201,13 @@ export function createPlanCoachServer(deps: PlanCoachDeps): McpServer {
       audit,
       "tool",
       "record_reaction",
-      async (args: { caseId: string; member: string; topicId: string; level: Level; reaction: string; dwellMs?: number; attempt?: number }) =>
+      async (args: { room?: string; caseId: string; member: string; topicId: string; level: Level; reaction: string; dwellMs?: number; attempt?: number }) =>
         guard(async () => {
           const raw = await source.getCase(args.caseId);
           checkMember(raw, args.member);
           if (!TOPICS.some((t) => t.id === args.topicId)) throw new UnknownTopicError(args.topicId);
           const reaction = args.reaction as (typeof REACTIONS)[number];
-          store.append({
+          inRoom(args.room).append({
             type: "reaction",
             at: new Date().toISOString(),
             caseId: args.caseId,
@@ -208,7 +220,7 @@ export function createPlanCoachServer(deps: PlanCoachDeps): McpServer {
           });
           // Each "I'm lost" in a row on the same idea asks for a different way in; any other
           // reaction ends the streak, so coming back later starts again with plain words.
-          const mine = store.list(args.caseId).filter(isReaction).filter((e) => e.member === args.member && e.topicId === args.topicId);
+          const mine = inRoom(args.room).list(args.caseId).filter(isReaction).filter((e) => e.member === args.member && e.topicId === args.topicId);
           let lostSoFar = 0;
           for (let i = mine.length - 1; i >= 0 && mine[i]!.reaction === "lost"; i--) lostSoFar++;
           const next =
@@ -247,16 +259,16 @@ export function createPlanCoachServer(deps: PlanCoachDeps): McpServer {
   // ---- First step, couple agreement, check-ins, questions ------------------------------
 
   /** Latest order per partner. */
-  const rankingsOf = (caseId: string) => {
+  const rankingsOf = (caseId: string, room?: string) => {
     const orders: Record<string, number[]> = {};
-    for (const e of store.list(caseId).filter(isRanking)) orders[e.member] = e.order;
+    for (const e of inRoom(room).list(caseId).filter(isRanking)) orders[e.member] = e.order;
     return orders;
   };
-  const agreementFor = (raw: RawCase) =>
+  const agreementFor = (raw: RawCase, room?: string) =>
     agreement(
       planPriorities(raw),
       members(raw).map((m) => ({ id: m.id, name: m.name })),
-      rankingsOf(raw.id),
+      rankingsOf(raw.id, room),
     );
 
   server.registerTool(
@@ -268,17 +280,17 @@ export function createPlanCoachServer(deps: PlanCoachDeps): McpServer {
         "the capsule that explains it and, where the plan scores a matching move, the score before → after and the best " +
         "combination. `suggested` follows the plan's order; for a couple reading together who both ranked, " +
         "the one they put highest together. Plus the member's commitment and check-ins.",
-      inputSchema: { caseId: CASE_ID, member: MEMBER.optional() },
+      inputSchema: { room: ROOM, caseId: CASE_ID, member: MEMBER.optional() },
       annotations: { readOnlyHint: true },
     },
-    audited(audit, "tool", "get_first_step", async (args: { caseId: string; member?: string }) =>
+    audited(audit, "tool", "get_first_step", async (args: { room?: string; caseId: string; member?: string }) =>
       guard(async () => {
         const raw = await source.getCase(args.caseId);
         checkMember(raw, args.member);
-        const events = store.list(args.caseId).filter((e) => !args.member || e.member === args.member);
+        const events = inRoom(args.room).list(args.caseId).filter((e) => !args.member || e.member === args.member);
         const priorities = planPriorities(raw);
         const together = !args.member || args.member === "together";
-        const agreed = together ? agreementFor(raw) : null;
+        const agreed = together ? agreementFor(raw, args.room) : null;
         const suggestion =
           agreed?.status === "ready" && agreed.sharedFirst !== null
             ? { index: agreed.sharedFirst, because: "agreement" as const }
@@ -299,9 +311,9 @@ export function createPlanCoachServer(deps: PlanCoachDeps): McpServer {
     {
       title: "Order the priorities",
       description: "Stores one partner's order of the plan's priorities (indexes from get_first_step, first to last). Returns who still has to order.",
-      inputSchema: { caseId: CASE_ID, member: MEMBER, order: z.array(z.number().int().min(0).max(20)).min(1).max(20) },
+      inputSchema: { room: ROOM, caseId: CASE_ID, member: MEMBER, order: z.array(z.number().int().min(0).max(20)).min(1).max(20) },
     },
-    audited(audit, "tool", "submit_ranking", async (args: { caseId: string; member: string; order: number[] }) =>
+    audited(audit, "tool", "submit_ranking", async (args: { room?: string; caseId: string; member: string; order: number[] }) =>
       guard(async () => {
         const raw = await source.getCase(args.caseId);
         checkMember(raw, args.member);
@@ -309,8 +321,8 @@ export function createPlanCoachServer(deps: PlanCoachDeps): McpServer {
         const indexes = planPriorities(raw).map((p) => p.index);
         const full = args.order.length === indexes.length && indexes.every((i) => args.order.includes(i));
         if (!full) throw new InvalidInputError("Order every priority once");
-        store.append({ type: "ranking", at: new Date().toISOString(), caseId: args.caseId, member: args.member, order: args.order });
-        return { ok: true, waitingFor: agreementFor(raw).waitingFor };
+        inRoom(args.room).append({ type: "ranking", at: new Date().toISOString(), caseId: args.caseId, member: args.member, order: args.order });
+        return { ok: true, waitingFor: agreementFor(raw, args.room).waitingFor };
       }),
     ),
   );
@@ -323,11 +335,11 @@ export function createPlanCoachServer(deps: PlanCoachDeps): McpServer {
         "Where the partners agree and differ on the plan's priorities: each item with every partner's position, the one they put " +
         "highest together, those both put in their top two and those three or more places apart, with a plain summary. It never " +
         "ranks for them. status is waiting (with waitingFor), ready, or single_member.",
-      inputSchema: { caseId: CASE_ID },
+      inputSchema: { room: ROOM, caseId: CASE_ID },
       annotations: { readOnlyHint: true },
     },
-    audited(audit, "tool", "get_agreement", async (args: { caseId: string }) =>
-      guard(async () => agreementFor(await source.getCase(args.caseId))),
+    audited(audit, "tool", "get_agreement", async (args: { room?: string; caseId: string }) =>
+      guard(async () => agreementFor(await source.getCase(args.caseId), args.room)),
     ),
   );
 
@@ -338,13 +350,14 @@ export function createPlanCoachServer(deps: PlanCoachDeps): McpServer {
       description:
         "Stores \"I'll do it by <date>\": one of the plan's priorities, for a member or the couple (together), from today up to a year ahead.",
       inputSchema: {
+        room: ROOM,
         caseId: CASE_ID,
         member: MEMBER,
         priorityIndex: z.number().int().min(0).max(20),
         dueDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).describe("YYYY-MM-DD"),
       },
     },
-    audited(audit, "tool", "commit_step", async (args: { caseId: string; member: string; priorityIndex: number; dueDate: string }) =>
+    audited(audit, "tool", "commit_step", async (args: { room?: string; caseId: string; member: string; priorityIndex: number; dueDate: string }) =>
       guard(async () => {
         const raw = await source.getCase(args.caseId);
         checkMember(raw, args.member);
@@ -362,7 +375,7 @@ export function createPlanCoachServer(deps: PlanCoachDeps): McpServer {
           label: priority.label,
           dueDate: args.dueDate,
         };
-        store.append(commitment);
+        inRoom(args.room).append(commitment);
         return { ok: true, commitment };
       }),
     ),
@@ -374,15 +387,15 @@ export function createPlanCoachServer(deps: PlanCoachDeps): McpServer {
       title: "Record a check-in answer",
       description:
         "The answer when the future self asks \"Did you do it?\". not_yet returns the capsule that explains the step, at the simple level.",
-      inputSchema: { caseId: CASE_ID, member: MEMBER, status: z.enum(["done", "not_yet"]) },
+      inputSchema: { room: ROOM, caseId: CASE_ID, member: MEMBER, status: z.enum(["done", "not_yet"]) },
     },
-    audited(audit, "tool", "record_checkin", async (args: { caseId: string; member: string; status: "done" | "not_yet" }) =>
+    audited(audit, "tool", "record_checkin", async (args: { room?: string; caseId: string; member: string; status: "done" | "not_yet" }) =>
       guard(async () => {
         const raw = await source.getCase(args.caseId);
         checkMember(raw, args.member);
-        const commitment = store.list(args.caseId).filter(isCommitment).filter((e) => e.member === args.member).at(-1);
+        const commitment = inRoom(args.room).list(args.caseId).filter(isCommitment).filter((e) => e.member === args.member).at(-1);
         if (!commitment) throw new InvalidInputError("No step committed yet");
-        store.append({ type: "checkin", at: new Date().toISOString(), caseId: args.caseId, member: args.member, label: commitment.label, status: args.status });
+        inRoom(args.room).append({ type: "checkin", at: new Date().toISOString(), caseId: args.caseId, member: args.member, label: commitment.label, status: args.status });
         const priority = planPriorities(raw).find((p) => p.index === commitment.priorityIndex);
         return { ok: true, next: args.status === "not_yet" && priority ? { topicId: priority.topicId, level: "simple" as const, attempt: 0 } : null };
       }),
@@ -395,14 +408,14 @@ export function createPlanCoachServer(deps: PlanCoachDeps): McpServer {
       title: "Ask the advisor",
       description:
         "Stores a question the person asked that the plan on screen didn't answer. It goes to the advisor's brief; nothing is answered automatically.",
-      inputSchema: { caseId: CASE_ID, member: MEMBER, topicId: TOPIC_ID, text: z.string().min(3).max(500) },
+      inputSchema: { room: ROOM, caseId: CASE_ID, member: MEMBER, topicId: TOPIC_ID, text: z.string().min(3).max(500) },
     },
-    audited(audit, "tool", "log_question", async (args: { caseId: string; member: string; topicId: string; text: string }) =>
+    audited(audit, "tool", "log_question", async (args: { room?: string; caseId: string; member: string; topicId: string; text: string }) =>
       guard(async () => {
         const raw = await source.getCase(args.caseId);
         checkMember(raw, args.member);
         const text = args.text.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim();
-        store.append({ type: "question", at: new Date().toISOString(), caseId: args.caseId, member: args.member, topicId: args.topicId, text });
+        inRoom(args.room).append({ type: "question", at: new Date().toISOString(), caseId: args.caseId, member: args.member, topicId: args.topicId, text });
         return { ok: true };
       }),
     ),
@@ -419,14 +432,14 @@ export function createPlanCoachServer(deps: PlanCoachDeps): McpServer {
         "first step and check-ins. Without it the advisor brief shows them as \"has not shared yet\". The latest choice counts. " +
         "Couple items (where partners agree and differ) need both partners' consent. A question sent with log_question is " +
         "shared on its own.",
-      inputSchema: { caseId: CASE_ID, member: MEMBER, share: z.boolean() },
+      inputSchema: { room: ROOM, caseId: CASE_ID, member: MEMBER, share: z.boolean() },
     },
-    audited(audit, "tool", "set_consent", async (args: { caseId: string; member: string; share: boolean }) =>
+    audited(audit, "tool", "set_consent", async (args: { room?: string; caseId: string; member: string; share: boolean }) =>
       guard(async () => {
         const raw = await source.getCase(args.caseId);
         checkMember(raw, args.member);
         if (args.member === "together") throw new InvalidInputError("Each partner chooses for themselves");
-        store.append({ type: "consent", at: new Date().toISOString(), caseId: args.caseId, member: args.member, share: args.share });
+        inRoom(args.room).append({ type: "consent", at: new Date().toISOString(), caseId: args.caseId, member: args.member, share: args.share });
         return { ok: true, member: args.member, share: args.share };
       }),
     ),
@@ -437,13 +450,13 @@ export function createPlanCoachServer(deps: PlanCoachDeps): McpServer {
     {
       title: "Who chose to share",
       description: "Each adult's latest choice: true shares, false does not, null not asked yet.",
-      inputSchema: { caseId: CASE_ID },
+      inputSchema: { room: ROOM, caseId: CASE_ID },
       annotations: { readOnlyHint: true },
     },
-    audited(audit, "tool", "get_consent", async (args: { caseId: string }) =>
+    audited(audit, "tool", "get_consent", async (args: { room?: string; caseId: string }) =>
       guard(async () => {
         const raw = await source.getCase(args.caseId);
-        const chosen = consents(store.list(args.caseId));
+        const chosen = consents(inRoom(args.room).list(args.caseId));
         return { consent: Object.fromEntries(members(raw).map((m) => [m.id, chosen.get(m.id) ?? null])) };
       }),
     ),
@@ -459,11 +472,11 @@ export function createPlanCoachServer(deps: PlanCoachDeps): McpServer {
         "first step and check-in. For a couple: where their orders of the plan's priorities agree and differ, quoting the plan. A " +
         "suggested agenda of up to three items, each citing the events it comes from, flagged when the persona predicted it. Built " +
         "only from recorded events and plan data; anyone who has not chosen to share shows as not shared, with only the questions they sent.",
-      inputSchema: { caseId: CASE_ID },
+      inputSchema: { room: ROOM, caseId: CASE_ID },
       annotations: { readOnlyHint: true },
     },
-    audited(audit, "tool", "get_advisor_brief", async (args: { caseId: string }) =>
-      guard(async () => advisorBrief(await source.getCase(args.caseId), store.list(args.caseId))),
+    audited(audit, "tool", "get_advisor_brief", async (args: { room?: string; caseId: string }) =>
+      guard(async () => advisorBrief(await source.getCase(args.caseId), inRoom(args.room).list(args.caseId))),
     ),
   );
 
@@ -472,13 +485,13 @@ export function createPlanCoachServer(deps: PlanCoachDeps): McpServer {
     {
       title: "Start a family over",
       description: "Deletes everything recorded for one family (reactions, choices, questions, steps, check-ins). For demos and rehearsals.",
-      inputSchema: { caseId: CASE_ID },
+      inputSchema: { room: ROOM, caseId: CASE_ID },
       annotations: { destructiveHint: true },
     },
-    audited(audit, "tool", "reset_case", async (args: { caseId: string }) =>
+    audited(audit, "tool", "reset_case", async (args: { room?: string; caseId: string }) =>
       guard(async () => {
         await source.getCase(args.caseId);
-        return { ok: true, removed: store.clear(args.caseId) };
+        return { ok: true, removed: store.clear(args.caseId, args.room) };
       }),
     ),
   );
