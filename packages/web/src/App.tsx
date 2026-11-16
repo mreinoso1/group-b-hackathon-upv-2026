@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { api, type Capsule, type CaseSummary, type Level, type Reaction, type TopicInfo } from "./api.ts";
 import { CapsuleCard, ReactionBar } from "./components/CapsuleCard.tsx";
 import { ConsentScreen } from "./components/Consent.tsx";
-import { Bubble, FutureSelfIntro } from "./components/FutureSelf.tsx";
+import { Bubble, FutureSelfIntro, PortraitContext, portraitsFor } from "./components/FutureSelf.tsx";
 import { AgreementScreen, AskAdvisor, CheckInScreen, FirstStepScreen } from "./components/Steps.tsx";
 
 type Step = "consent" | "intro" | "feed" | "agree" | "step" | "checkin";
@@ -44,12 +44,13 @@ export function App() {
     <div className="app">
       <header className="top">
         <button className="brand" onClick={() => setScreen({ name: "cases" })} aria-label="Back to start">
-          one bite<span className="brand-dot">.</span>
+          Future You<span className="brand-dot">.</span>
         </button>
         {screen.name !== "cases" ? <span className="who-chip">{whoLabel(screen)}</span> : null}
       </header>
 
       {/* Keyed by screen: each new screen enters with a short fade-up. */}
+      <PortraitContext.Provider value={screen.name === "cases" ? {} : portraitsFor(screen.household)}>
       <main key={screen.name === "cases" ? "cases" : `${screen.name}-${screen.household.id}`} className="screen">
         {error ? <p className="error">{error}</p> : null}
         {screen.name === "cases" ? <CasePicker cases={cases} onPick={pickCase} /> : null}
@@ -72,6 +73,7 @@ export function App() {
         ) : null}
         {screen.name === "checkin" ? <CheckInScreen household={screen.household} member={screen.member} onRestart={() => setScreen({ name: "cases" })} /> : null}
       </main>
+      </PortraitContext.Provider>
     </div>
   );
 }
@@ -83,20 +85,43 @@ function whoLabel(screen: Exclude<Screen, { name: "cases" }>): string {
 }
 
 function CasePicker({ cases, onPick }: { cases: CaseSummary[] | null; onPick: (c: CaseSummary) => void }) {
+  const faces = cases?.flatMap((c) => c.members.map((m) => ({ key: `${c.id}-${m.id}`, name: m.name }))) ?? [];
   return (
-    <section className="intro">
-      <h1>Your plan, one bite at a time</h1>
-      <p className="lede">One idea at a time, each in under a minute. Tell us how it landed and we explain it your way.</p>
+    <section className="intro home">
+      <div className="home-hero">
+        {faces.length ? (
+          <div className="face-row" aria-hidden="true">
+            {faces.map((f) => (
+              <img key={f.key} src={`/avatars/${f.key}.jpg`} alt="" />
+            ))}
+          </div>
+        ) : null}
+        <h1>Meet your future self</h1>
+        <p className="lede">A message from you, years from now. Then your plan, one idea at a time, explained your way.</p>
+      </div>
       {!cases ? <p className="muted">Loading families…</p> : null}
       <ul className="case-list">
         {cases?.map((c) => (
           <li key={c.id}>
             <button className="case" onClick={() => onPick(c)}>
-              <span className="case-name">{c.label}</span>
-              <span className="muted case-score">Financial Health Score {c.score} · {c.band}</span>
-              <span className="muted">
-                {c.city}, {c.state}
-                {c.children.length ? ` · ${c.children.map((k) => k.name).join(" & ")}` : ""}
+              <span className="case-faces" aria-hidden="true">
+                {c.members.map((m) => (
+                  <img key={m.id} src={`/avatars/${c.id}-${m.id}.jpg`} alt="" />
+                ))}
+              </span>
+              <span className="case-text">
+                <span className="case-top">
+                  <span className="case-name">{c.label}</span>
+                  <span className="case-score muted">Score {c.score}</span>
+                </span>
+                <span className="muted">
+                  {c.city}, {c.state}
+                  {c.children.length ? ` · ${c.children.map((k) => k.name).join(" & ")}` : ""}
+                </span>
+                <span className="case-message">
+                  <span className="dot" aria-hidden="true" />
+                  {c.members.length > 1 ? `${c.members.length} messages from the future` : "1 message from the future"}
+                </span>
               </span>
             </button>
           </li>
