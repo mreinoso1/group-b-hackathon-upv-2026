@@ -1691,3 +1691,36 @@ video.media-slot {
   font-size: 12px;
   white-space: nowrap;
 }
+
+/* "Make it real": the step and the plan's check-ins go to the family's own calendar. */
+.calendar-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  margin: 0 0 16px;
+  border-radius: 20px;
+  background: var(--fy-cream);
+  color: var(--fy-navy);
+}
+
+.calendar-card p {
+  margin: 0;
+}
+
+.calendar-title {
+  font-family: var(--heading);
+  font-weight: 600;
+  font-size: 17px;
+}
+
+.calendar-card .muted {
+  font-size: 13px;
+}
+
+.calendar-card .primary {
+  flex: none;
+  padding: 11px 16px;
+  background: var(--fy-navy);
+}
