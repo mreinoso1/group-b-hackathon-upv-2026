@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   at,
   buildCapsule,
+  futureSelves,
   caseSummary,
   LEVELS,
   LocalCaseSource,
@@ -134,6 +135,29 @@ describe("timeline chart", () => {
       const marker = c.milestones.find((m) => m.distress)!;
       const firstBelow = c.points.find((p) => p.value <= 0);
       expect(firstBelow?.year, raw.id).toBe(marker.year);
+      expect(c.dollars).toBe("future");
+    }
+  });
+
+  it("the life map leads with the goals that shape a life, never with a yearly vacation, and keeps every sentence", () => {
+    for (const raw of all) {
+      const texts = buildCapsule(raw, { topicId: "map.timeline", level: "standard" }).blocks.map((b) => b.text);
+      expect(texts[0], raw.id).not.toMatch(/vacation/i);
+      const plan = (at(raw.financialHealth, "goals.goalsSummary") as { value: string }[]).map((g) => g.value);
+      expect([...texts].sort(), raw.id).toEqual([...plan].sort());
+    }
+    expect(buildCapsule(all.find((r) => r.id === "samantha-lewis")!, { topicId: "map.timeline", level: "standard" }).blocks[0]!.text).toMatch(/home/);
+  });
+
+  it("stops at zero where savings run out, and names the same age as the future self", () => {
+    for (const id of ["samantha-lewis", "michael-carter"]) {
+      const raw = all.find((r) => r.id === id)!;
+      const c = chartOf(id);
+      const self = futureSelves(raw).find((f) => f.reason === "savings_run_out")!;
+      expect(Math.min(...c.points.map((p) => p.value)), id).toBe(0); // never -$5,360,262
+      expect(c.runOut?.age, id).toBe(self.age);
+      expect(c.milestones.find((m) => m.distress)?.label, id).toBe(`Savings run out at ${self.age}`);
+      expect(c.points.filter((p) => p.year >= c.runOut!.year).every((p) => p.value === 0)).toBe(true);
     }
   });
 

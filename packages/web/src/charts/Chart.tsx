@@ -279,6 +279,8 @@ function TimelineChart({ spec, simple }: { spec: Extract<ChartSpec, { kind: "tim
   const showAge = pts.every((p) => p.age !== undefined);
   const xTicks = pts.filter((_, i) => i % Math.ceil(pts.length / 6) === 0);
   const hp = hover !== null ? pts[hover] : undefined;
+  // From the year savings run out the line sits at zero: say so, rather than show "$0".
+  const gone = (p: { year: number }) => spec.runOut !== undefined && p.year >= spec.runOut.year;
 
   const onMove = (e: React.PointerEvent<SVGSVGElement>) => {
     const r = e.currentTarget.getBoundingClientRect();
@@ -302,10 +304,17 @@ function TimelineChart({ spec, simple }: { spec: Extract<ChartSpec, { kind: "tim
             <dd>{moneyShort(atRetire.value)}</dd>
           </div>
         ) : null}
-        <div>
-          <dt>End of plan</dt>
-          <dd>{moneyShort(last.value)}</dd>
-        </div>
+        {spec.runOut ? (
+          <div>
+            <dt>Savings run out</dt>
+            <dd>{spec.runOut.age !== undefined ? `at ${spec.runOut.age}` : spec.runOut.year}</dd>
+          </div>
+        ) : (
+          <div>
+            <dt>End of plan</dt>
+            <dd>{moneyShort(last.value)}</dd>
+          </div>
+        )}
       </dl>
       <div className="chart-panel plain" role="img" aria-label={`${spec.seriesLabel} from ${first.year} to ${last.year}. Milestones: ${groups.map((m) => `${m.year} ${m.label}`).join("; ")}`}>
         <svg viewBox={`0 0 ${W} ${H}`} width="100%" onPointerMove={onMove} onPointerLeave={() => setHover(null)} className="timeline">
@@ -348,13 +357,15 @@ function TimelineChart({ spec, simple }: { spec: Extract<ChartSpec, { kind: "tim
         {hp ? (
           <p className="tooltip" style={{ left: `${(sx(hp.year) / W) * 100}%` }}>
             <strong>{hp.year}</strong>
-            {hp.age !== undefined ? ` · age ${hp.age}` : ""}
+            {hp.age !== undefined && !gone(hp) ? ` · age ${hp.age}` : ""}
             <br />
-            {money(hp.value)}
+            {gone(hp) ? "No savings left" : money(hp.value)}
           </p>
         ) : null}
       </div>
-      {showAge ? <p className="axis-note">Ages along the bottom · values in today's dollars</p> : null}
+      {showAge ? (
+        <p className="axis-note">Ages along the bottom · {spec.dollars === "future" ? "values in future dollars, as your plan projects them" : "values in today's dollars"}</p>
+      ) : null}
       <ul className="events">
         {groups.map((m) => (
           <li key={`row-${m.year}-${m.label}`} className={m.distress ? "soft" : ""}>

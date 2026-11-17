@@ -96,6 +96,13 @@ export type ChartSpec =
       points: { year: number; value: number; age?: number }[];
       milestones: Milestone[];
       source: string;
+      /** "today" (inflation-adjusted) or "future" (the plan's nominal dollars). */
+      dollars: "today" | "future";
+      /**
+       * When the plan says savings run out: the line stops at zero from `year` on (the plan's
+       * shortfall after that is in the expert figures), and `age` is the last age with savings left.
+       */
+      runOut?: { year: number; age?: number };
     };
 
 export interface Block {

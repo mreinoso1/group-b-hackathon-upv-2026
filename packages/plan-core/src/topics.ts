@@ -27,6 +27,21 @@ export interface TopicDef {
   visual: (raw: RawCase) => Visual;
   /** Max words for the standard capsule (30–60 s spoken). */
   budget?: number;
+  /** Order for the plan's sentences, lower first (same rank keeps the plan's order). Never changes a word. */
+  rank?: (sentence: string) => number;
+}
+
+/**
+ * The life map leads with the goals that shape a life, not the plan's list order: retirement,
+ * then a home, the children's education, a vehicle; a yearly vacation last. Only the order changes.
+ */
+function goalRank(sentence: string): number {
+  if (/retire/i.test(sentence)) return 0;
+  if (/\bhome\b|\bhouse\b|real estate/i.test(sentence)) return 1;
+  if (/educat|college|school/i.test(sentence)) return 2;
+  if (/vehicle|\bcar\b/i.test(sentence)) return 3;
+  if (/vacation|holiday|travel|trip/i.test(sentence)) return 9;
+  return 5;
 }
 
 export const srcPath = (ref: TextRef) =>
@@ -264,14 +279,28 @@ function timeline(raw: RawCase, opts: { onlyRetirement?: boolean }): Visual {
   if (savingsSeries) {
     // The last year the plan still shows savings left.
     const lastLeft = points.findLastIndex((p, k) => p.value > 0 && (points[k + 1]?.value ?? 0) <= 0);
+    // After that the plan's figure is the spending left unpaid, which grows into the millions and
+    // reads as a debt. The line stops at zero there and says so; the plan's figures stay in "Tell me more".
+    const cut = points.findIndex((p) => p.value <= 0);
+    const runOut = cut > 0 ? { year: points[cut]!.year, age: points[cut - 1]!.age } : undefined;
+    const shown = runOut ? points.map((p, k) => (k >= cut ? { ...p, value: 0 } : p)) : points;
+    // Say the age on the marker, the same age the future self speaks from.
+    let named = false;
+    const marked = ms.map((m) => {
+      if (!runOut?.age || !m.distress || named) return m;
+      named = true;
+      return { ...m, label: `Savings run out at ${runOut.age}` };
+    });
     return {
       chart: {
         kind: "timeline",
         title: "Your savings and investments, year by year (not counting your home)",
         seriesLabel: "Savings and investments",
-        points,
-        milestones: ms,
+        points: shown,
+        milestones: marked,
         source: `${FH}projections.yearly`,
+        dollars: "future",
+        ...(runOut ? { runOut } : {}),
       },
       figures: [
         fig(`Savings and investments in ${first.year}`, 0),
@@ -288,6 +317,7 @@ function timeline(raw: RawCase, opts: { onlyRetirement?: boolean }): Visual {
       points,
       milestones: ms,
       source: `${FH}projections.yearly`,
+      dollars: "today",
     },
     figures: [fig(`Net worth in ${first.year} (today's dollars)`, 0), fig(`Net worth in ${last.year} (today's dollars)`, points.length - 1)],
     missing: [],
@@ -305,7 +335,7 @@ function round(n: number): number {
 export const TOPICS: readonly TopicDef[] = [
   { id: "overview.score", piece: "overview", title: "Your score, in one look", main: fh("score.message"), expert: [fh("score.explainer", "Key takeaways")], visual: scoreVisual },
   { id: "overview.big_picture", piece: "overview", title: "The big picture", main: fh("narrative.summary_main"), expert: [], visual: accountsVisual },
-  { id: "map.timeline", piece: "living_map", title: "Your life, year by year", main: fh("goals.goalsSummary"), expert: [], visual: (r) => timeline(r, {}), budget: 120 },
+  { id: "map.timeline", piece: "living_map", title: "Your life, year by year", main: fh("goals.goalsSummary"), expert: [], visual: (r) => timeline(r, {}), budget: 120, rank: goalRank },
   { id: "advice.protection.life_insurance", piece: "advice", title: "Life insurance", main: fh("narrative.protection_life_insurance_short_observations"), expert: [fh("score.explainer", "Protection")], visual: lifeVisual },
   { id: "advice.protection.umbrella", piece: "advice", title: "Umbrella cover", main: fh("narrative.protection_umbrella_short_observations"), expert: [], visual: umbrellaVisual },
   { id: "advice.debt", piece: "advice", title: "Your debts", main: fh("narrative.debt_short_observations"), expert: [fh("narrative.debt_what_to_look_into"), fh("score.explainer", "Debt")], visual: debtVisual },
