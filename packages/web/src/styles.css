@@ -1724,3 +1724,313 @@ video.media-slot {
   padding: 11px 16px;
   background: var(--fy-navy);
 }
+
+/* ---- Summit, the guide ---- */
+
+.guide-bot {
+  display: block;
+  overflow: visible;
+}
+
+.guide-bot .guide-mouth {
+  opacity: 0;
+}
+
+.guide-bot.talking .guide-smile {
+  opacity: 0;
+}
+
+.guide-bot.talking .guide-mouth {
+  opacity: 1;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: guide-talk 0.28s ease-in-out infinite alternate;
+}
+
+.guide-bot .guide-eyes {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: guide-blink 4.2s infinite;
+}
+
+.guide-bot .guide-flag {
+  transform-box: fill-box;
+  transform-origin: left center;
+  animation: guide-flag 2.4s ease-in-out infinite;
+}
+
+.guide-bot.talking .guide-head {
+  transform-box: fill-box;
+  transform-origin: center bottom;
+  animation: guide-nod 1.4s ease-in-out infinite;
+}
+
+@keyframes guide-talk {
+  from { transform: scaleY(0.35); }
+  to { transform: scaleY(1.15); }
+}
+
+@keyframes guide-blink {
+  0%, 92%, 100% { transform: scaleY(1); }
+  95% { transform: scaleY(0.1); }
+}
+
+@keyframes guide-flag {
+  0%, 100% { transform: skewY(0deg); }
+  50% { transform: skewY(-8deg); }
+}
+
+@keyframes guide-nod {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(-3deg); }
+}
+
+.guide-intro {
+  display: grid;
+  gap: 12px;
+}
+
+.guide-stage {
+  display: grid;
+  place-items: center;
+  padding: 18px 0 6px;
+  margin: 0 -16px;
+  background: var(--fy-cream);
+  border-radius: 0 0 28px 28px;
+}
+
+.guide-stage.small {
+  padding: 10px 0 4px;
+}
+
+.guide-lines {
+  display: grid;
+  gap: 10px;
+}
+
+.guide-line {
+  justify-self: start;
+  max-width: 92%;
+  animation: guide-in 0.35s ease-out both;
+}
+
+@keyframes guide-in {
+  from { opacity: 0; transform: translateY(6px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+
+.guide-actions {
+  display: grid;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.guide-actions .ghost {
+  justify-self: center;
+}
+
+.bubble-avatar.guide {
+  background: var(--fy-cream);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  box-shadow: 0 0 0 2px #fff, 0 0 0 3px var(--fy-cream-2);
+}
+
+.bubble-avatar.guide .guide-bot {
+  width: 28px;
+  height: 28px;
+  transform: translateY(2px);
+}
+
+.meet-note {
+  font-size: 13px;
+  margin: 0;
+}
+
+.future-text {
+  margin-top: 4px;
+}
+
+.home-guide {
+  margin: 0 0 8px;
+}
+
+.demo-note {
+  margin: 10px 0 0;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: #9a6a1f;
+}
+
+.case-initial {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-family: var(--heading);
+  font-weight: 600;
+  font-size: 18px;
+  color: var(--fy-navy);
+  background: var(--fy-cream);
+  box-shadow: 0 0 0 3px #fff;
+}
+
+.case-initial + .case-initial {
+  margin-left: -12px;
+  background: var(--fy-cream-2);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .guide-bot *,
+  .guide-line {
+    animation: none !important;
+  }
+}
+
+/* The guide waves hello, breathes while it waits, and has a voice switch. */
+.guide-bot.waving .guide-arm {
+  transform-box: fill-box;
+  transform-origin: 30% 90%;
+  animation: guide-wave 0.5s ease-in-out 4 alternate;
+}
+
+@keyframes guide-wave {
+  from { transform: rotate(-25deg); }
+  to { transform: rotate(-70deg); }
+}
+
+.guide-stage .guide-bot {
+  animation: guide-bob 3s ease-in-out infinite;
+}
+
+@keyframes guide-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+.guide-stage {
+  position: relative;
+}
+
+.guide-sound {
+  position: absolute;
+  right: 22px;
+  bottom: 12px;
+  padding: 6px 10px;
+  border: 0;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--fy-navy);
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(30, 42, 74, 0.15);
+}
+
+.guide-mute {
+  align-self: center;
+  flex: none;
+  border: 0;
+  background: none;
+  font-size: 14px;
+  opacity: 0.55;
+  padding: 4px;
+}
+
+.guide-mute:hover {
+  opacity: 1;
+}
+
+.typing {
+  display: inline-flex;
+  gap: 4px;
+  padding: 10px 14px;
+  border-radius: 18px 18px 18px 4px;
+  background: var(--fy-cream);
+  justify-self: start;
+}
+
+.typing i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--fy-navy);
+  opacity: 0.35;
+  animation: typing 1s ease-in-out infinite;
+}
+
+.typing i:nth-child(2) { animation-delay: 0.15s; }
+.typing i:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes typing {
+  50% { opacity: 1; transform: translateY(-2px); }
+}
+
+/* The postcard from the future self: a still portrait, a note, an optional voice. */
+.postcard {
+  position: relative;
+  margin: 6px 0 14px;
+  padding: 20px 20px 16px;
+  border-radius: 6px;
+  background: #fffaf1;
+  border: 1px solid var(--fy-cream-2);
+  box-shadow: 0 14px 30px -18px rgba(30, 42, 74, 0.45);
+  transform: rotate(-1deg);
+  animation: guide-in 0.5s ease-out both;
+}
+
+.postcard-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.postcard-from {
+  margin: 4px 0 0;
+  font-family: var(--heading);
+  font-weight: 600;
+  font-size: 18px;
+  color: var(--fy-navy);
+}
+
+.postcard-stamp {
+  flex: none;
+  width: 86px;
+  height: 104px;
+  object-fit: cover;
+  padding: 5px;
+  background: #fff;
+  border: 2px dashed var(--fy-cream-2);
+  transform: rotate(3deg);
+}
+
+.postcard-text {
+  margin: 12px 0 8px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-style: italic;
+  font-size: 19px;
+  line-height: 1.5;
+  color: var(--fy-navy);
+}
+
+.postcard-sign {
+  margin: 0 0 10px;
+  text-align: right;
+  font-family: Georgia, "Times New Roman", serif;
+  color: #9a6a1f;
+}
+
+.postcard-play {
+  width: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .guide-stage .guide-bot,
+  .typing i,
+  .postcard {
+    animation: none !important;
+  }
+}

@@ -97,7 +97,7 @@ describe("future-self lines", () => {
   it("speak honestly but hopefully when savings run out", () => {
     const michael = futureSelves(cases.find((c) => c.id === "michael-carter")!, TODAY)[0]!;
     expect(futureSelfLine(michael, "overview.score")).toMatch(/time to change that/);
-    expect(futureSelfLine(michael, "overview.big_picture", true)).toMatch(/^It's me, Michael, at \d+\. This is the whole picture/);
+    expect(futureSelfLine(michael, "overview.big_picture", true)).toMatch(/^Let's start, Michael\. This is the whole picture/);
     expect(michael.introText).not.toMatch(/This is the year our savings run out/);
   });
 });
