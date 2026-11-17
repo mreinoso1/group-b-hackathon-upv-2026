@@ -1,21 +1,24 @@
-# One Bite — your plan, one bite at a time
+# Future You — your plan, explained by your future self
 
 **Sherpas x UPV Sigma Data Club hackathon, November 2026.** The original challenge brief is in [`docs/CHALLENGE.md`](docs/CHALLENGE.md).
 
-Sherpas already writes a good plan. The problem is the **amount** and the **format**: a family gets everything at once, on one screen, at one pace. In a meeting the advisor *calibrates*: they see a confused face and explain it another way. One Bite brings that back when nobody is in the room, and hands the advisor what happened.
+Sherpas already writes a good plan. The problem is the **amount** and the **format**: a family gets everything at once, on one screen, at one pace, in a new language, with nobody beside them. And the hardest part of any plan is seeing how a choice today changes your life years from now. **Future You** hands the plan to the one messenger nobody ignores: yourself, years from now. In a meeting the advisor *calibrates*; Future You does that when nobody is in the room, moves each person to one first step, comes back until they take it, and hands the advisor what happened.
 
 **For the family (phone):**
 
-- **Calibrated capsules.** One idea of the plan at a time, 30–60 seconds, with a chart. Each one ends with *Got it* / *I'm lost* / *Tell me more*. *I'm lost* re-explains it for that person (plain words, then the one number that matters, then an analogy), in a tone set by their profile; *Tell me more* shows the full detail and every figure with where it sits in the plan. *Listen* reads it aloud.
-- **Their future self.** Each adult meets themselves at retirement (or at the age the plan says their savings run out), in their own recorded voice. That future self introduces every idea, asks for one first step with a date, and checks in before the next big date in the plan.
+- **A message from your future self.** Each adult opens a video message from themselves at the age where their plan is decided: Michael at 85, the year his plan says his savings run out; Samantha at 73, despite a score of 82; the couples at retirement, with what the plan puts on the way (the home, the children's college) and, where the plan shows it, the gap still to close. One tap plays it, with sound. The age, the year and every word come from the plan (`futureSelves` in `plan-core`); nothing is promised that the plan doesn't show.
+- **Calibrated capsules, one bite at a time.** Then the plan, one idea at a time, 30–60 seconds, with a chart, each introduced by the future self. Each one ends with *Got it* / *I'm lost* / *Tell me more*. *I'm lost* re-explains it for that person (plain words, then the one number that matters, then an analogy), in a tone set by their profile; *Tell me more* shows the full detail and every figure with where it sits in the plan. *Listen* reads it aloud.
+- **One first step, made real.** Not ten recommendations: one step from the plan's own top moves, in plain words, with what it does to the score. The person picks a date, and *Make it real* puts the step and a reminder before each big date of the plan in their own calendar (a standard `.ics`, for Google, Outlook or Apple). On day 3 the future self asks "Did you do it?" and, if not, explains it another way.
 - **The plan's own words.** Capsules are the plan's text, dosed, never rewritten. Every number comes from the plan JSON; if something is missing, we say so. A red score is never the first thing they see: the plan's own summary, which starts from their strengths, comes first.
-- **Each person at their own pace.** Couples pick who is reading; each orders the plan's priorities, and the app shows where they agree and differ. The order is always theirs.
+- **Each person at their own pace.** Couples pick who is reading; each hears their own future self, orders the plan's priorities, and the app shows where they agree and differ. The order is always theirs.
 
 **For the advisor (laptop):** a live brief at `/advisor/<caseId>`: what each person understood (skip it), where they said *I'm lost* and which explanation finally worked, what they asked, the step they chose, where a couple differs, and a three-item agenda that cites the evidence and flags when the persona predicted it. Only what each person chose to share.
 
-**Two MCP servers.** `plan-coach` (ours) reads each family's plan from the **Sherpas MCP** and serves it as capsules, the future self and the advisor brief, so any MCP host (Claude Desktop, an advisor's assistant) can use them too.
+**Two MCP servers.** `plan-coach` (ours) reads each family's plan from the **Sherpas MCP** and serves it as capsules, the future self, the first step and the advisor brief, so any MCP host (Claude Desktop, an advisor's assistant) can use them too.
 
-Works for all four families; the demo family is Timothy and Melanie Weah.
+Works for all four families; the demo family is **Michael Carter**. The home page lists the four example families for the demo; in real life each person would get a link straight to their own message.
+
+**The future selves' faces and voices.** The families are fictional, so each future self was designed once: an illustrated portrait at their future age, a voice designed in ElevenLabs (Voice Design), and a talking video made from both (ElevenLabs lip sync, HeyGen Avatar 4). They live in `packages/web/public/` (`avatars/`, `audio/`, `video/`), named `<caseId>-<memberId>`; `npm run voices` checks that every recording says exactly the line the app shows. For a real client this would be their own photo and voice, only with their consent.
 
 ## Run it in under 5 minutes
 
@@ -27,7 +30,7 @@ npm run dev
 ```
 
 - **The family:** http://localhost:5173 (best in a phone-sized window). The first start takes a few seconds while the API launches `plan-coach`.
-- **The advisor:** http://localhost:5173/advisor/timothy-melanie-weah (any case id). It fills in every 2 seconds while the family uses the app; **Reset** starts that family over for the next demo.
+- **The advisor:** http://localhost:5173/advisor/michael-carter (any case id). It fills in every 2 seconds while the family uses the app; **Reset** starts that family over for the next demo.
 
 **Demo with phones (judges try it on their own phone).** Run `npm run demo` instead: the same app, listening on the Wi-Fi. Open http://localhost:5173/demo on the laptop, pick a family, and it creates a **room** (a 4-letter code) with a QR code per person and the advisor link for that room. Each phone that scans a QR opens straight at that person's start; whatever they tap stays in that room, so several groups can try the same family at once without mixing, and **Reset** on the advisor screen clears only that room. The laptop and the phones must be on the same Wi-Fi; the first time, allow Node through the Windows firewall when it asks. Without a room code the app uses the default room, as before.
 
