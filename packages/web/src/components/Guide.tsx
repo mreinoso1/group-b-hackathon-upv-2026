@@ -125,12 +125,13 @@ function useReducedMotion(): boolean {
 // The device's own English voice when it has one (instant, free). Without one (a Spanish Windows, say)
 // the line is spoken by the server in English, like Listen, and cached; never a Spanish voice reading English.
 
-const MUTE_KEY = "future-you-guide-muted";
+// Remembered only for this tab (sessionStorage): every new visit starts quiet, whatever was chosen before.
+const VOICE_KEY = "future-you-voice";
 
 /** Quiet by default: the guide only speaks once someone turns its voice on. */
 function readMuted(): boolean {
   try {
-    return window.localStorage.getItem(MUTE_KEY) !== "0";
+    return window.sessionStorage.getItem(VOICE_KEY) !== "on";
   } catch {
     return true;
   }
@@ -208,14 +209,14 @@ function say(text: string): Promise<void> {
   });
 }
 
-/** Mute switch shared by every screen (remembered on this device). */
+/** Mute switch shared by every screen (remembered while this tab is open). */
 export function useGuideMute() {
   const [muted, setMuted] = useState(readMuted);
   const toggle = () => {
     unlockAudio(); // inside the tap: phones only allow sound that starts from one
     setMuted((m) => {
       try {
-        window.localStorage.setItem(MUTE_KEY, m ? "0" : "1");
+        window.sessionStorage.setItem(VOICE_KEY, m ? "on" : "off");
       } catch {
         /* storage may be unavailable; the switch still works for this page */
       }
