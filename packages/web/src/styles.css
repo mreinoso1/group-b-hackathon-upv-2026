@@ -1732,75 +1732,43 @@ video.media-slot {
   overflow: visible;
 }
 
-.guide-bot .guide-mouth {
-  opacity: 0;
-}
-
-.guide-bot.talking .guide-smile {
-  opacity: 0;
-}
-
-.guide-bot.talking .guide-mouth {
-  opacity: 1;
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: guide-talk 0.28s ease-in-out infinite alternate;
-}
-
-.guide-bot .guide-eyes {
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: guide-blink 4.2s infinite;
-}
-
-.guide-bot .guide-flag {
-  transform-box: fill-box;
-  transform-origin: left center;
-  animation: guide-flag 2.4s ease-in-out infinite;
-}
-
-.guide-bot.talking .guide-head {
-  transform-box: fill-box;
-  transform-origin: center bottom;
-  animation: guide-nod 1.4s ease-in-out infinite;
-}
-
-@keyframes guide-talk {
-  from { transform: scaleY(0.35); }
-  to { transform: scaleY(1.15); }
-}
-
-@keyframes guide-blink {
-  0%, 92%, 100% { transform: scaleY(1); }
-  95% { transform: scaleY(0.1); }
-}
-
-@keyframes guide-flag {
-  0%, 100% { transform: skewY(0deg); }
-  50% { transform: skewY(-8deg); }
-}
-
-@keyframes guide-nod {
-  0%, 100% { transform: rotate(0deg); }
-  50% { transform: rotate(-3deg); }
-}
-
 .guide-intro {
   display: grid;
   gap: 12px;
 }
 
 .guide-stage {
-  display: grid;
-  place-items: center;
-  padding: 18px 0 6px;
+  position: relative;
+  overflow: hidden;
   margin: 0 -16px;
-  background: var(--fy-cream);
-  border-radius: 0 0 28px 28px;
+  border-radius: 0 0 32px 32px;
+  background: linear-gradient(#fbf5ea, var(--fy-cream));
 }
 
-.guide-stage.small {
-  padding: 10px 0 4px;
+.guide-mountains {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.guide-clouds {
+  animation: clouds 18s linear infinite alternate;
+}
+
+@keyframes clouds {
+  to { transform: translateX(26px); }
+}
+
+.guide-stage-inner {
+  position: relative;
+  display: grid;
+  place-items: center;
+  padding: 16px 0 8px;
+}
+
+.guide-stage.small .guide-stage-inner {
+  padding: 8px 0 4px;
 }
 
 .guide-lines {
@@ -1837,10 +1805,15 @@ video.media-slot {
   box-shadow: 0 0 0 2px #fff, 0 0 0 3px var(--fy-cream-2);
 }
 
+.bubble-avatar.guide {
+  width: 44px;
+  height: 44px;
+}
+
 .bubble-avatar.guide .guide-bot {
-  width: 28px;
-  height: 28px;
-  transform: translateY(2px);
+  width: 40px;
+  height: 48px;
+  transform: translateY(5px);
 }
 
 .meet-note {
@@ -1852,8 +1825,8 @@ video.media-slot {
   margin-top: 4px;
 }
 
-.home-guide {
-  margin: 0 0 8px;
+.home-hero .guide-stage {
+  margin: -22px -16px 14px;
 }
 
 .demo-note {
@@ -1890,30 +1863,7 @@ video.media-slot {
   }
 }
 
-/* The guide waves hello, breathes while it waits, and has a voice switch. */
-.guide-bot.waving .guide-arm {
-  transform-box: fill-box;
-  transform-origin: 30% 90%;
-  animation: guide-wave 0.5s ease-in-out 4 alternate;
-}
-
-@keyframes guide-wave {
-  from { transform: rotate(-25deg); }
-  to { transform: rotate(-70deg); }
-}
-
-.guide-stage .guide-bot {
-  animation: guide-bob 3s ease-in-out infinite;
-}
-
-@keyframes guide-bob {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-5px); }
-}
-
-.guide-stage {
-  position: relative;
-}
+/* The guide's voice switch. */
 
 .guide-sound {
   position: absolute;
@@ -2033,4 +1983,173 @@ video.media-slot {
   .postcard {
     animation: none !important;
   }
+}
+
+/* ---- v4: home with Summit, detailed family cards ---- */
+
+.home .home-hero {
+  padding-top: 0;
+  padding-bottom: 16px;
+}
+
+.home-bubble {
+  margin: 12px 0 0;
+  max-width: 100%;
+  font-size: 16px;
+  background: #fff;
+  box-shadow: 0 6px 18px -12px rgba(30, 42, 74, 0.4);
+}
+
+.home .case {
+  grid-template-columns: auto 1fr auto;
+  gap: 14px;
+  padding: 14px 14px 14px 16px;
+  border-radius: 22px;
+  border: 1px solid #ece4d6;
+  box-shadow: 0 8px 20px -16px rgba(30, 42, 74, 0.5);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.home .case:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 26px -16px rgba(30, 42, 74, 0.55);
+}
+
+.home .case-faces {
+  width: 76px;
+}
+
+.case-initial {
+  width: 46px;
+  height: 46px;
+  font-size: 19px;
+}
+
+.family-0 .case-initial { background: #fde8cc; color: #8a4f0c; }
+.family-1 .case-initial { background: #dcefe6; color: #0f5c46; }
+.family-2 .case-initial { background: #f6ddd4; color: #8c3a1d; }
+.family-3 .case-initial { background: #e3e0f7; color: #3c3489; }
+.case-initial + .case-initial { filter: saturate(0.8) brightness(0.97); }
+
+.case-name {
+  font-size: 17px;
+}
+
+.case-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.case-side {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.score-badge {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  line-height: 1;
+  background: #f1efe8;
+  color: #444441;
+}
+
+.score-badge strong {
+  font-family: var(--heading);
+  font-size: 16px;
+}
+
+.score-badge small {
+  font-size: 9px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-top: -6px;
+}
+
+.score-badge.band-critical { background: #fcebeb; color: #a32d2d; }
+.score-badge.band-vulnerable { background: #faeeda; color: #854f0b; }
+.score-badge.band-stable { background: #e1f5ee; color: #0f6e56; }
+.score-badge.band-strong { background: #eaf3de; color: #3b6d11; }
+
+.case-go {
+  font-size: 26px;
+  line-height: 1;
+  color: #c9bea9;
+}
+
+/* ---- v4: Summit sits on top of every idea; warmer cards ---- */
+
+.bubble-row.big {
+  position: relative;
+  z-index: 2;
+  align-items: flex-end;
+  margin-bottom: -22px;
+  padding-left: 4px;
+}
+
+.bubble-row.big .bubble-avatar.guide {
+  width: 70px;
+  height: 70px;
+  background: var(--fy-cream);
+  border: 3px solid #fff;
+  box-shadow: 0 8px 18px -10px rgba(30, 42, 74, 0.55);
+}
+
+.bubble-row.big .bubble-avatar.guide .guide-bot {
+  width: 62px;
+  height: 74px;
+  transform: translateY(9px);
+}
+
+.bubble-row.big .bubble {
+  margin-bottom: 26px;
+  background: #fff;
+  box-shadow: 0 8px 20px -14px rgba(30, 42, 74, 0.5);
+  border: 1px solid #f0e6d4;
+  font-size: 15.5px;
+}
+
+.capsule {
+  border: 1px solid #efe7d8;
+  border-radius: 26px;
+  padding-top: 30px;
+  box-shadow: 0 16px 34px -24px rgba(30, 42, 74, 0.5);
+}
+
+.capsule .piece {
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--fy-cream);
+  color: #9a6a1f;
+  font-size: 12.5px;
+}
+
+.capsule h2 {
+  color: var(--fy-navy);
+}
+
+.capsule .chart-panel {
+  background: #fbf7ef;
+  border: 1px solid #f1e8d8;
+  border-radius: 18px;
+}
+
+/* ---- v5: one sentence first, the rest one tap away ---- */
+
+.capsule .blocks .lead {
+  font-size: 19px;
+  line-height: 1.5;
+  color: var(--fy-navy);
+  margin-bottom: 6px;
+}
+
+.read-more {
+  margin: 0 0 12px;
+  font-weight: 600;
 }

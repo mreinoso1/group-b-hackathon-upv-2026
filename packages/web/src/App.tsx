@@ -4,7 +4,7 @@ import { joinTarget, ROOM } from "./room.ts";
 import { CapsuleCard, ReactionBar } from "./components/CapsuleCard.tsx";
 import { ConsentScreen } from "./components/Consent.tsx";
 import { Bubble, FutureSelfIntro, MeetFutureSelf, PortraitContext, portraitsFor } from "./components/FutureSelf.tsx";
-import { GuideBot } from "./components/Guide.tsx";
+import { GuideBot, GuideStage, useGuideSays } from "./components/Guide.tsx";
 import { AgreementScreen, AskAdvisor, CheckInScreen, FirstStepScreen } from "./components/Steps.tsx";
 
 type Step = "consent" | "intro" | "feed" | "agree" | "step" | "meet" | "checkin";
@@ -102,22 +102,43 @@ function whoLabel(screen: Exclude<Screen, { name: "cases" }>): string {
   return m ? `${m.name}'s plan` : `${screen.household.label}, together`;
 }
 
+const HOME_LINE = "Hi! I'm Summit. Pick a family and I'll walk you through their plan, one idea at a time.";
+
+function Pin() {
+  return (
+    <svg width="13" height="13" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M12 22s7-6.3 7-12a7 7 0 1 0-14 0c0 5.7 7 12 7 12z" fill="none" stroke="currentColor" strokeWidth="2.2" />
+      <circle cx="12" cy="10" r="2.6" fill="currentColor" />
+    </svg>
+  );
+}
+
+function Kids() {
+  return (
+    <svg width="13" height="13" viewBox="0 0 24 24" aria-hidden="true">
+      <circle cx="8" cy="7" r="3" fill="none" stroke="currentColor" strokeWidth="2.2" />
+      <circle cx="17" cy="9" r="2.4" fill="none" stroke="currentColor" strokeWidth="2.2" />
+      <path d="M2.5 20c.6-3.6 2.8-5.5 5.5-5.5s4.9 1.9 5.5 5.5M13.5 20c.4-2.6 1.8-4 3.5-4s3.1 1.4 3.5 4" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 function CasePicker({ cases, onPick }: { cases: CaseSummary[] | null; onPick: (c: CaseSummary) => void }) {
+  const talking = useGuideSays(HOME_LINE, true);
   return (
     <section className="intro home">
       <div className="home-hero">
-        <div className="home-guide" aria-hidden="true">
-          <GuideBot size={84} />
-        </div>
-        <h1>Your plan, explained by a guide who never gets tired</h1>
-        <p className="lede">One idea at a time, in plain words. One first step. And at the end, a surprise: meet yourself, years from now.</p>
+        <GuideStage compact>
+          <GuideBot size={96} waving talking={talking} />
+        </GuideStage>
+        <p className="bubble self guide-line home-bubble">{HOME_LINE}</p>
         <p className="demo-note">Demo · four example families</p>
       </div>
       {!cases ? <p className="muted">Loading families…</p> : null}
       <ul className="case-list">
-        {cases?.map((c) => (
+        {cases?.map((c, i) => (
           <li key={c.id}>
-            <button className="case" onClick={() => onPick(c)}>
+            <button className={`case family-${i % 4}`} onClick={() => onPick(c)}>
               <span className="case-faces" aria-hidden="true">
                 {c.members.map((m) => (
                   <span key={m.id} className="case-initial">
@@ -126,13 +147,23 @@ function CasePicker({ cases, onPick }: { cases: CaseSummary[] | null; onPick: (c
                 ))}
               </span>
               <span className="case-text">
-                <span className="case-top">
-                  <span className="case-name">{c.label}</span>
-                  <span className="case-score muted">Score {c.score}</span>
+                <span className="case-name">{c.label}</span>
+                <span className="case-meta">
+                  <Pin /> {c.city}, {c.state}
                 </span>
-                <span className="muted">
-                  {c.city}, {c.state}
-                  {c.children.length ? ` · ${c.children.map((k) => k.name).join(" & ")}` : ""}
+                {c.children.length ? (
+                  <span className="case-meta">
+                    <Kids /> {c.children.map((k) => k.name).join(" & ")}
+                  </span>
+                ) : null}
+              </span>
+              <span className="case-side">
+                <span className={`score-badge band-${c.band}`}>
+                  <strong>{c.score}</strong>
+                  <small>score</small>
+                </span>
+                <span className="case-go" aria-hidden="true">
+                  ›
                 </span>
               </span>
             </button>
@@ -321,7 +352,11 @@ function Feed({ household, member, onDone }: { household: CaseSummary; member: s
         </p>
       ) : null}
       {capsule?.futureSelfLine && capsule.level === "standard" ? (
-        <Bubble name={capsule.futureSelfName ?? speakerName(household, member)}>{capsule.futureSelfLine}</Bubble>
+        <Bubble big name={capsule.futureSelfName ?? speakerName(household, member)}>{capsule.futureSelfLine}</Bubble>
+      ) : capsule && capsule.level !== "standard" ? (
+        <Bubble big name="guide">
+          {capsule.level === "expert" ? "Here are the real numbers, and where each one sits in your plan." : "No problem. Let me put it another way."}
+        </Bubble>
       ) : null}
       {capsule ? (
         <CapsuleCard

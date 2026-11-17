@@ -5,42 +5,130 @@ import { useEffect, useState } from "react";
 
 export const GUIDE_NAME = "Summit";
 
-/** The robot. `talking` animates the mouth; it always blinks now and then. */
+/**
+ * The robot, alive: it floats, blinks, looks around, its antenna light pulses; when it talks, its
+ * mouth becomes a little equaliser and its arms move; it waves hello. Driven by JavaScript (not
+ * CSS), so it moves on every device; only the floating and waving calm down with reduced motion.
+ */
 export function GuideBot({ size = 120, talking = false, waving = false }: { size?: number; talking?: boolean; waving?: boolean }) {
+  const t = useClock();
+  const reduce = useReducedMotion();
+  const blink = Math.sin(t / 1900) > 0.985 || Math.sin(t / 2700 + 1) > 0.993;
+  const look = Math.round(Math.sin(t / 2300) * 3 * 10) / 10;
+  const bob = reduce ? 0 : Math.sin(t / 520) * 3;
+  const glow = 0.55 + 0.45 * Math.sin(t / 300);
+  const bars = [0, 1, 2, 3, 4].map((i) => (talking ? 4 + Math.abs(Math.sin(t / 95 + i * 1.3)) * 11 : 0));
+  const armL = talking ? -8 + Math.sin(t / 260) * 10 : -4;
+  const armR = waving && !reduce ? -140 + Math.sin(t / 110) * 22 : talking ? 8 + Math.sin(t / 240 + 2) * 10 : 4;
   return (
-    <svg className={`guide-bot ${talking ? "talking" : ""} ${waving ? "waving" : ""}`} width={size} height={size} viewBox="0 0 180 220" role="img" aria-label={`${GUIDE_NAME}, your guide`}>
-      <line x1="90" y1="38" x2="90" y2="8" stroke="#1E2A4A" strokeWidth="4" strokeLinecap="round" />
-      <path className="guide-flag" d="M90 8 L118 16 L90 24 Z" fill="#E8A33D" />
-      <rect x="132" y="140" width="34" height="58" rx="10" fill="#E8A33D" stroke="#1E2A4A" strokeWidth="3" />
-      <rect x="46" y="134" width="88" height="80" rx="26" fill="#F8F1E5" stroke="#1E2A4A" strokeWidth="4" />
-      <circle cx="90" cy="172" r="12" fill="#E8A33D" stroke="#1E2A4A" strokeWidth="3" />
-      <rect x="22" y="148" width="22" height="46" rx="11" fill="#F8F1E5" stroke="#1E2A4A" strokeWidth="4" />
-      <rect className="guide-arm" x="136" y="150" width="22" height="40" rx="11" fill="#F8F1E5" stroke="#1E2A4A" strokeWidth="4" />
-      <g className="guide-head">
-        <rect x="34" y="38" width="112" height="92" rx="34" fill="#F8F1E5" stroke="#1E2A4A" strokeWidth="4" />
-        <rect x="52" y="60" width="76" height="46" rx="20" fill="#1E2A4A" />
-        <g className="guide-eyes">
-          <ellipse cx="74" cy="80" rx="7" ry="9" fill="#9FE1CB" />
-          <ellipse cx="106" cy="80" rx="7" ry="9" fill="#9FE1CB" />
+    <svg className="guide-bot" width={size} height={size * 1.2} viewBox="0 0 200 240" role="img" aria-label={`${GUIDE_NAME}, your guide`}>
+      <ellipse cx="100" cy="230" rx={46 - bob} ry="7" fill="#1E2A4A" opacity="0.12" />
+      <g transform={`translate(0 ${bob})`}>
+        {/* backpack */}
+        <rect x="128" y="138" width="34" height="56" rx="11" fill="#E8A33D" stroke="#1E2A4A" strokeWidth="3.5" />
+        <rect x="134" y="148" width="22" height="10" rx="4" fill="#F3C16E" />
+        {/* arms (behind the body) */}
+        <g transform={`rotate(${armL} 58 146)`}>
+          <rect x="34" y="140" width="26" height="50" rx="13" fill="#F8F1E5" stroke="#1E2A4A" strokeWidth="3.5" />
+          <circle cx="47" cy="190" r="9" fill="#E8A33D" stroke="#1E2A4A" strokeWidth="3" />
         </g>
-        <path className="guide-smile" d="M78 95 Q90 103 102 95" fill="none" stroke="#9FE1CB" strokeWidth="3.5" strokeLinecap="round" />
-        <ellipse className="guide-mouth" cx="90" cy="97" rx="9" ry="5" fill="#9FE1CB" />
-        <circle cx="40" cy="96" r="6" fill="#E8A33D" />
-        <circle cx="140" cy="96" r="6" fill="#E8A33D" />
+        <g transform={`rotate(${armR} 142 146)`}>
+          <rect x="140" y="140" width="26" height="50" rx="13" fill="#F8F1E5" stroke="#1E2A4A" strokeWidth="3.5" />
+          <circle cx="153" cy="190" r="9" fill="#E8A33D" stroke="#1E2A4A" strokeWidth="3" />
+        </g>
+        {/* body */}
+        <rect x="58" y="132" width="84" height="76" rx="26" fill="#F8F1E5" stroke="#1E2A4A" strokeWidth="4" />
+        <path d="M70 136 L86 170 M130 136 L114 170" stroke="#E8A33D" strokeWidth="5" strokeLinecap="round" />
+        <circle cx="100" cy="176" r="11" fill="#E8A33D" opacity={0.6 + glow * 0.4} stroke="#1E2A4A" strokeWidth="3" />
+        <circle cx="100" cy="176" r="4" fill="#fff" opacity={glow} />
+        {/* feet */}
+        <rect x="70" y="204" width="24" height="14" rx="7" fill="#1E2A4A" />
+        <rect x="106" y="204" width="24" height="14" rx="7" fill="#1E2A4A" />
+        {/* antenna */}
+        <line x1="100" y1="40" x2="100" y2="16" stroke="#1E2A4A" strokeWidth="4" strokeLinecap="round" />
+        <path d={`M100 12 L${124 + Math.sin(t / 300) * 3} ${18 + Math.sin(t / 300) * 2} L100 26 Z`} fill="#E8A33D" stroke="#1E2A4A" strokeWidth="2" strokeLinejoin="round" />
+        <circle cx="100" cy="12" r="6" fill="#9FE1CB" stroke="#1E2A4A" strokeWidth="2.5" opacity={0.7 + glow * 0.3} />
+        {/* head */}
+        <rect x="36" y="38" width="128" height="98" rx="38" fill="#F8F1E5" stroke="#1E2A4A" strokeWidth="4" />
+        <rect x="28" y="74" width="12" height="28" rx="6" fill="#E8A33D" stroke="#1E2A4A" strokeWidth="3" />
+        <rect x="160" y="74" width="12" height="28" rx="6" fill="#E8A33D" stroke="#1E2A4A" strokeWidth="3" />
+        <rect x="54" y="56" width="92" height="62" rx="24" fill="#1E2A4A" />
+        {/* eyes: screen eyes with pupils that look around, and a blink */}
+        {[78, 122].map((cx) => (
+          <g key={cx}>
+            <rect x={cx - 10} y={blink ? 78 : 68} width="20" height={blink ? 3 : 22} rx={blink ? 1.5 : 9} fill="#9FE1CB" />
+            {!blink ? <circle cx={cx + look} cy="80" r="4.5" fill="#1E2A4A" /> : null}
+            {!blink ? <circle cx={cx + look + 2} cy="76" r="1.6" fill="#fff" /> : null}
+          </g>
+        ))}
+        <circle cx="64" cy="100" r="5" fill="#F0997B" opacity="0.55" />
+        <circle cx="136" cy="100" r="5" fill="#F0997B" opacity="0.55" />
+        {/* mouth: a smile at rest, an equaliser while talking */}
+        {talking ? (
+          bars.map((h, i) => <rect key={i} x={84 + i * 7} y={106 - h / 2} width="4" height={h} rx="2" fill="#9FE1CB" />)
+        ) : (
+          <path d="M86 102 Q100 112 114 102" fill="none" stroke="#9FE1CB" strokeWidth="3.5" strokeLinecap="round" />
+        )}
       </g>
     </svg>
   );
+}
+
+/** A mountain stage for the guide: a nod to a sherpa, the mountain guide. */
+export function GuideStage({ children, compact = false }: { children: React.ReactNode; compact?: boolean }) {
+  return (
+    <div className={`guide-stage ${compact ? "small" : ""}`}>
+      <svg className="guide-mountains" viewBox="0 0 400 200" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+        <circle cx="318" cy="62" r="26" fill="#F3C16E" opacity="0.55" />
+        <g className="guide-clouds">
+          <ellipse cx="70" cy="48" rx="26" ry="9" fill="#fff" opacity="0.9" />
+          <ellipse cx="88" cy="42" rx="16" ry="9" fill="#fff" opacity="0.9" />
+          <ellipse cx="250" cy="34" rx="20" ry="7" fill="#fff" opacity="0.8" />
+        </g>
+        <path d="M-10 200 L80 92 L130 140 L200 70 L270 150 L320 104 L410 200 Z" fill="#E4DDD0" />
+        <path d="M200 70 L218 92 L206 88 L198 98 L188 86 L182 92 Z" fill="#fff" />
+        <path d="M80 92 L94 108 L84 106 L76 112 L68 104 Z" fill="#fff" />
+        <path d="M-10 200 L60 150 L130 186 L210 132 L300 178 L360 150 L410 200 Z" fill="#EFE3CF" />
+      </svg>
+      <div className="guide-stage-inner">{children}</div>
+    </div>
+  );
+}
+
+/** A single clock for the robot's movements (about 30 frames a second, paused when the tab is hidden). */
+function useClock(): number {
+  const [t, setT] = useState(() => performance.now());
+  useEffect(() => {
+    let raf = 0;
+    let last = 0;
+    const tick = (now: number) => {
+      if (now - last > 33) {
+        last = now;
+        setT(now);
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, []);
+  return t;
+}
+
+function useReducedMotion(): boolean {
+  const [reduce] = useState(() => typeof window !== "undefined" && !!window.matchMedia?.("(prefers-reduced-motion: reduce)").matches);
+  return reduce;
 }
 
 // ---- the guide's voice: the device's own English voice (no network, no budget) ----
 
 const MUTE_KEY = "future-you-guide-muted";
 
+/** Quiet by default: the guide only speaks once someone turns its voice on. */
 function readMuted(): boolean {
   try {
-    return window.localStorage.getItem(MUTE_KEY) === "1";
+    return window.localStorage.getItem(MUTE_KEY) !== "0";
   } catch {
-    return false;
+    return true;
   }
 }
 
