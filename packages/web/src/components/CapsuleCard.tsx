@@ -84,22 +84,73 @@ export function CapsuleCard({ capsule, step, total, onListen }: { capsule: Capsu
 }
 
 /**
+ * One audio channel for the page, opened inside the tap. Phone browsers (Safari above all) only let
+ * a page make sound from a tap, and our audio arrives after a network wait: playing it then through
+ * a new <audio> or AudioContext stayed silent on the first tap. Opened here, it stays unlocked.
+ */
+let sharedCtx: AudioContext | null = null;
+function unlockAudio(): AudioContext | null {
+  const AC = window.AudioContext ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+  if (!AC) return null;
+  sharedCtx ??= new AC();
+  if (sharedCtx.state === "suspended") void sharedCtx.resume();
+  return sharedCtx;
+}
+
+/** `heard` is false when nothing could be played (the clip failed to load or the voice never came). */
+type OnEnd = (heard: boolean) => void;
+
+/** A whole clip (mp3 or wav from the cache), played through the unlocked channel. Returns a stop function. */
+function playFile(ctx: AudioContext, url: string, onEnd: OnEnd): () => void {
+  const controller = new AbortController();
+  let src: AudioBufferSourceNode | null = null;
+  let finished = false;
+  const end = (heard: boolean) => {
+    if (finished) return;
+    finished = true;
+    onEnd(heard);
+  };
+  void (async () => {
+    try {
+      const res = await fetch(url, { signal: controller.signal });
+      if (!res.ok) throw new Error(`audio ${res.status}`);
+      const buf = await ctx.decodeAudioData(await res.arrayBuffer());
+      if (finished) return;
+      src = ctx.createBufferSource();
+      src.buffer = buf;
+      src.connect(ctx.destination);
+      src.onended = () => end(true);
+      src.start();
+    } catch {
+      end(false);
+    }
+  })();
+  return () => {
+    controller.abort();
+    try {
+      src?.stop();
+    } catch {
+      /* not started */
+    }
+    end(true);
+  };
+}
+
+/**
  * Plays raw 16-bit PCM at 24 kHz as it downloads: each chunk is scheduled right after the last,
  * so the voice starts as soon as the first second arrives. Returns a stop function.
  */
-function playPcmStream(url: string, onEnd: () => void): () => void {
-  const ctx = new AudioContext({ sampleRate: 24000 });
+function playPcmStream(ctx: AudioContext, url: string, onEnd: OnEnd): () => void {
   const controller = new AbortController();
   let next = 0;
   let leftover: number | null = null;
   let finished = false;
   const sources: AudioBufferSourceNode[] = [];
 
-  const end = () => {
+  const end = (heard = sources.length > 0) => {
     if (finished) return;
     finished = true;
-    onEnd();
-    void ctx.close().catch(() => undefined);
+    onEnd(heard);
   };
 
   void (async () => {
@@ -134,9 +185,9 @@ function playPcmStream(url: string, onEnd: () => void): () => void {
         next += buf.duration;
         sources.push(src);
       }
-      // Downloaded: end when the last scheduled chunk has played.
+      // Downloaded: end when the last scheduled chunk has played (at once if nothing came).
       const wait = Math.max(0, next - ctx.currentTime);
-      setTimeout(end, wait * 1000 + 100);
+      setTimeout(() => end(), wait * 1000 + 100);
     } catch {
       end();
     }
@@ -151,7 +202,7 @@ function playPcmStream(url: string, onEnd: () => void): () => void {
         /* already stopped */
       }
     }
-    end();
+    end(true);
   };
 }
 
@@ -177,60 +228,65 @@ async function englishVoice(): Promise<SpeechSynthesisVoice | null> {
  */
 export function ListenButton({ onListen }: { onListen: () => Promise<AudioAnswer> }) {
   const [state, setState] = useState<"idle" | "loading" | "playing" | "no_voice">("idle");
-  const audio = useRef<HTMLAudioElement | null>(null);
-  const stopStream = useRef<(() => void) | null>(null);
+  const stopPlayback = useRef<(() => void) | null>(null);
+  // Which tap is current. A stop, a new tap or leaving the card makes older ones stale, so audio that
+  // arrives late never starts over the next idea, and two taps never play twice.
+  const run = useRef(0);
+
+  const halt = () => {
+    stopPlayback.current?.();
+    stopPlayback.current = null;
+    window.speechSynthesis?.cancel();
+  };
 
   useEffect(
     () => () => {
-      audio.current?.pause();
-      stopStream.current?.();
-      window.speechSynthesis?.cancel();
+      run.current++;
+      halt();
     },
     [],
   );
 
   const stop = () => {
-    audio.current?.pause();
-    stopStream.current?.();
-    stopStream.current = null;
-    window.speechSynthesis?.cancel();
+    run.current++;
+    halt();
     setState("idle");
   };
 
   const play = async () => {
-    if (state === "playing") return stop();
+    // Tapping while it loads or plays stops it.
+    if (state === "playing" || state === "loading") return stop();
+    const ctx = unlockAudio(); // inside the tap, before any wait
+    const me = ++run.current;
+    const current = () => me === run.current;
+    const done = (heard: boolean) => current() && setState(heard ? "idle" : "no_voice");
     setState("loading");
     try {
       const answer = await onListen();
-      if (answer.kind === "stream") {
-        stopStream.current = playPcmStream(answer.url, () => setState("idle"));
-      } else if (answer.kind === "audio") {
-        const el = new Audio(answer.url);
-        audio.current = el;
-        el.onended = () => setState("idle");
-        await el.play();
+      if (!current()) return;
+      if (answer.kind === "stream" || answer.kind === "audio") {
+        if (!ctx) return setState("no_voice");
+        stopPlayback.current = answer.kind === "stream" ? playPcmStream(ctx, answer.url, done) : playFile(ctx, answer.url, done);
       } else {
         const voice = await englishVoice();
-        if (!voice) {
-          setState("no_voice");
-          return;
-        }
+        if (!current()) return;
+        if (!voice) return setState("no_voice");
         const u = new SpeechSynthesisUtterance(answer.text);
         u.voice = voice;
         u.lang = voice.lang;
-        u.onend = () => setState("idle");
+        u.onend = () => done(true);
         window.speechSynthesis.speak(u);
       }
       setState("playing");
     } catch {
-      setState("idle");
+      if (current()) setState("no_voice");
     }
   };
 
   return (
     <button className="play" onClick={play} aria-pressed={state === "playing"}>
       <span className="play-icon" aria-hidden="true">
-        {state === "playing" ? "■" : "▶"}
+        {state === "playing" || state === "loading" ? "■" : "▶"}
       </span>
       {state === "loading" ? "Getting the audio…" : state === "playing" ? "Stop" : state === "no_voice" ? "Audio not available right now" : "Listen"}
     </button>

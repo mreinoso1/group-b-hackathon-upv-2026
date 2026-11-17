@@ -50,7 +50,15 @@ export function App() {
   return (
     <div className="app">
       <header className="top">
-        <button className="brand" onClick={() => setScreen({ name: "cases" })} aria-label="Back to start">
+        <button
+          className="brand"
+          onClick={() => {
+            // Leave a join link's address too, so a reload doesn't jump back into that person; the room stays.
+            window.history.replaceState(null, "", ROOM ? `/?room=${ROOM}` : "/");
+            setScreen({ name: "cases" });
+          }}
+          aria-label="Back to start"
+        >
           Future You<span className="brand-dot">.</span>
         </button>
         {screen.name !== "cases" ? <span className="who-chip">{whoLabel(screen)}</span> : null}
