@@ -4,7 +4,7 @@ import { joinTarget, ROOM } from "./room.ts";
 import { CapsuleCard, ReactionBar } from "./components/CapsuleCard.tsx";
 import { ConsentScreen } from "./components/Consent.tsx";
 import { Bubble, FutureSelfIntro, MeetFutureSelf, PortraitContext, portraitsFor } from "./components/FutureSelf.tsx";
-import { GuideBot, GuideStage, useGuideSays } from "./components/Guide.tsx";
+import { Climb, GuideBot, GuideStage, useGuideSays } from "./components/Guide.tsx";
 import { AgreementScreen, AskAdvisor, CheckInScreen, FirstStepScreen } from "./components/Steps.tsx";
 
 type Step = "consent" | "intro" | "feed" | "agree" | "step" | "meet" | "checkin";
@@ -345,6 +345,7 @@ function Feed({ household, member, onDone }: { household: CaseSummary; member: s
           })}
         </ol>
       </div>
+      <Climb step={step} total={topics.length} />
       {pending ? (
         <p className="pending" role="status">
           <span className="spinner" aria-hidden="true" />
