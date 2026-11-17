@@ -71,7 +71,12 @@ describe("advisorBrief for one person who shared", () => {
     expect(first.kind).toBe("lost");
     expect(first.title).toMatch(/Umbrella/);
     expect(first.evidence.every((e) => e.type === "reaction" && e.member === "melanie" && e.topicId === "advice.protection.umbrella")).toBe(true);
-    expect(b.agenda.length).toBeLessThanOrEqual(3);
+  });
+
+  it("keeps every open item: a fourth 'I'm lost' never pushes an earlier one off", () => {
+    const topics = ["advice.debt", "advice.protection.life_insurance", "advice.protection.umbrella", "advice.savings", "advice.retirement"];
+    const b2 = advisorBrief(weah, [consent("melanie", true), ...topics.map((t) => react("melanie", t, "lost"))]);
+    expect(b2.agenda.map((a) => a.evidence[0]!.topicId)).toEqual(topics);
   });
 
   it("flags when the persona predicted it", () => {

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { AgendaItem, CoupleBrief, Evidence, PersonBrief, StuckTopic, Tension } from "@bite/plan-core";
 import { advisorApi, type AdvisorBrief } from "../api-advisor.ts";
 import { ROOM } from "../room.ts";
@@ -106,15 +106,13 @@ export function AdvisorScreen({ caseId }: { caseId: string }) {
       ) : (
         <>
           <section className="adv-agenda" aria-label="Suggested agenda">
-            <h2>Suggested agenda</h2>
             {brief.agenda.length ? (
-              <ol>
-                {brief.agenda.map((a, i) => (
-                  <AgendaCard key={i} item={a} n={i + 1} names={brief.people} />
-                ))}
-              </ol>
+              <AgendaRow items={brief.agenda} names={brief.people} />
             ) : (
-              <p className="muted">Nothing open yet: no unresolved "I'm lost", no differences between partners, no questions.</p>
+              <>
+                <h2>Suggested agenda</h2>
+                <p className="muted">Nothing open yet: no unresolved "I'm lost", no differences between partners, no questions.</p>
+              </>
             )}
             <p className="adv-skip">
               {brief.alreadyUnderstood.length
@@ -168,6 +166,59 @@ function Predicted({ t }: { t: Tension }) {
     <p className="adv-predicted">
       <strong>Persona predicted this</strong> · {t.id} ({t.severity.toLowerCase()}): {t.summary}
     </p>
+  );
+}
+
+/**
+ * Every agenda item, most important first, in one row that slides sideways: three fit on a laptop,
+ * the rest are a swipe (or the arrows) away, so a long list never pushes the people off the screen.
+ */
+function AgendaRow({ items, names }: { items: AgendaItem[]; names: PersonBrief[] }) {
+  const row = useRef<HTMLOListElement>(null);
+  const [edges, setEdges] = useState({ start: true, end: true });
+
+  const measure = useCallback(() => {
+    const el = row.current;
+    if (!el) return;
+    setEdges({ start: el.scrollLeft <= 2, end: el.scrollLeft + el.clientWidth >= el.scrollWidth - 2 });
+  }, []);
+  // Re-measure when items arrive (every 2 s) or the window changes size.
+  useEffect(() => {
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, [measure, items.length]);
+
+  const slide = (dir: 1 | -1) => {
+    const el = row.current;
+    const card = el?.querySelector("li");
+    if (!el || !card) return;
+    el.scrollBy({ left: dir * (card.getBoundingClientRect().width + 12), behavior: "smooth" });
+  };
+
+  return (
+    <>
+      <div className="adv-agenda-head">
+        <h2>
+          Suggested agenda <span className="adv-count">{items.length}</span>
+        </h2>
+        {!(edges.start && edges.end) ? (
+          <div className="adv-arrows">
+            <button className="adv-arrow" onClick={() => slide(-1)} disabled={edges.start} aria-label="Previous agenda items">
+              ‹
+            </button>
+            <button className="adv-arrow" onClick={() => slide(1)} disabled={edges.end} aria-label="Next agenda items">
+              ›
+            </button>
+          </div>
+        ) : null}
+      </div>
+      <ol ref={row} className="adv-agenda-row" onScroll={measure} tabIndex={0} aria-label={`${items.length} agenda items, slide sideways for more`}>
+        {items.map((a, i) => (
+          <AgendaCard key={`${a.kind}-${a.title}-${a.evidence[0]?.at ?? i}`} item={a} n={i + 1} names={names} />
+        ))}
+      </ol>
+    </>
   );
 }
 

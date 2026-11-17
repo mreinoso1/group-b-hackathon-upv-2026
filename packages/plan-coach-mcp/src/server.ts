@@ -470,7 +470,7 @@ export function createPlanCoachServer(deps: PlanCoachDeps): McpServer {
         "For the advisor, before the meeting. Per person: ideas understood (skip them), where they said \"I'm lost\" (how often, and " +
         "which re-explanation landed), where they wanted more, what they skipped or did not reach, their questions verbatim, their " +
         "first step and check-in. For a couple: where their orders of the plan's priorities agree and differ, quoting the plan. A " +
-        "suggested agenda of up to three items, each citing the events it comes from, flagged when the persona predicted it. Built " +
+        "suggested agenda with every open item, most important first, each citing the events it comes from, flagged when the persona predicted it. Built " +
         "only from recorded events and plan data; anyone who has not chosen to share shows as not shared, with only the questions they sent.",
       inputSchema: { room: ROOM, caseId: CASE_ID },
       annotations: { readOnlyHint: true },
