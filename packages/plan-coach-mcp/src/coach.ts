@@ -155,39 +155,56 @@ export async function speak(text: string, deps: CoachDeps, opts: { stream?: bool
     if (deps.cache.has("audio", audioId, format)) return { kind: "audio", audioId, format, cached: true, chars: text.length };
   }
   if (!deps.ai) return { kind: "browser", text, reason: "no_key" };
+  // ElevenLabs returns a whole mp3 in a second or two: wait for it even when streaming. The stream
+  // only carries the voice model's live audio, so answering "stream" and then making an mp3 left
+  // the player waiting for audio that never came (silence until a second tap found the mp3).
   // A prefetch and a tap for the same text share one generation.
-  let job = speaking.get(audioId);
-  if (!job) {
-    if (opts.stream && !deps.budget.canSpend("voice", VOICE_ESTIMATE_USD)) return { kind: "browser", text, reason: "budget" };
-    job = generateSpeech(text, audioId, deps);
-    speaking.set(audioId, job);
-    void job.finally(() => speaking.delete(audioId));
+  const mp3 = await shared(elevenJobs, audioId, () => viaEleven(text, audioId, deps));
+  if (mp3) return mp3;
+  if (opts.stream) {
+    if (!voiceJobs.has(audioId) && !deps.budget.canSpend("voice", VOICE_ESTIMATE_USD)) return { kind: "browser", text, reason: "budget" };
+    // Answer at once; the client plays the voice model's audio as it is written.
+    void shared(voiceJobs, audioId, () => viaVoice(text, audioId, deps));
+    return { kind: "stream", audioId };
   }
-  // Streaming: answer at once; the client plays the audio as it is written.
-  return opts.stream ? { kind: "stream", audioId } : job;
+  return shared(voiceJobs, audioId, () => viaVoice(text, audioId, deps));
 }
 
-const speaking = new Map<string, Promise<AudioResult>>();
+const elevenJobs = new Map<string, Promise<AudioResult | null>>();
+const voiceJobs = new Map<string, Promise<AudioResult>>();
 
-async function generateSpeech(text: string, audioId: string, deps: CoachDeps): Promise<AudioResult> {
-  if (!deps.ai) return { kind: "browser", text, reason: "no_key" };
-
-  if (Date.now() >= elevenPausedUntil) {
-    const estimate = text.length * PRICES["eleven-flash-v2.5"].perChar;
-    if (deps.budget.canSpend("tts", estimate)) {
-      try {
-        const bytes = await deps.ai.speech(text);
-        deps.budget.record("tts", estimate);
-        deps.cache.putBytes("audio", audioId, "mp3", bytes);
-        return { kind: "audio", audioId, format: "mp3", cached: false, chars: text.length };
-      } catch (e) {
-        const message = (e as Error).message;
-        deps.log?.(`elevenlabs failed: ${message.slice(0, 120)}`);
-        if (/ 40[13]/.test(message)) elevenPausedUntil = Date.now() + PAUSE_MS;
-      }
-    }
+/** One job per text at a time: a second request for the same text waits for the first. */
+function shared<T>(jobs: Map<string, Promise<T>>, key: string, start: () => Promise<T>): Promise<T> {
+  let job = jobs.get(key);
+  if (!job) {
+    job = start();
+    jobs.set(key, job);
+    void job.finally(() => jobs.delete(key));
   }
+  return job;
+}
 
+/** ElevenLabs' mp3, cached; null when it is paused, over budget or fails. */
+async function viaEleven(text: string, audioId: string, deps: CoachDeps): Promise<AudioResult | null> {
+  if (!deps.ai || Date.now() < elevenPausedUntil) return null;
+  const estimate = text.length * PRICES["eleven-flash-v2.5"].perChar;
+  if (!deps.budget.canSpend("tts", estimate)) return null;
+  try {
+    const bytes = await deps.ai.speech(text);
+    deps.budget.record("tts", estimate);
+    deps.cache.putBytes("audio", audioId, "mp3", bytes);
+    return { kind: "audio", audioId, format: "mp3", cached: false, chars: text.length };
+  } catch (e) {
+    const message = (e as Error).message;
+    deps.log?.(`elevenlabs failed: ${message.slice(0, 120)}`);
+    if (/ 40[13]/.test(message)) elevenPausedUntil = Date.now() + PAUSE_MS;
+    return null;
+  }
+}
+
+/** A realtime voice model reads the text, written to `<audioId>.part` as it comes, then kept as a WAV. */
+async function viaVoice(text: string, audioId: string, deps: CoachDeps): Promise<AudioResult> {
+  if (!deps.ai) return { kind: "browser", text, reason: "no_key" };
   for (let attempt = 0; attempt < 2; attempt++) {
     if (!deps.budget.canSpend("voice", VOICE_ESTIMATE_USD)) return { kind: "browser", text, reason: "budget" };
     deps.cache.remove("audio", audioId, "part");

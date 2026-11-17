@@ -223,6 +223,16 @@ describe("streamed voice", () => {
     expect(await capsuleAudio(capsule, d, { stream: true })).toMatchObject({ kind: "audio", cached: true });
   });
 
+  it("when ElevenLabs works, answers with its mp3 on the first tap, never with a stream that stays silent", async () => {
+    const ai = fakeAi([""]);
+    ai.speech.mockResolvedValue(new Uint8Array([1, 2, 3]));
+    const d = deps(ai);
+    const r = await capsuleAudio(capsule, d, { stream: true });
+    expect(r).toMatchObject({ kind: "audio", format: "mp3", cached: false });
+    expect(ai.voice).not.toHaveBeenCalled();
+    expect(await capsuleAudio(capsule, d, { stream: true })).toMatchObject({ kind: "audio", format: "mp3", cached: true });
+  });
+
   it("removes the partial audio when the voice fails", async () => {
     const ai = fakeAi([""]);
     ai.speech.mockRejectedValue(new Error("AI proxy /v1/audio/speech answered 500: upstream"));
