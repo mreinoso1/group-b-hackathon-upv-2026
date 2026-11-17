@@ -13,7 +13,7 @@ export interface CalendarEvent {
 
 /** RFC 5545 text: escape backslash, semicolon, comma and newlines. */
 export function icsText(s: string): string {
-  return s.replace(/\\/g, "\\\\").replace(/;/g, "\;").replace(/,/g, "\\,").replace(/\r?\n/g, "\\n");
+  return s.replace(/\\/g, "\\\\").replace(/;/g, "\\;").replace(/,/g, "\\,").replace(/\r?\n/g, "\\n");
 }
 
 /** Lines longer than 75 octets are folded with CRLF + space (approximated by characters). */
