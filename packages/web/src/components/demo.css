@@ -1,0 +1,223 @@
+/* The demo page (/demo): shown on the laptop or projector, scanned from phones. Tokens from styles.css. */
+
+.demo-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 28px 28px 40px;
+  min-height: 100dvh;
+}
+
+.demo-brand {
+  margin: 0;
+  font: 600 1rem var(--heading);
+  color: var(--ink-2);
+}
+
+.demo-head h1 {
+  font: 600 2rem/1.15 var(--heading);
+  margin: 6px 0 6px;
+}
+
+.demo-lede {
+  margin: 0 0 20px;
+  color: var(--slate);
+  max-width: 60ch;
+}
+
+.demo-page h2 {
+  font: 600 1.25rem/1.3 var(--heading);
+  margin: 0 0 12px;
+}
+
+.demo-warning {
+  background: #fff4e0;
+  border: 1px solid var(--warning);
+  border-radius: var(--radius);
+  padding: 12px 16px;
+  margin: 0 0 20px;
+  color: var(--ink);
+}
+
+/* pick a family */
+
+.demo-families {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 12px;
+}
+
+.demo-family {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  text-align: left;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 16px;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  transition: border-color 0.15s ease, transform 0.1s ease;
+}
+
+.demo-family:hover {
+  border-color: var(--blue);
+}
+
+.demo-family:active {
+  transform: scale(0.98);
+}
+
+.demo-family:focus-visible,
+.demo-page a:focus-visible,
+.demo-page button:focus-visible {
+  outline: 3px solid var(--blue);
+  outline-offset: 2px;
+}
+
+.demo-family-name {
+  font: 600 1.1rem var(--heading);
+}
+
+.demo-faces {
+  display: flex;
+}
+
+.demo-faces img {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--surface);
+  background: var(--panel);
+}
+
+.demo-faces img + img {
+  margin-left: -10px;
+}
+
+.demo-faces.small img {
+  width: 40px;
+  height: 40px;
+}
+
+/* the room */
+
+.demo-room {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--line);
+}
+
+.demo-room h2 {
+  margin: 0;
+}
+
+.demo-room-code {
+  margin: 4px 0 0;
+  color: var(--slate);
+  font-size: 1.1rem;
+}
+
+.demo-room-code strong {
+  font: 700 1.6rem var(--heading);
+  letter-spacing: 0.12em;
+  color: var(--blue);
+  margin-left: 4px;
+}
+
+.demo-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.demo-advisor {
+  text-decoration: none;
+  display: inline-block;
+  width: auto;
+}
+
+.demo-confirm {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+}
+
+.ghost.danger {
+  border-color: var(--critical);
+  color: var(--critical);
+}
+
+.demo-note {
+  margin: 12px 0 0;
+  color: var(--good);
+}
+
+/* the codes */
+
+.demo-codes {
+  list-style: none;
+  margin: 20px 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.demo-code {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 18px 16px 14px;
+}
+
+.demo-code h3 {
+  font: 600 1.2rem var(--heading);
+  margin: 8px 0 2px;
+}
+
+.demo-code .muted {
+  margin: 0 0 12px;
+}
+
+.qr {
+  width: 100%;
+  max-width: 240px;
+  aspect-ratio: 1;
+  image-rendering: pixelated;
+  background: var(--panel);
+  border-radius: 8px;
+}
+
+.demo-url {
+  margin-top: 10px;
+  font-size: 0.75rem;
+  color: var(--muted);
+  word-break: break-all;
+}
+
+@media (max-width: 700px) {
+  .demo-page {
+    padding: 16px;
+  }
+  .demo-head h1 {
+    font-size: 1.6rem;
+  }
+}
