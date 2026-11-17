@@ -196,9 +196,9 @@ describe("get_future_self", () => {
 describe("first step and check-ins", () => {
   const inDays = (d: number) => new Date(Date.now() + d * 86_400_000).toISOString().slice(0, 10);
 
-  it("standard capsules carry a line from the reader's future self", async () => {
+  it("standard capsules carry a line from the guide, about the reader's own road", async () => {
     const c = parse(await call("get_capsule", { caseId: WEAH, topicId: "map.timeline", member: "melanie" })) as Capsule;
-    expect(c.futureSelfLine).toMatch(/our road from 38 to 60/);
+    expect(c.futureSelfLine).toMatch(/your road from 38 to 60/);
   });
 
   it("offers the plan's priorities, in the plan's order", async () => {
@@ -280,9 +280,9 @@ describe("each person's order and voice", () => {
     expect((await order(WEAH, "melanie"))[0]).toBe("overview.score");
     const first = parse(await call("get_capsule", { caseId: "michael-carter", topicId: "overview.big_picture", member: "michael" })) as Capsule;
     expect(first.blocks[0]!.text).toMatch(/strong position/);
-    expect(first.futureSelfLine).toMatch(/^It's me, Michael/);
+    expect(first.futureSelfLine).toMatch(/^Let's start, Michael/);
     const second = parse(await call("get_capsule", { caseId: "michael-carter", topicId: "overview.score", member: "michael" })) as Capsule;
-    expect(second.futureSelfLine).not.toMatch(/^It's me/);
+    expect(second.futureSelfLine).not.toMatch(/^Let's start/);
   });
 
   it("reading together, the partners' future selves take turns", async () => {

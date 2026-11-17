@@ -3,10 +3,11 @@ import { api, type Capsule, type CaseSummary, type Level, type Reaction, type To
 import { joinTarget, ROOM } from "./room.ts";
 import { CapsuleCard, ReactionBar } from "./components/CapsuleCard.tsx";
 import { ConsentScreen } from "./components/Consent.tsx";
-import { Bubble, FutureSelfIntro, PortraitContext, portraitsFor } from "./components/FutureSelf.tsx";
+import { Bubble, FutureSelfIntro, MeetFutureSelf, PortraitContext, portraitsFor } from "./components/FutureSelf.tsx";
+import { GuideBot } from "./components/Guide.tsx";
 import { AgreementScreen, AskAdvisor, CheckInScreen, FirstStepScreen } from "./components/Steps.tsx";
 
-type Step = "consent" | "intro" | "feed" | "agree" | "step" | "checkin";
+type Step = "consent" | "intro" | "feed" | "agree" | "step" | "meet" | "checkin";
 type Screen = { name: "cases" } | { name: "who"; household: CaseSummary } | { name: Step; household: CaseSummary; member: string };
 
 export function App() {
@@ -85,8 +86,9 @@ export function App() {
         ) : null}
         {screen.name === "agree" ? <AgreementScreen household={screen.household} onDone={() => setScreen({ ...screen, name: "step" })} /> : null}
         {screen.name === "step" ? (
-          <FirstStepScreen household={screen.household} member={screen.member} onCommitted={() => setScreen({ ...screen, name: "checkin" })} />
+          <FirstStepScreen household={screen.household} member={screen.member} onCommitted={() => setScreen({ ...screen, name: "meet" })} />
         ) : null}
+        {screen.name === "meet" ? <MeetFutureSelf household={screen.household} member={screen.member} onDone={() => setScreen({ ...screen, name: "checkin" })} /> : null}
         {screen.name === "checkin" ? <CheckInScreen household={screen.household} member={screen.member} onRestart={() => setScreen({ name: "cases" })} /> : null}
       </main>
       </PortraitContext.Provider>
@@ -101,19 +103,15 @@ function whoLabel(screen: Exclude<Screen, { name: "cases" }>): string {
 }
 
 function CasePicker({ cases, onPick }: { cases: CaseSummary[] | null; onPick: (c: CaseSummary) => void }) {
-  const faces = cases?.flatMap((c) => c.members.map((m) => ({ key: `${c.id}-${m.id}`, name: m.name }))) ?? [];
   return (
     <section className="intro home">
       <div className="home-hero">
-        {faces.length ? (
-          <div className="face-row" aria-hidden="true">
-            {faces.map((f) => (
-              <img key={f.key} src={`/avatars/${f.key}.jpg`} alt="" />
-            ))}
-          </div>
-        ) : null}
-        <h1>Meet your future self</h1>
-        <p className="lede">A message from you, years from now. Then your plan, one idea at a time, explained your way.</p>
+        <div className="home-guide" aria-hidden="true">
+          <GuideBot size={84} />
+        </div>
+        <h1>Your plan, explained by a guide who never gets tired</h1>
+        <p className="lede">One idea at a time, in plain words. One first step. And at the end, a surprise: meet yourself, years from now.</p>
+        <p className="demo-note">Demo · four example families</p>
       </div>
       {!cases ? <p className="muted">Loading families…</p> : null}
       <ul className="case-list">
@@ -122,7 +120,9 @@ function CasePicker({ cases, onPick }: { cases: CaseSummary[] | null; onPick: (c
             <button className="case" onClick={() => onPick(c)}>
               <span className="case-faces" aria-hidden="true">
                 {c.members.map((m) => (
-                  <img key={m.id} src={`/avatars/${c.id}-${m.id}.jpg`} alt="" />
+                  <span key={m.id} className="case-initial">
+                    {m.name[0]}
+                  </span>
                 ))}
               </span>
               <span className="case-text">
@@ -133,10 +133,6 @@ function CasePicker({ cases, onPick }: { cases: CaseSummary[] | null; onPick: (c
                 <span className="muted">
                   {c.city}, {c.state}
                   {c.children.length ? ` · ${c.children.map((k) => k.name).join(" & ")}` : ""}
-                </span>
-                <span className="case-message">
-                  <span className="dot" aria-hidden="true" />
-                  {c.members.length > 1 ? `${c.members.length} messages from the future` : "1 message from the future"}
                 </span>
               </span>
             </button>
