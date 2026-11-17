@@ -1,7 +1,7 @@
 // The future self: who greets each person and speaks in the thread. The steps after the
 // capsules live in Steps.tsx. Every number shown comes from the plan via plan-coach.
 import { createContext, useContext, useEffect, useRef, useState } from "react";
-import { GUIDE_NAME, GuideBot, useGuideConversation, useGuideMute, useGuideSays } from "./Guide.tsx";
+import { GUIDE_NAME, GuideBot, GuideStage, useGuideConversation, useGuideMute, useGuideSays } from "./Guide.tsx";
 import type { CaseSummary } from "../api.ts";
 import { futureApi, type FutureSelfView } from "../api-future.ts";
 import { ListenButton } from "./CapsuleCard.tsx";
@@ -23,15 +23,15 @@ export function portraitsFor(household: CaseSummary): Record<string, string> {
 }
 
 /** A chat-style message from the guide (or from "me", the reader). The guide says it aloud as it appears. */
-export function Bubble({ name: _name, children, tone = "self" }: { name: string; children: React.ReactNode; tone?: "self" | "me" }) {
+export function Bubble({ name: _name, children, tone = "self", big = false }: { name: string; children: React.ReactNode; tone?: "self" | "me"; big?: boolean }) {
   const { muted, toggle, supported } = useGuideMute();
   const text = tone === "self" && typeof children === "string" ? children : undefined;
   const talking = useGuideSays(text, muted);
   return (
-    <div className={`bubble-row ${tone}`}>
+    <div className={`bubble-row ${tone} ${big ? "big" : ""}`}>
       {tone === "self" ? (
         <span className="bubble-avatar guide" aria-hidden="true">
-          <GuideBot size={34} talking={talking} />
+          <GuideBot size={big ? 62 : 40} talking={talking} />
         </span>
       ) : null}
       <p className={`bubble ${tone}`}>
@@ -191,14 +191,14 @@ export function FutureSelfIntro({ household, member, onStart }: { household: Cas
   const { shown, talking, done } = useGuideConversation(lines, muted);
   return (
     <section className="guide-intro">
-      <div className="guide-stage">
+      <GuideStage>
         <GuideBot size={150} talking={talking} waving={shown === 1} />
         {supported ? (
           <button className="guide-sound" onClick={toggle} aria-label={muted ? "Turn the guide's voice on" : "Mute the guide"}>
-            {muted ? "🔇 Sound off" : "🔊 Sound on"}
+            {muted ? "🔈 Turn sound on" : "🔊 Sound on"}
           </button>
         ) : null}
-      </div>
+      </GuideStage>
       <div className="guide-lines" aria-live="polite">
         {lines.slice(0, shown).map((l) => (
           <p key={l} className="bubble self guide-line">
@@ -225,18 +225,19 @@ export function MeetFutureSelf({ household, member, onDone }: { household: CaseS
   const [open, setOpen] = useState(false);
   const self = selves?.[0];
   const who = !selves?.length ? "yourself, years from now" : selves.length > 1 ? "yourselves, years from now" : `you, at ${self!.age}`;
+  const meetLine = `You did the hard part: you picked a step and a date. Want to meet who it's for? It's ${who}.`;
+  const { muted } = useGuideMute();
+  const meetTalking = useGuideSays(selves ? meetLine : undefined, muted);
   if (selves && !selves.length) {
     onDone();
     return null;
   }
   return (
     <section className="guide-intro meet">
-      <div className="guide-stage small">
-        <GuideBot size={96} />
-      </div>
-      <p className="bubble self guide-line">
-        You did the hard part: you picked a step and a date. Want to meet who it's for? It's {who}.
-      </p>
+      <GuideStage compact>
+        <GuideBot size={104} talking={meetTalking} waving={!open} />
+      </GuideStage>
+      <p className="bubble self guide-line">{meetLine}</p>
       {!open ? (
         <>
           <p className="muted meet-note">

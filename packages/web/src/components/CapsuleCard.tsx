@@ -9,6 +9,28 @@ export function RichText({ text }: { text: string }) {
   return <>{parts.map((p, i) => (i % 2 ? <strong key={i}>{p}</strong> : p))}</>;
 }
 
+/**
+ * The first sentence (or two, if the first is very short) of the plan's text, and the rest. The
+ * card leads with that and keeps the rest one tap away: the plan's own words, just not all at once.
+ * Bold markers are never split.
+ */
+export function splitLead(text: string): { lead: string; rest: string } {
+  const sentence = /^(.+?[.!?])(?=\s+[A-Z"“(]|\s*$)/s;
+  const first = sentence.exec(text);
+  if (!first) return { lead: text, rest: "" };
+  let lead = first[1]!;
+  let rest = text.slice(lead.length).trim();
+  if (lead.length < 45 && rest) {
+    const second = sentence.exec(rest);
+    if (second) {
+      lead = `${lead} ${second[1]}`;
+      rest = rest.slice(second[1]!.length).trim();
+    }
+  }
+  if ((lead.match(/\*\*/g)?.length ?? 0) % 2) return { lead: text, rest: "" };
+  return { lead, rest };
+}
+
 const STYLE_TAG: Record<string, string> = { plain: "In plain words", one_number: "The one number that matters", analogy: "Said another way" };
 
 function levelTag(c: Capsule): string | null {
@@ -19,6 +41,11 @@ function levelTag(c: Capsule): string | null {
 
 export function CapsuleCard({ capsule, step, total, onListen }: { capsule: Capsule; step: number; total: number; onListen: () => Promise<AudioAnswer> }) {
   const [showPlanWords, setShowPlanWords] = useState(false);
+  const [more, setMore] = useState(false);
+  // Standard ideas lead with one sentence; "I'm lost" and "Tell me more" show everything.
+  const short = capsule.level === "standard" && capsule.blocks.length > 0;
+  const head = short ? splitLead(capsule.blocks[0]!.text) : null;
+  const restBlocks = short ? [...(head!.rest ? [head!.rest] : []), ...capsule.blocks.slice(1).map((b) => b.text)] : [];
   const tag = levelTag(capsule);
   const sections = new Set(capsule.figures.map((f) => f.section));
   const oneSection = sections.size === 1 ? capsule.figures[0]?.section : undefined;
@@ -34,13 +61,27 @@ export function CapsuleCard({ capsule, step, total, onListen }: { capsule: Capsu
 
       {capsule.chart ? <Chart spec={capsule.chart} simple={capsule.level === "simple"} /> : null}
 
-      <div className="blocks">
-        {capsule.blocks.map((b, i) => (
-          <p key={i}>
-            <RichText text={b.text} />
+      {short ? (
+        <div className="blocks">
+          <p className="lead">
+            <RichText text={head!.lead} />
           </p>
-        ))}
-      </div>
+          {more ? restBlocks.map((t, i) => <p key={i}><RichText text={t} /></p>) : null}
+          {restBlocks.length ? (
+            <button className="link read-more" onClick={() => setMore((v) => !v)} aria-expanded={more}>
+              {more ? "Show less" : "Read more"}
+            </button>
+          ) : null}
+        </div>
+      ) : (
+        <div className="blocks">
+          {capsule.blocks.map((b, i) => (
+            <p key={i}>
+              <RichText text={b.text} />
+            </p>
+          ))}
+        </div>
+      )}
 
       {capsule.generatedBy === "llm" ? (
         <p className="checked">
