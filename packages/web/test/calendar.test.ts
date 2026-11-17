@@ -21,7 +21,7 @@ describe("calendar file", () => {
   });
 
   it("escapes commas, semicolons and newlines in text", () => {
-    expect(icsText("a, b; c\nd")).toBe("a\\, b\; c\\nd");
+    expect(icsText("a, b; c\nd")).toBe("a\\, b\\; c\\nd");
   });
 
   it("puts a check-in a month before the plan date", () => {
