@@ -207,13 +207,84 @@
   margin: 16px 0;
 }
 
-.adv-agenda ol {
+.adv-agenda-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.adv-agenda-head h2 {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.adv-count {
+  font: 600 0.8rem var(--text);
+  background: var(--blue-wash);
+  color: var(--blue);
+  border-radius: 999px;
+  padding: 2px 9px;
+}
+
+.adv-arrows {
+  display: flex;
+  gap: 6px;
+}
+
+.adv-arrow {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 1.3rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.adv-arrow:hover:not(:disabled) {
+  border-color: var(--blue);
+  color: var(--blue);
+}
+
+.adv-arrow:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.adv-arrow:focus-visible,
+.adv-agenda-row:focus-visible {
+  outline: 3px solid var(--blue);
+  outline-offset: 2px;
+}
+
+/* One row that slides sideways: three cards fit on a laptop, the rest are a swipe away. */
+.adv-agenda-row {
   list-style: none;
   margin: 0;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  padding: 0 0 6px;
+  display: flex;
   gap: 12px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  overscroll-behavior-x: contain;
+}
+
+.adv-agenda-row > li {
+  flex: 0 0 calc((100% - 24px) / 3);
+  scroll-snap-align: start;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .adv-agenda-row {
+    scroll-behavior: auto;
+  }
 }
 
 .adv-item {
@@ -370,8 +441,11 @@
   .advisor-page {
     padding: 16px;
   }
-  .adv-agenda ol,
   .adv-grid {
     grid-template-columns: 1fr !important;
+  }
+  /* On a phone or tablet: one card and a peek of the next, swiped with a finger. */
+  .adv-agenda-row > li {
+    flex-basis: 85%;
   }
 }

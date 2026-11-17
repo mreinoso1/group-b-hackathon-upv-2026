@@ -86,7 +86,7 @@ export interface AdvisorBrief {
   band: string;
   people: PersonBrief[];
   couple: CoupleBrief | null;
-  /** Up to three, by evidence: unresolved "I'm lost" first, then couple differences, then open questions. */
+  /** Every open item, by evidence: unresolved "I'm lost" first, then couple differences, then open questions. */
   agenda: AgendaItem[];
   /** Ideas everyone who read them marked "Got it" and nobody got lost on: skip them in the meeting. */
   alreadyUnderstood: TopicRef[];
@@ -260,10 +260,11 @@ export function advisorBrief(raw: RawCase, events: PlanEvent[]): AdvisorBrief {
     personaPredicted: predicted(tensions, q.topicId),
     evidence: [ev(q)],
   }));
-  const byWeight = (a: { weight: number }, b: { weight: number }) => b.weight - a.weight;
-  const agenda = [...lostItems.sort(byWeight), ...coupleItems.sort(byWeight), ...questionItems]
-    .slice(0, 3)
-    .map(({ kind, title, detail, personaPredicted, evidence }) => ({ kind, title, detail, personaPredicted, evidence }));
+  // Every item stays: a fourth "I'm lost" must not push an earlier one off the advisor's list.
+  // Within a kind, the heavier first; ties in the order they happened, so new items join at the end.
+  const firstAt = (a: AgendaItem) => a.evidence.map((e) => e.at).sort()[0] ?? "";
+  const byWeight = (a: AgendaItem & { weight: number }, b: AgendaItem & { weight: number }) => b.weight - a.weight || firstAt(a).localeCompare(firstAt(b));
+  const agenda = [...lostItems.sort(byWeight), ...coupleItems.sort(byWeight), ...questionItems].map(({ kind, title, detail, personaPredicted, evidence }) => ({ kind, title, detail, personaPredicted, evidence }));
 
   // Skippable: understood by everyone who shared and reacted to it, stuck for nobody.
   const sharers = people.filter((p) => p.shared);

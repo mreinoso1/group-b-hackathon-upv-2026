@@ -12,7 +12,7 @@ Sherpas already writes a good plan. The problem is the **amount** and the **form
 - **The plan's own words.** Capsules are the plan's text, dosed, never rewritten. Every number comes from the plan JSON; if something is missing, we say so. A red score is never the first thing they see: the plan's own summary, which starts from their strengths, comes first.
 - **Each person at their own pace.** Couples pick who is reading; each hears their own future self, orders the plan's priorities, and the app shows where they agree and differ. The order is always theirs.
 
-**For the advisor (laptop):** a live brief at `/advisor/<caseId>`: what each person understood (skip it), where they said *I'm lost* and which explanation finally worked, what they asked, the step they chose, where a couple differs, and a three-item agenda that cites the evidence and flags when the persona predicted it. Only what each person chose to share.
+**For the advisor (laptop):** a live brief at `/advisor/<caseId>`: what each person understood (skip it), where they said *I'm lost* and which explanation finally worked, what they asked, the step they chose, where a couple differs, and an agenda of every open item, most important first, that cites the evidence and flags when the persona predicted it. Only what each person chose to share.
 
 **Two MCP servers.** `plan-coach` (ours) reads each family's plan from the **Sherpas MCP** and serves it as capsules, the future self, the first step and the advisor brief, so any MCP host (Claude Desktop, an advisor's assistant) can use them too.
 
@@ -101,7 +101,7 @@ advisor laptop ─┘                                               resources ·
 | `record_checkin` | `caseId`, `member`, `status` (`done` · `not_yet`) | Stores the answer; `not_yet` returns the capsule that explains the step |
 | `log_question` | `caseId`, `member`, `topicId`, `text` | Stores a question for the advisor (shared on its own) |
 | `set_consent` · `get_consent` | `caseId`, `member`, `share` · `caseId` | Each adult's choice to share with the advisor; the latest counts |
-| `get_advisor_brief` | `caseId` | Per person: understood, stuck (and what landed), wanted more, skipped, not reached, questions, first step, check-in; the couple's agreement quoting the plan; an agenda of up to three items, each citing its events and flagged when a persona tension predicted it |
+| `get_advisor_brief` | `caseId` | Per person: understood, stuck (and what landed), wanted more, skipped, not reached, questions, first step, check-in; the couple's agreement quoting the plan; an agenda of every open item (unresolved *I'm lost* first, then couple differences, then questions), each citing its events and flagged when a persona tension predicted it |
 | `reset_case` | `caseId` | Deletes everything recorded for one family (demos) |
 | `get_audio` | same as `get_capsule`, plus `intro?`, `stream?` | `{ kind: "audio" }` (cached), `{ kind: "stream" }` (being generated) or `{ kind: "browser", text }` |
 
