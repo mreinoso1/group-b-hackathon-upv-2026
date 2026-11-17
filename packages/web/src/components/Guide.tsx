@@ -286,3 +286,84 @@ export function useGuideSays(text: string | undefined, muted: boolean) {
   }, [text, muted]);
   return talking;
 }
+
+// ---- the climb: each idea is a step up the mountain ----
+
+/** The trail's turns, in a 360 × 84 box, from the foot (left) to the summit (right). */
+const TRAIL: [number, number][] = [
+  [14, 74],
+  [92, 62],
+  [58, 50],
+  [168, 42],
+  [132, 30],
+  [250, 24],
+  [226, 16],
+  [338, 10],
+];
+
+function trailPoint(f: number): [number, number] {
+  const segs = TRAIL.slice(1).map((p, i) => {
+    const a = TRAIL[i]!;
+    return { a, b: p, len: Math.hypot(p[0] - a[0], p[1] - a[1]) };
+  });
+  const total = segs.reduce((n, s) => n + s.len, 0);
+  let d = Math.max(0, Math.min(1, f)) * total;
+  for (const s of segs) {
+    if (d <= s.len) {
+      const k = s.len ? d / s.len : 0;
+      return [s.a[0] + (s.b[0] - s.a[0]) * k, s.a[1] + (s.b[1] - s.a[1]) * k];
+    }
+    d -= s.len;
+  }
+  return TRAIL[TRAIL.length - 1]!;
+}
+
+/** Summit climbing the plan: one step up per idea; at the last idea, the flag goes up on the peak. */
+export function Climb({ step, total }: { step: number; total: number }) {
+  const f = total > 1 ? (step - 1) / (total - 1) : 0;
+  const [x, y] = trailPoint(f);
+  const top = step >= total && total > 0;
+  const dots = Array.from({ length: Math.max(total, 0) }, (_, i) => trailPoint(total > 1 ? i / (total - 1) : 0));
+  return (
+    <div className={`climb ${top ? "top" : ""}`} aria-label={`Idea ${step} of ${total}`}>
+      <svg viewBox="0 0 360 84" aria-hidden="true">
+        <path d="M0 84 L60 46 L104 62 L196 18 L240 34 L300 4 L360 30 L360 84 Z" fill="#efe3cf" />
+        <path d="M196 18 L208 26 L200 25 L194 30 L186 25 Z M300 4 L312 13 L304 12 L298 17 L290 12 Z" fill="#fff" />
+        <polyline points={TRAIL.map((p) => p.join(",")).join(" ")} fill="none" stroke="#c9b28c" strokeWidth="2" strokeDasharray="3 4" strokeLinecap="round" />
+        {dots.map(([dx, dy], i) => (
+          <circle key={i} cx={dx} cy={dy} r={i < step ? 3.4 : 2.6} fill={i < step ? "#E8A33D" : "#fff"} stroke="#c9b28c" strokeWidth="1.2" />
+        ))}
+        <g className="climb-flag" transform="translate(338 10)">
+          <line x1="0" y1="0" x2="0" y2="-14" stroke="#1E2A4A" strokeWidth="2" />
+          <path d="M0 -14 L12 -10 L0 -6 Z" fill={top ? "#E8A33D" : "#d8cbb4"} />
+        </g>
+      </svg>
+      <span className="climb-bot" style={{ left: `${(x / 360) * 100}%`, top: `${(y / 84) * 100}%` }}>
+        <GuideBot size={30} waving={top} />
+      </span>
+    </div>
+  );
+}
+
+/** Confetti for the moment someone commits to their first step. */
+export function Confetti() {
+  const colors = ["#E8A33D", "#9FE1CB", "#F0997B", "#7F77DD", "#1E2A4A", "#F3C16E"];
+  const bits = Array.from({ length: 46 }, (_, i) => ({
+    left: (i * 37) % 100,
+    delay: (i % 9) * 0.07,
+    dur: 1.6 + ((i * 13) % 10) / 10,
+    rot: (i * 47) % 360,
+    color: colors[i % colors.length]!,
+    w: 6 + (i % 3) * 2,
+  }));
+  return (
+    <div className="confetti" aria-hidden="true">
+      {bits.map((b, i) => (
+        <i
+          key={i}
+          style={{ left: `${b.left}%`, background: b.color, width: b.w, height: b.w * 1.6, animationDelay: `${b.delay}s`, animationDuration: `${b.dur}s`, transform: `rotate(${b.rot}deg)` }}
+        />
+      ))}
+    </div>
+  );
+}

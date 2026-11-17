@@ -37,7 +37,7 @@
 html,
 body {
   margin: 0;
-  background: var(--bg);
+  background: #fcf8f1;
   color: var(--ink);
   font: 16px/1.55 var(--text);
   -webkit-text-size-adjust: 100%;
@@ -68,7 +68,9 @@ button {
   margin: 0 -16px 16px;
   padding-left: 16px;
   padding-right: 16px;
-  background: var(--surface);
+  background: rgba(252, 248, 241, 0.92);
+  backdrop-filter: blur(8px);
+  border-bottom-color: #efe6d6;
   position: sticky;
   top: 0;
   z-index: 5;
@@ -2152,4 +2154,87 @@ video.media-slot {
 .read-more {
   margin: 0 0 12px;
   font-weight: 600;
+}
+
+/* ---- v6: the climb, the celebration, warmer pages ---- */
+
+.climb {
+  position: relative;
+  aspect-ratio: 360 / 84;
+  margin: 4px 0 8px;
+}
+
+.climb > svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.climb-bot {
+  position: absolute;
+  transform: translate(-50%, -88%);
+  transition: left 0.7s cubic-bezier(0.3, 0.8, 0.3, 1), top 0.7s cubic-bezier(0.3, 0.8, 0.3, 1);
+  filter: drop-shadow(0 2px 2px rgba(30, 42, 74, 0.2));
+}
+
+.climb.top .climb-flag path {
+  animation: flag-wave 0.9s ease-in-out infinite alternate;
+  transform-box: fill-box;
+  transform-origin: left center;
+}
+
+@keyframes flag-wave {
+  to { transform: scaleX(1.25) skewY(-6deg); }
+}
+
+.confetti {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 30;
+}
+
+.confetti i {
+  position: absolute;
+  top: -20px;
+  border-radius: 2px;
+  opacity: 0;
+  animation-name: confetti-fall;
+  animation-timing-function: cubic-bezier(0.25, 0.6, 0.4, 1);
+  animation-fill-mode: forwards;
+}
+
+@keyframes confetti-fall {
+  0% { opacity: 1; transform: translateY(0) rotate(0deg); }
+  80% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(105vh) rotate(540deg); }
+}
+
+.cheer {
+  display: inline-block;
+  animation: cheer 0.55s ease-out 3;
+}
+
+@keyframes cheer {
+  0%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-18px) scale(1.04); }
+}
+
+.capsule,
+.home .case,
+.calendar-card {
+  background-color: #fff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .confetti,
+  .cheer,
+  .climb.top .climb-flag path {
+    animation: none !important;
+  }
+  .confetti { display: none; }
+  .climb-bot { transition: none; }
 }
