@@ -50,7 +50,9 @@ export function buildCapsule(raw: RawCase, req: CapsuleRequest): Capsule {
   const topic = findTopic(req.topicId);
   if (!topic) throw new UnknownTopicError(req.topicId);
   const visual = topic.visual(raw);
-  const main = planBlocks(raw, topic.main);
+  const rank = topic.rank;
+  // Some ideas put their most telling sentence first (sort is stable: ties keep the plan's order).
+  const main = rank ? [...planBlocks(raw, topic.main)].sort((x, y) => rank(x.text) - rank(y.text)) : planBlocks(raw, topic.main);
   const missing = [...visual.missing];
   if (!main.length) missing.push(srcPath(topic.main));
 
