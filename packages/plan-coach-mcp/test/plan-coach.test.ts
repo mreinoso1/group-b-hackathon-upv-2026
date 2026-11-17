@@ -393,3 +393,14 @@ describe("get_guide_audio", () => {
     expect((await call("get_guide_audio", { text: "<script>alert(1)</script>" })).isError).toBe(true);
   });
 });
+
+describe("the postcard's P.S.", () => {
+  it("names the step Samantha chose, and that it is not about her savings", async () => {
+    const inDays = (d: number) => new Date(Date.now() + d * 86_400_000).toISOString().slice(0, 10);
+    const before = parse(await call("get_first_step", { caseId: "samantha-lewis", member: "samantha" }));
+    expect(before.postcardNotes).toEqual({});
+    await call("commit_step", { caseId: "samantha-lewis", member: "samantha", priorityIndex: 0, dueDate: inDays(7) });
+    const after = parse(await call("get_first_step", { caseId: "samantha-lewis", member: "samantha" }));
+    expect(after.postcardNotes.samantha).toMatch(/^P\.S\. You chose “Keep your protection in place” for \w+ \d+\. Thank you: that's the start\. It won't make our savings last on its own/);
+  });
+});

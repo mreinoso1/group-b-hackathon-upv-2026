@@ -42,6 +42,21 @@ export function futureSelfNumbers(f: FutureSelf): number[] {
 }
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const MONTHS_LONG = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+/**
+ * The postcard's P.S., written after the person chose their step: it names that step and its date
+ * (the recorded message says "let's start this week", so the P.S. answers it). When the plan shows
+ * savings running out and the step is about something else, it says so plainly.
+ */
+export function postcardNote(f: Pick<FutureSelf, "reason">, step: { label: string; dueDate: string; aboutSavings: boolean }): string {
+  const [, month, day] = step.dueDate.split("-").map(Number);
+  const when = month && day ? `${MONTHS_LONG[month - 1]} ${day}` : step.dueDate;
+  const thanks = `P.S. You chose “${step.label}” for ${when}. Thank you: that's the start.`;
+  return f.reason === "savings_run_out" && !step.aboutSavings
+    ? `${thanks} It won't make our savings last on its own; that part is still ahead of us.`
+    : thanks;
+}
 
 /** "Before your home purchase · Jan 2030", "Before Liam starts college · Aug 2038", "Before Emily's retirement · May 2044". */
 export function checkInLabel(m: Milestone): string {
