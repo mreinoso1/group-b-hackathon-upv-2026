@@ -145,15 +145,34 @@ function pickVoice(): SpeechSynthesisVoice | undefined {
 
 const canSpeak = () => typeof window !== "undefined" && "speechSynthesis" in window;
 
-/** Speaks one line; resolves when it ends (or right away when the device can't speak). */
+/**
+ * Whether the guide may speak: only with an English voice. Without one the browser falls back to
+ * its default voice, and on a Spanish Windows that reads English with a Spanish voice.
+ */
+const canTalk = () => canSpeak() && pickVoice() !== undefined;
+
+/** Whether the device has an English voice; browsers load their voices a moment after the page. */
+function useEnglishVoice(): boolean {
+  const [ok, setOk] = useState(canTalk);
+  useEffect(() => {
+    if (!canSpeak()) return;
+    const update = () => setOk(canTalk());
+    window.speechSynthesis.addEventListener("voiceschanged", update);
+    update();
+    return () => window.speechSynthesis.removeEventListener("voiceschanged", update);
+  }, []);
+  return ok;
+}
+
+/** Speaks one line in English; resolves when it ends (or right away when there is no English voice). */
 function say(text: string): Promise<void> {
   return new Promise((resolve) => {
-    if (!canSpeak()) return resolve();
+    const v = canSpeak() ? pickVoice() : undefined;
+    if (!v) return resolve();
     const synth = window.speechSynthesis;
     const u = new SpeechSynthesisUtterance(text);
-    u.lang = "en-US";
-    const v = pickVoice();
-    if (v) u.voice = v;
+    u.voice = v;
+    u.lang = v.lang;
     u.rate = 1.03;
     u.pitch = 1.1;
     let done = false;
@@ -174,6 +193,7 @@ function say(text: string): Promise<void> {
 /** Mute switch shared by every screen (remembered on this device). */
 export function useGuideMute() {
   const [muted, setMuted] = useState(readMuted);
+  const english = useEnglishVoice();
   const toggle = () =>
     setMuted((m) => {
       try {
@@ -184,7 +204,8 @@ export function useGuideMute() {
       if (!m && canSpeak()) window.speechSynthesis.cancel();
       return !m;
     });
-  return { muted, toggle, supported: canSpeak() };
+  // No English voice: no sound switch, and the guide stays quiet (its lines still appear).
+  return { muted, toggle, supported: english };
 }
 
 /**
@@ -206,7 +227,7 @@ export function useGuideConversation(lines: string[], muted: boolean) {
     (async () => {
       for (let i = 0; i < lines.length && live; i++) {
         setShown(i + 1);
-        if (!muted && canSpeak()) {
+        if (!muted && canTalk()) {
           setTalking(true);
           await say(lines[i]!);
           if (!live) return;
@@ -237,7 +258,7 @@ export function useGuideSays(text: string | undefined, muted: boolean) {
     let live = true;
     setTalking(true);
     const stopAfter = (ms: number) => window.setTimeout(() => live && setTalking(false), ms);
-    if (!muted && canSpeak()) {
+    if (!muted && canTalk()) {
       window.speechSynthesis.cancel();
       void say(text).then(() => live && setTalking(false));
     } else stopAfter(Math.min(2200, 600 + text.length * 20));
