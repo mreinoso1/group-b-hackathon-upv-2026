@@ -95,7 +95,8 @@ export function createAiClient(cfg: AiConfig): AiClient {
       };
     },
     async speech(input) {
-      const res = await post("/v1/audio/speech", { model: cfg.ttsModel ?? "eleven-flash-v2.5", voice: cfg.voice ?? "alloy", input, response_format: "mp3" }, 45_000);
+      // ElevenLabs answers in a second or two; past 15 s the person is waiting, so fall back to the voice model.
+      const res = await post("/v1/audio/speech", { model: cfg.ttsModel ?? "eleven-flash-v2.5", voice: cfg.voice ?? "alloy", input, response_format: "mp3" }, 15_000);
       return new Uint8Array(await res.arrayBuffer());
     },
     async voice(input, onChunk) {

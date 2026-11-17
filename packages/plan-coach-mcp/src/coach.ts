@@ -197,7 +197,8 @@ async function viaEleven(text: string, audioId: string, deps: CoachDeps): Promis
   } catch (e) {
     const message = (e as Error).message;
     deps.log?.(`elevenlabs failed: ${message.slice(0, 120)}`);
-    if (/ 40[13]/.test(message)) elevenPausedUntil = Date.now() + PAUSE_MS;
+    // Refused (401/403) or too slow: stop asking for a while, so nobody waits on it again.
+    if (/ 40[13]|timeout|timed out|aborted/i.test(message)) elevenPausedUntil = Date.now() + PAUSE_MS;
     return null;
   }
 }
