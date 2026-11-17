@@ -11,6 +11,7 @@ import {
   checkInLabel,
   futureSelf,
   futureSelfLine,
+  postcardNote,
   futureSelves,
   agreement,
   advisorBrief,
@@ -295,12 +296,21 @@ export function createPlanCoachServer(deps: PlanCoachDeps): McpServer {
           agreed?.status === "ready" && agreed.sharedFirst !== null
             ? { index: agreed.sharedFirst, because: "agreement" as const }
             : suggestPriority(priorities);
+        const commitment = events.filter(isCommitment).at(-1) ?? null;
+        // The future self's postcard comes after the choice: its P.S. names the step and its date.
+        const chosen = commitment ? priorities.find((p) => p.index === commitment.priorityIndex) : undefined;
+        const selves = together ? futureSelves(raw) : [futureSelf(raw, args.member!)].filter((f) => f !== undefined);
+        const postcardNotes =
+          commitment && chosen
+            ? Object.fromEntries(selves.map((f) => [f.memberId, postcardNote(f, { label: chosen.label, dueDate: commitment.dueDate, aboutSavings: chosen.aboutSavings })]))
+            : {};
         return {
           priorities,
           suggested: suggestion.index,
           suggestedBecause: suggestion.because,
-          commitment: events.filter(isCommitment).at(-1) ?? null,
+          commitment,
           checkins: events.filter(isCheckin),
+          postcardNotes,
         };
       }),
     ),

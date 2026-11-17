@@ -5,6 +5,7 @@ import {
   checkNumbers,
   futureSelfLine,
   futureSelfNumbers,
+  postcardNote,
   futureSelves,
   LocalCaseSource,
   planMoves,
@@ -113,5 +114,19 @@ describe("checkInLabel", () => {
     expect(checkInLabel({ date: "2044-05-01", year: 2044, type: "RETIREMENT", label: "Emily's Retirement", distress: false })).toBe(
       "Before Emily's retirement · May 2044",
     );
+  });
+});
+
+describe("postcardNote", () => {
+  it("names the chosen step and its date, and thanks them", () => {
+    const note = postcardNote({ reason: "retirement" }, { label: "Get the life cover you need", dueDate: "2026-11-24", aboutSavings: false });
+    expect(note).toBe("P.S. You chose “Get the life cover you need” for November 24. Thank you: that's the start.");
+  });
+
+  it("says plainly when savings run out and the step is about something else", () => {
+    const off = postcardNote({ reason: "savings_run_out" }, { label: "Keep your protection in place", dueDate: "2026-11-24", aboutSavings: false });
+    expect(off).toMatch(/It won't make our savings last on its own/);
+    const on = postcardNote({ reason: "savings_run_out" }, { label: "Open a tax-advantaged account", dueDate: "2026-11-24", aboutSavings: true });
+    expect(on).not.toMatch(/won't/);
   });
 });

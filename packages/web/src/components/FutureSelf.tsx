@@ -139,6 +139,11 @@ export function FutureSelfIntro({ household, member, onStart }: { household: Cas
 export function MeetFutureSelf({ household, member, onDone }: { household: CaseSummary; member: string; onDone: () => void }) {
   const { selves } = useFutureSelves(household.id, member);
   const [open, setOpen] = useState(false);
+  // The step they just chose, for the postcard's P.S.
+  const [notes, setNotes] = useState<Record<string, string>>({});
+  useEffect(() => {
+    futureApi.firstStep(household.id, member).then((r) => setNotes(r.postcardNotes ?? {}), () => undefined);
+  }, [household.id, member]);
   const self = selves?.[0];
   const who = !selves?.length ? "yourself, years from now" : selves.length > 1 ? "yourselves, years from now" : `you, at ${self!.age}`;
   const meetLine = `You did the hard part: you picked a step and a date. Want to meet who it's for? It's ${who}.`;
@@ -171,7 +176,7 @@ export function MeetFutureSelf({ household, member, onDone }: { household: CaseS
       ) : (
         <>
           {selves?.map((s) => (
-            <Postcard key={s.memberId} household={household} self={s} />
+            <Postcard key={s.memberId} household={household} self={s} note={notes[s.memberId]} />
           ))}
           <button className="primary wide" onClick={onDone}>
             Continue
@@ -186,7 +191,7 @@ export function MeetFutureSelf({ household, member, onDone }: { household: CaseS
  * A postcard from the future self: the illustrated portrait (still, never animated), their message
  * written as a note, and their recorded voice if you want it. Warm, and something you'd keep.
  */
-function Postcard({ household, self }: { household: CaseSummary; self: FutureSelfView }) {
+function Postcard({ household, self, note }: { household: CaseSummary; self: FutureSelfView; note?: string }) {
   const media = useMedia(household.id, self.memberId);
   const audioRef = useRef<HTMLAudioElement>(null);
   const [playing, setPlaying] = useState(false);
@@ -201,6 +206,7 @@ function Postcard({ household, self }: { household: CaseSummary; self: FutureSel
       <p className="postcard-sign">
         — {self.name}, {self.age}
       </p>
+      {note ? <p className="postcard-ps">{note}</p> : null}
       {voice ? (
         <>
           <audio ref={audioRef} src={voice} preload="none" onEnded={() => setPlaying(false)} onPause={() => setPlaying(false)} />

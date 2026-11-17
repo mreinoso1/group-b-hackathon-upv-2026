@@ -1973,6 +1973,16 @@ video.media-slot {
   color: #9a6a1f;
 }
 
+/* The P.S.: the step they just chose, and its date. */
+.postcard-ps {
+  margin: 0 0 12px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-style: italic;
+  font-size: 0.95rem;
+  line-height: 1.45;
+  color: var(--ink-2);
+}
+
 .postcard-play {
   width: 100%;
 }

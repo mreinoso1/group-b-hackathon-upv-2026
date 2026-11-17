@@ -20,6 +20,8 @@ export interface FirstStep {
   suggestedBecause: "plan_order" | "agreement";
   commitment: Commitment | null;
   checkins: { status: "done" | "not_yet"; at: string }[];
+  /** Per future self, once a step is chosen: the postcard's P.S. naming that step and its date. */
+  postcardNotes?: Record<string, string>;
 }
 
 const base = (caseId: string) => `/api/cases/${encodeURIComponent(caseId)}`;
