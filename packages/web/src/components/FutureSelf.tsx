@@ -1,7 +1,7 @@
 // The future self: who greets each person and speaks in the thread. The steps after the
 // capsules live in Steps.tsx. Every number shown comes from the plan via plan-coach.
 import { createContext, useContext, useEffect, useRef, useState } from "react";
-import { GUIDE_NAME, GuideBot, GuideStage, useGuideConversation, useGuideMute, useGuideSays } from "./Guide.tsx";
+import { Confetti, GUIDE_NAME, GuideBot, GuideStage, useGuideConversation, useGuideMute, useGuideSays } from "./Guide.tsx";
 import type { CaseSummary } from "../api.ts";
 import { futureApi, type FutureSelfView } from "../api-future.ts";
 
@@ -146,7 +146,7 @@ export function MeetFutureSelf({ household, member, onDone }: { household: CaseS
   }, [household.id, member]);
   const self = selves?.[0];
   const who = !selves?.length ? "yourself, years from now" : selves.length > 1 ? "yourselves, years from now" : `you, at ${self!.age}`;
-  const meetLine = `You did the hard part: you picked a step and a date. Want to meet who it's for? It's ${who}.`;
+  const meetLine = `You did it! You picked a step and a date, and that's the hard part. Want to meet who it's for? It's ${who}.`;
   const { muted } = useGuideMute();
   const meetTalking = useGuideSays(selves ? meetLine : undefined, muted);
   if (selves && !selves.length) {
@@ -155,8 +155,11 @@ export function MeetFutureSelf({ household, member, onDone }: { household: CaseS
   }
   return (
     <section className="guide-intro meet">
+      {!open ? <Confetti /> : null}
       <GuideStage compact>
-        <GuideBot size={104} talking={meetTalking} waving={!open} />
+        <span className={open ? "" : "cheer"}>
+          <GuideBot size={104} talking={meetTalking} waving={!open} />
+        </span>
       </GuideStage>
       <p className="bubble self guide-line">{meetLine}</p>
       {!open ? (
