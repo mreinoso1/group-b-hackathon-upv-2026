@@ -381,3 +381,15 @@ describe("rooms", () => {
     expect(r.isError).toBe(true);
   });
 });
+
+describe("get_guide_audio", () => {
+  it("speaks a short plain line; without a key it hands the text back for the device", async () => {
+    const r = parse(await call("get_guide_audio", { text: "Let's start, Michael. This is the whole picture, at 37." }));
+    expect(r).toMatchObject({ kind: "browser", reason: "no_key" });
+  });
+
+  it("refuses long or unusual text, so it can't be used as a general speech service", async () => {
+    expect((await call("get_guide_audio", { text: "x".repeat(401) })).isError).toBe(true);
+    expect((await call("get_guide_audio", { text: "<script>alert(1)</script>" })).isError).toBe(true);
+  });
+});

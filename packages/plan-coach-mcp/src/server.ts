@@ -533,6 +533,26 @@ export function createPlanCoachServer(deps: PlanCoachDeps): McpServer {
     ),
   );
 
+  server.registerTool(
+    "get_guide_audio",
+    {
+      title: "Speak one of the guide's lines",
+      description:
+        "English speech for one short line of the guide (Summit), for devices without an English voice of their own. " +
+        "Same voices, cache and spend caps as get_audio: each line is generated once. Short plain text only.",
+      inputSchema: {
+        text: z
+          .string()
+          .min(2)
+          .max(400)
+          .regex(/^[\p{L}\p{N}\s.,'’!?:;\-—–$%()&"“”…·/]+$/u, "Plain text only"),
+      },
+    },
+    audited(audit, "tool", "get_guide_audio", async (args: { text: string }) =>
+      guard(async () => speak(args.text.replace(/\s+/g, " ").trim(), coach, { stream: true })),
+    ),
+  );
+
   // ---- Prompts: launched by the person ("I'm lost", "Tell me more") -------------------
 
   server.registerPrompt(

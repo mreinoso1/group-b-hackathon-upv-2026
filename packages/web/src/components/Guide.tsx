@@ -2,6 +2,8 @@
 // person through their plan. Testers found an AI face unsettling at first, so the guide speaks,
 // and the future self waits until the end, as something you choose to meet.
 import { useEffect, useState } from "react";
+import { api } from "../api.ts";
+import { audioSupported, playFile, playPcmStream, unlockAudio } from "../audio.ts";
 
 export const GUIDE_NAME = "Summit";
 
@@ -119,7 +121,9 @@ function useReducedMotion(): boolean {
   return reduce;
 }
 
-// ---- the guide's voice: the device's own English voice (no network, no budget) ----
+// ---- the guide's voice: always English ---------------------------------------------------------
+// The device's own English voice when it has one (instant, free). Without one (a Spanish Windows, say)
+// the line is spoken by the server in English, like Listen, and cached; never a Spanish voice reading English.
 
 const MUTE_KEY = "future-you-guide-muted";
 
@@ -132,8 +136,11 @@ function readMuted(): boolean {
   }
 }
 
+const canSpeak = () => typeof window !== "undefined" && "speechSynthesis" in window;
+
 /** The best English voice the device has: the natural/online ones first, then any en-US, then any English. */
 function pickVoice(): SpeechSynthesisVoice | undefined {
+  if (!canSpeak()) return undefined;
   const voices = window.speechSynthesis.getVoices().filter((v) => v.lang.toLowerCase().startsWith("en"));
   const score = (v: SpeechSynthesisVoice) =>
     (/natural|online|neural/i.test(v.name) ? 4 : 0) +
@@ -143,74 +150,85 @@ function pickVoice(): SpeechSynthesisVoice | undefined {
   return voices.sort((a, b) => score(b) - score(a))[0];
 }
 
-const canSpeak = () => typeof window !== "undefined" && "speechSynthesis" in window;
+/** The guide can speak: with the device's English voice, or with the server's through the page's audio. */
+const canTalk = () => pickVoice() !== undefined || audioSupported();
 
-/**
- * Whether the guide may speak: only with an English voice. Without one the browser falls back to
- * its default voice, and on a Spanish Windows that reads English with a Spanish voice.
- */
-const canTalk = () => canSpeak() && pickVoice() !== undefined;
+// Only one line at a time. Each new line (or a stop) makes the one before it stale.
+let voiceRun = 0;
+let stopVoice: (() => void) | null = null;
 
-/** Whether the device has an English voice; browsers load their voices a moment after the page. */
-function useEnglishVoice(): boolean {
-  const [ok, setOk] = useState(canTalk);
-  useEffect(() => {
-    if (!canSpeak()) return;
-    const update = () => setOk(canTalk());
-    window.speechSynthesis.addEventListener("voiceschanged", update);
-    update();
-    return () => window.speechSynthesis.removeEventListener("voiceschanged", update);
-  }, []);
-  return ok;
+/** Stops whatever the guide is saying, on the device or from the server. */
+function stopTalking() {
+  voiceRun++;
+  stopVoice?.();
+  stopVoice = null;
+  if (canSpeak()) window.speechSynthesis.cancel();
 }
 
-/** Speaks one line in English; resolves when it ends (or right away when there is no English voice). */
+/** Speaks one line in English; resolves when it ends. A timeout keeps the conversation moving if it never does. */
 function say(text: string): Promise<void> {
+  stopTalking();
+  const me = voiceRun;
   return new Promise((resolve) => {
-    const v = canSpeak() ? pickVoice() : undefined;
-    if (!v) return resolve();
-    const synth = window.speechSynthesis;
-    const u = new SpeechSynthesisUtterance(text);
-    u.voice = v;
-    u.lang = v.lang;
-    u.rate = 1.03;
-    u.pitch = 1.1;
     let done = false;
     const finish = () => {
-      if (!done) {
-        done = true;
-        resolve();
-      }
+      if (done) return;
+      done = true;
+      window.clearTimeout(timer);
+      if (me === voiceRun) stopVoice = null;
+      resolve();
     };
-    u.onend = finish;
-    u.onerror = finish;
-    // Some browsers never fire onend: a generous timeout keeps the conversation moving.
-    window.setTimeout(finish, 1500 + text.length * 90);
-    synth.speak(u);
+    const voice = pickVoice();
+    // From the server it can take a moment to arrive the first time; after that it's cached.
+    const timer = window.setTimeout(finish, (voice ? 1500 : 5000) + text.length * 90);
+
+    if (voice) {
+      const u = new SpeechSynthesisUtterance(text);
+      u.voice = voice;
+      u.lang = voice.lang;
+      u.rate = 1.03;
+      u.pitch = 1.1;
+      u.onend = finish;
+      u.onerror = finish;
+      window.speechSynthesis.speak(u);
+      return;
+    }
+
+    void (async () => {
+      try {
+        const answer = await api.guideAudio(text);
+        if (me !== voiceRun || done) return finish();
+        const ctx = unlockAudio();
+        if (!ctx || (answer.kind !== "audio" && answer.kind !== "stream")) return finish();
+        stopVoice = (answer.kind === "stream" ? playPcmStream : playFile)(ctx, answer.url, finish);
+      } catch {
+        finish();
+      }
+    })();
   });
 }
 
 /** Mute switch shared by every screen (remembered on this device). */
 export function useGuideMute() {
   const [muted, setMuted] = useState(readMuted);
-  const english = useEnglishVoice();
-  const toggle = () =>
+  const toggle = () => {
+    unlockAudio(); // inside the tap: phones only allow sound that starts from one
     setMuted((m) => {
       try {
         window.localStorage.setItem(MUTE_KEY, m ? "0" : "1");
       } catch {
         /* storage may be unavailable; the switch still works for this page */
       }
-      if (!m && canSpeak()) window.speechSynthesis.cancel();
+      if (!m) stopTalking();
       return !m;
     });
-  // No English voice: no sound switch, and the guide stays quiet (its lines still appear).
-  return { muted, toggle, supported: english };
+  };
+  return { muted, toggle, supported: canTalk() };
 }
 
 /**
  * A conversation: lines appear one by one, each spoken aloud while the robot's mouth moves; the
- * next comes when it has finished. Muted (or no voice on the device), each line waits roughly the
+ * next comes when it has finished. Muted, each line waits roughly the
  * time it takes to read it.
  */
 export function useGuideConversation(lines: string[], muted: boolean) {
@@ -242,7 +260,7 @@ export function useGuideConversation(lines: string[], muted: boolean) {
     })();
     return () => {
       live = false;
-      if (canSpeak()) window.speechSynthesis.cancel();
+      stopTalking();
       setTalking(false);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -259,12 +277,11 @@ export function useGuideSays(text: string | undefined, muted: boolean) {
     setTalking(true);
     const stopAfter = (ms: number) => window.setTimeout(() => live && setTalking(false), ms);
     if (!muted && canTalk()) {
-      window.speechSynthesis.cancel();
       void say(text).then(() => live && setTalking(false));
     } else stopAfter(Math.min(2200, 600 + text.length * 20));
     return () => {
       live = false;
-      if (canSpeak()) window.speechSynthesis.cancel();
+      stopTalking();
     };
   }, [text, muted]);
   return talking;

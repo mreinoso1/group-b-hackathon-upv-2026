@@ -118,10 +118,22 @@ app.post("/api/cases/:caseId/audio", bodyLimit({ maxSize: 4 * 1024 }), async (c)
     ...(body.intro === true ? { intro: true } : {}),
     stream: true,
   };
-  const result = await coach.call<{ kind: string; audioId?: string; text?: string }>("get_audio", args);
-  if (result.kind === "audio") return c.json({ kind: "audio", url: `/api/audio/${result.audioId}` });
-  if (result.kind === "stream") return c.json({ kind: "stream", url: `/api/audio/${result.audioId}/stream` });
-  return c.json(result);
+  return c.json(audioAnswer(await coach.call<AudioResult>("get_audio", args)));
+});
+
+type AudioResult = { kind: string; audioId?: string; text?: string };
+
+/** plan-coach's audio result as the browser plays it: a cached file, a live stream, or text for the device. */
+function audioAnswer(result: AudioResult) {
+  if (result.kind === "audio") return { kind: "audio", url: `/api/audio/${result.audioId}` };
+  if (result.kind === "stream") return { kind: "stream", url: `/api/audio/${result.audioId}/stream` };
+  return result;
+}
+
+/** The guide's line, spoken in English by the server: for devices that have no English voice. */
+app.post("/api/guide/audio", bodyLimit({ maxSize: 2 * 1024 }), async (c) => {
+  const body = await c.req.json<Record<string, unknown>>();
+  return c.json(audioAnswer(await coach.call<AudioResult>("get_guide_audio", { text: body.text })));
 });
 
 /**
