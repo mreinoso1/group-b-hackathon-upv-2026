@@ -46,22 +46,61 @@ function ScoreLine({ p }: { p: Priority }) {
 
 // ---- couple: each partner orders the plan's priorities ---------------------------------------
 
-export function AgreementScreen({ household, onDone }: { household: CaseSummary; onDone: () => void }) {
+/**
+ * The couple orders the plan's priorities. Reading together, they pass the phone. Each on their own
+ * phone (a QR per person), each orders only theirs; the one who finishes first waits, and both phones
+ * show where they agree once both have saved. Neither sees the other's order before that.
+ */
+export function AgreementScreen({ household, member = "together", onDone }: { household: CaseSummary; member?: string; onDone: () => void }) {
   const { data, error } = useFirstStep(household.id, "together");
   const [agreed, setAgreed] = useState<Agreement | null>(null);
   const [turn, setTurn] = useState(0);
   const [order, setOrder] = useState<number[]>([]);
   const [problem, setProblem] = useState<string | null>(null);
+  const [reorder, setReorder] = useState(false);
   const partners = household.members;
+  const solo = member !== "together";
+  const me = partners.find((m) => m.id === member);
+  const others = partners.filter((m) => m.id !== member);
+  const waitingForOthers = solo && agreed !== null && agreed.status !== "ready" && !agreed.waitingFor.includes(member) && !reorder;
 
   useEffect(() => {
     futureApi.agreement(household.id).then(setAgreed, (e: Error) => setProblem(e.message));
   }, [household.id]);
 
+  // Saved, partner still ordering: check every few seconds, so both phones turn at the same time.
+  useEffect(() => {
+    if (!waitingForOthers) return;
+    const id = window.setInterval(() => {
+      futureApi.agreement(household.id).then(setAgreed, () => undefined);
+    }, 3000);
+    return () => window.clearInterval(id);
+  }, [waitingForOthers, household.id]);
+
   if (error || problem) return <p className="error">{error ?? problem}</p>;
   if (!data || !agreed) return <p className="muted">Loading…</p>;
 
-  if (agreed.status === "ready")
+  if (waitingForOthers) {
+    const names = others.filter((o) => agreed.waitingFor.includes(o.id)).map((o) => o.name).join(" and ") || "your partner";
+    return (
+      <section className="agreement">
+        <p className="kicker">Your order is saved</p>
+        <h1>Waiting for {names}</h1>
+        <p className="lede">
+          When {names} has ordered theirs on their phone, you'll both see here where you agree. You won't see each other's order before that.
+        </p>
+        <p className="pending" role="status">
+          <span className="spinner" aria-hidden="true" />
+          Checking…
+        </p>
+        <button className="ghost" onClick={onDone}>
+          Go on to my first step
+        </button>
+      </section>
+    );
+  }
+
+  if (agreed.status === "ready" && !reorder)
     return (
       <section className="agreement">
         <h1>Where you agree</h1>
@@ -83,13 +122,16 @@ export function AgreementScreen({ household, onDone }: { household: CaseSummary;
         </ol>
         <p className="step-note">{agreed.note}</p>
         <button className="primary wide" onClick={onDone}>
-          Choose our first step
+          {solo ? "Choose my first step" : "Choose our first step"}
         </button>
         <button
           className="link"
           onClick={() => {
-            setAgreed({ ...agreed, status: "waiting", waitingFor: partners.map((m) => m.id) });
-            setTurn(0);
+            if (solo) setReorder(true);
+            else {
+              setAgreed({ ...agreed, status: "waiting", waitingFor: partners.map((m) => m.id) });
+              setTurn(0);
+            }
             setOrder([]);
           }}
         >
@@ -98,24 +140,33 @@ export function AgreementScreen({ household, onDone }: { household: CaseSummary;
       </section>
     );
 
-  const who = partners[turn]!;
+  const who = solo && me ? me : partners[turn]!;
   const tap = (i: number) => setOrder((o) => (o.includes(i) ? o.filter((x) => x !== i) : [...o, i]));
   const save = async () => {
     try {
       await futureApi.rank(household.id, who.id, order);
       setOrder([]);
-      if (turn + 1 < partners.length) setTurn(turn + 1);
-      else setAgreed(await futureApi.agreement(household.id));
+      if (!solo && turn + 1 < partners.length) setTurn(turn + 1);
+      else {
+        setAgreed(await futureApi.agreement(household.id));
+        setReorder(false);
+      }
     } catch (e) {
       setProblem((e as Error).message);
     }
   };
 
+  const kicker = solo ? "One thing to decide together, each on your own phone" : turn === 0 ? "One thing to decide together" : `Now pass the phone to ${who.name}`;
+  const privacy = solo
+    ? `You won't see ${others.map((o) => o.name).join(" and ")}'s order until you've both saved yours.`
+    : turn > 0
+      ? `You won't see ${partners[0]!.name}'s answers yet.`
+      : "";
   return (
     <section className="agreement">
-      <p className="kicker">{turn === 0 ? "One thing to decide together" : `Now pass the phone to ${who.name}`}</p>
+      <p className="kicker">{kicker}</p>
       <h1>{who.name}, what comes first for you?</h1>
-      <p className="lede">These all compete for the same money. Tap them in your order. {turn > 0 ? `You won't see ${partners[0]!.name}'s answers yet.` : ""}</p>
+      <p className="lede">These all compete for the same money. Tap them in your order. {privacy}</p>
       <ul className="rank-list">
         {data.priorities.map((p) => {
           const pos = order.indexOf(p.index);

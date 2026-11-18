@@ -80,11 +80,11 @@ export function App() {
           <Feed
             household={screen.household}
             member={screen.member}
-            // A couple reading together first finds where they agree; everyone else goes to the step.
-            onDone={() => setScreen({ ...screen, name: screen.member === "together" && screen.household.members.length > 1 ? "agree" : "step" })}
+            // A couple first finds where they agree (together on one phone, or each on their own); a single adult goes to the step.
+            onDone={() => setScreen({ ...screen, name: screen.household.members.length > 1 ? "agree" : "step" })}
           />
         ) : null}
-        {screen.name === "agree" ? <AgreementScreen household={screen.household} onDone={() => setScreen({ ...screen, name: "step" })} /> : null}
+        {screen.name === "agree" ? <AgreementScreen household={screen.household} member={screen.member} onDone={() => setScreen({ ...screen, name: "step" })} /> : null}
         {screen.name === "step" ? (
           <FirstStepScreen household={screen.household} member={screen.member} onCommitted={() => setScreen({ ...screen, name: "meet" })} />
         ) : null}
