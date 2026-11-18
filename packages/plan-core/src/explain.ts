@@ -54,7 +54,7 @@ export interface ExplainPrompt {
 
 const STYLE_GUIDE: Record<ExplainStyle, string> = {
   analogy: "Use one everyday analogy to make the idea click, then tie it back to the plan.",
-  plain: "Say the same idea again in two or three short, plain sentences, the way you would tell a friend: the fact itself first (do not start with \"The plan\"), then what it means for them. No images or comparisons.",
+  plain: "Say the same idea again in two or three short, plain sentences, the way you would tell a friend: the fact itself first (do not start with \"The plan\"), then what it means for them. Use everyday words a 12-year-old knows: swap the plan's jargon (\"cohesive strategy\", \"optimize\", \"liquidity\", \"allocation\") for simple words, and do not reuse the plan's sentences. No images or comparisons.",
   one_number: "Focus on the single most important figure in the text and say plainly why it matters to them. Two sentences at most.",
 };
 
@@ -97,6 +97,20 @@ function groupByPerson(texts: string[], reader: string | undefined, others: stri
   return out;
 }
 
+/**
+ * A dollar amount a person can remember: $171,055.83 → 171000, $6,418.40 → 6418. Null when the
+ * figure is already round, is not money, or is small enough to say exactly.
+ */
+export function roundedAmount(raw: string, value: number): number | null {
+  if (!raw.startsWith("$") || /[kmb%]|thousand|million|billion/i.test(raw)) return null;
+  const r = value >= 10_000 ? Math.round(value / 1000) * 1000 : Math.round(value);
+  return r !== value && r > 0 ? r : null;
+}
+
+function money(n: number): string {
+  return `$${n.toLocaleString("en-US")}`;
+}
+
 export function buildExplainPrompt(raw: RawCase, topicId: string, memberId: string | null, attempt = 0): ExplainPrompt {
   const topic = findTopic(topicId);
   const standard = buildCapsule(raw, { topicId, level: "standard" });
@@ -107,7 +121,15 @@ export function buildExplainPrompt(raw: RawCase, topicId: string, memberId: stri
   const others = me ? ms.filter((m) => m.id !== me.id).map((m) => m.name) : [];
   const texts = standard.blocks.map((b) => b.text);
   const allowed = allowedNumbers(texts);
-  const written = [...new Set(texts.flatMap((t) => extractNumbers(t).map((n) => n.raw)))];
+  const mentions = texts.flatMap((t) => extractNumbers(t));
+  const written = [...new Set(mentions.map((n) => n.raw))];
+  // Big or exact amounts also get a rounded form the guard accepts ("about $171,000" for $171,055.83).
+  const rounded = new Map<string, number>();
+  for (const n of mentions) {
+    const r = roundedAmount(n.raw, n.value);
+    if (r !== null) rounded.set(n.raw, r);
+  }
+  for (const r of rounded.values()) if (!allowed.includes(r)) allowed.push(r);
   const tone = toneFor(raw, me?.id ?? null);
   const household = [...ms.map((m) => m.name), ...children(raw).map((c) => c.name)];
 
@@ -116,7 +138,8 @@ export function buildExplainPrompt(raw: RawCase, topicId: string, memberId: stri
     "Rules:",
     "- Use only the plan text you are given. Add no advice, products, predictions, opinions or new facts.",
     "- Never say whose a debt, account or policy is unless the plan text says so.",
-    "- Every number you write must be copied exactly from ALLOWED NUMBERS. Never round, convert or calculate.",
+    "- Every number you write must be copied exactly from ALLOWED NUMBERS. Never round, convert or calculate yourself.",
+    "- When a figure has a rounded form listed (\"≈ $171,000\"), use the rounded form and say \"about\": people remember round numbers.",
     "- Use at most TWO numbers in total, the ones that matter most to the reader.",
     ...(me && others.length
       ? [`- Lead with what is about ${me.name}. Sentences about ${others.join(" and ")} are theirs: name them, never say "you" about them.`]
@@ -136,7 +159,7 @@ export function buildExplainPrompt(raw: RawCase, topicId: string, memberId: stri
     `PLAN TEXT (${topic?.title ?? topicId}):`,
     ...groupByPerson(texts, me?.name, others),
     "",
-    `ALLOWED NUMBERS: ${written.length ? written.join(" · ") : "none: write without numbers"}`,
+    `ALLOWED NUMBERS: ${written.length ? written.map((w) => (rounded.has(w) ? `${w} (≈ ${money(rounded.get(w)!)})` : w)).join(" · ") : "none: write without numbers"}`,
   ].join("\n");
 
   return {

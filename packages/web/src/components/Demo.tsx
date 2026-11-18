@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { api, request, type CaseSummary } from "../api.ts";
 import { joinUrl, newRoom, roomFrom } from "../room.ts";
 import "./demo.css";
+import { CasePeak, GuideBot } from "./Guide.tsx";
 
 interface Network {
   urls: string[];
@@ -24,7 +25,6 @@ function Qr({ url, label }: { url: string; label: string }) {
   return src ? <img className="qr" src={src} alt={`QR code: ${label}`} /> : <div className="qr" aria-hidden="true" />;
 }
 
-const face = (caseId: string, memberId: string) => `/avatars/${caseId}-${memberId}.jpg`;
 
 export function DemoPage() {
   const [cases, setCases] = useState<CaseSummary[] | null>(null);
@@ -80,7 +80,10 @@ export function DemoPage() {
         <p className="demo-brand">
           Future You<span className="brand-dot">.</span>
         </p>
-        <h1>Try it on your phone</h1>
+        <div className="demo-title">
+          <GuideBot size={64} waving />
+          <h1>Try it on your phone</h1>
+        </div>
         <p className="demo-lede">Scan a code with your phone's camera and open the plan as that person. Your phone and this laptop need to be on the same Wi-Fi.</p>
       </header>
 
@@ -101,11 +104,7 @@ export function DemoPage() {
             {cases?.map((c) => (
               <li key={c.id}>
                 <button className="demo-family" onClick={() => choose(c)}>
-                  <span className="demo-faces" aria-hidden="true">
-                    {c.members.map((m) => (
-                      <img key={m.id} src={face(c.id, m.id)} alt="" />
-                    ))}
-                  </span>
+                  <CasePeak score={c.score} />
                   <span className="demo-family-name">{c.label}</span>
                   <span className="muted">
                     Score {c.score} · {c.city}, {c.state}
@@ -167,9 +166,9 @@ export function DemoPage() {
               const url = joinUrl(origin, household.id, p.id, pick!.room);
               return (
                 <li key={p.id} className="demo-code">
-                  <span className="demo-faces small" aria-hidden="true">
+                  <span className="demo-initials" aria-hidden="true">
                     {p.faces.map((id) => (
-                      <img key={id} src={face(household.id, id)} alt="" />
+                      <span key={id}>{household.members.find((m) => m.id === id)?.name[0] ?? "?"}</span>
                     ))}
                   </span>
                   <h3>{p.name}</h3>
