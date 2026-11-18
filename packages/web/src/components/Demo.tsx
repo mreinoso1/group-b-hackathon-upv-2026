@@ -26,6 +26,12 @@ function Qr({ url, label }: { url: string; label: string }) {
 }
 
 
+/** True for a published address (not localhost, not a private network address like 192.168.x.x). */
+export function isPublicHost(host: string): boolean {
+  if (host === "localhost" || host.endsWith(".local") || host === "::1" || host === "[::1]") return false;
+  return !/^(127\.|10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.|169\.254\.)/.test(host);
+}
+
 export function DemoPage() {
   const [cases, setCases] = useState<CaseSummary[] | null>(null);
   const [net, setNet] = useState<Network | null>(null);
@@ -53,9 +59,11 @@ export function DemoPage() {
     window.history.replaceState(null, "", `/demo${search}`);
   }, [pick]);
 
-  // Phones can't open "localhost": the QR codes use this laptop's Wi-Fi address.
-  const origin = net?.urls[0] ?? window.location.origin;
-  const reachable = Boolean(net?.listening && net.urls.length);
+  // Published on the web (a public address): the codes use that address, and any phone can open them.
+  // On a laptop, phones can't open "localhost": the codes use this laptop's Wi-Fi address.
+  const hosted = isPublicHost(window.location.hostname);
+  const origin = hosted ? window.location.origin : (net?.urls[0] ?? window.location.origin);
+  const reachable = hosted || Boolean(net?.listening && net.urls.length);
   const household = pick && cases?.find((c) => c.id === pick.caseId);
 
   const choose = (c: CaseSummary) => {
@@ -84,7 +92,9 @@ export function DemoPage() {
           <GuideBot size={64} waving />
           <h1>Try it on your phone</h1>
         </div>
-        <p className="demo-lede">Scan a code with your phone's camera and open the plan as that person. Your phone and this laptop need to be on the same Wi-Fi.</p>
+        <p className="demo-lede">
+          Scan a code with your phone's camera and open the plan as that person.{hosted ? "" : " Your phone and this laptop need to be on the same Wi-Fi."}
+        </p>
       </header>
 
       {error ? <p className="error">{error}</p> : null}
