@@ -221,3 +221,74 @@
     font-size: 1.6rem;
   }
 }
+
+/* v7 identity: the serif, Summit, and families as mountains (no portraits here). */
+
+.demo-brand {
+  font: 600 1.35rem var(--display);
+  color: var(--fy-navy);
+}
+
+.demo-title {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.demo-head h1,
+.demo-page h2,
+.demo-family-name,
+.demo-code h3 {
+  font-family: var(--display);
+  color: var(--fy-navy);
+}
+
+.demo-family {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: 14px;
+}
+
+.demo-family .case-peak {
+  width: 64px;
+  height: 50px;
+}
+
+.demo-family > span:not(.case-peak) {
+  flex: 1 1 calc(100% - 90px);
+}
+
+.demo-family-name {
+  font-size: 1.2rem;
+}
+
+.demo-family .muted {
+  margin-left: 78px;
+  margin-top: -10px;
+}
+
+.demo-code {
+  background: var(--surface);
+}
+
+.demo-initials {
+  display: flex;
+}
+
+.demo-initials span {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--fy-navy);
+  color: #fff;
+  font: 600 1.1rem var(--display);
+  border: 2px solid var(--surface);
+}
+
+.demo-initials span + span {
+  margin-left: -8px;
+  background: var(--blue);
+}

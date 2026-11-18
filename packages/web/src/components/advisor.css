@@ -449,3 +449,50 @@
     flex-basis: 85%;
   }
 }
+
+/* v7 identity on the family's consent screen and the advisor's brief. */
+
+.consent-guide {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.consent-guide p {
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: 16px;
+  background: var(--surface);
+  box-shadow: 0 6px 18px -12px rgba(30, 42, 74, 0.45);
+  font-family: var(--display);
+  font-size: 17px;
+  color: var(--fy-navy);
+}
+
+.consent h1 {
+  font: 600 1.6rem/1.2 var(--display);
+  color: var(--fy-navy);
+  margin-top: 18px;
+}
+
+.adv-brand {
+  font: 600 1rem var(--display);
+  color: var(--fy-navy);
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.adv-head h1 {
+  font: 600 2rem/1.15 var(--display);
+  color: var(--fy-navy);
+}
+
+.advisor-page h2 {
+  font-family: var(--display);
+  color: var(--fy-navy);
+}
+
+.adv-score strong {
+  font-family: var(--display);
+}
