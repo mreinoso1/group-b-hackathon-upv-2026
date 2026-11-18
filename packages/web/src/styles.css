@@ -11,20 +11,21 @@
   --soft: #a1a4b3; /* oklch(0.72 0.022 277) */
   --line: #e2e5eb; /* oklch(0.92 0.009 265) */
   --panel: #f3f3f3; /* chart panels */
-  --lavender: #e6ebfd; /* score card */
-  --blue: #4666d7; /* oklch(0.55 0.177 268): focus */
-  --blue-wash: #e9eefc;
+  --lavender: #f4ecdd; /* score card (warm, v7) */
+  --blue: #2d4a7c; /* v7: mountain blue, replaces the purple-blue */
+  --blue-wash: #e8eef6;
   --good: #168b41;
   --warning: #ed8e00;
   --serious: #d0743c;
   --critical: #cd3b3b;
-  --cta: linear-gradient(127deg, #948df7 11%, #4565d6 119%);
+  --cta: linear-gradient(135deg, #34497a 0%, #1e2a4a 100%); /* v7: navy, Summit's colour */
   /* Future You: the future self's own colours, taken from the portraits (cream, navy, warm amber). */
   --fy-cream: #f8f1e5;
   --fy-cream-2: #efe3cf;
   --fy-navy: #1e2a4a;
   --fy-amber: #e8a33d;
   --radius: 16px;
+  --display: "Fraunces Variable", Georgia, "Times New Roman", serif; /* v7: titles and the guide's voice */
   --heading: Poppins, ui-sans-serif, system-ui, sans-serif;
   --text: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   color-scheme: light;
@@ -739,7 +740,7 @@ h2 {
 }
 
 .event-focus circle {
-  fill: #8fa3f0;
+  fill: #a9bcd8;
 }
 
 .event-focus path {
@@ -2247,4 +2248,284 @@ video.media-slot {
   }
   .confetti { display: none; }
   .climb-bot { transition: none; }
+}
+
+
+/* =====================================================================
+   v7: an identity of its own: navy + amber, a serif voice, families as
+   mountains, and the postcard arriving in an envelope.
+   ===================================================================== */
+
+.brand,
+h1,
+h2,
+.capsule h2,
+.postcard-from {
+  font-family: var(--display);
+  font-weight: 600;
+  font-variation-settings: "opsz" 72;
+  letter-spacing: -0.015em;
+}
+
+.brand {
+  font-size: 24px;
+  color: var(--fy-navy);
+}
+
+.brand-dot {
+  color: var(--fy-amber);
+}
+
+h1 {
+  font-size: 32px;
+}
+
+.capsule h2 {
+  font-size: 27px;
+  line-height: 1.15;
+}
+
+/* Summit's words: the guide speaks in the serif, like a note. */
+.guide-line,
+.home-bubble,
+.bubble-row.big .bubble {
+  font-family: var(--display);
+  font-variation-settings: "opsz" 18;
+  font-size: 17px;
+  line-height: 1.45;
+  color: var(--fy-navy);
+}
+
+.postcard-text,
+.postcard-sign,
+.postcard-ps {
+  font-family: var(--display);
+  font-variation-settings: "opsz" 24;
+}
+
+.primary {
+  box-shadow: 0 10px 22px -14px rgba(30, 42, 74, 0.8);
+}
+
+.primary:hover {
+  filter: brightness(1.12);
+}
+
+.capsule .piece,
+.demo-note {
+  color: #9a6a1f;
+}
+
+/* ---- families as mountains: the higher the peak, the stronger the plan ---- */
+
+.case-peak {
+  display: block;
+  width: 72px;
+  height: 56px;
+  flex: none;
+}
+
+.case-peak .peak-sky {
+  fill: #fbf3e6;
+}
+
+.case-peak .peak-back {
+  fill: #ecdfc8;
+}
+
+.case-peak .peak-main {
+  fill: var(--fy-navy);
+}
+
+.case-peak .peak-snow {
+  fill: #fffaf1;
+}
+
+.case-peak .peak-pole {
+  stroke: var(--fy-navy);
+  stroke-width: 1.4;
+}
+
+.case-peak .peak-flag {
+  fill: var(--fy-amber);
+}
+
+.family-1 .case-peak .peak-main { fill: #2d4a7c; }
+.family-2 .case-peak .peak-main { fill: #3c5a6e; }
+.family-3 .case-peak .peak-main { fill: #4a4466; }
+
+.home .case {
+  grid-template-columns: 72px 1fr auto;
+}
+
+.case-name {
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 19px;
+  font-variation-settings: "opsz" 36;
+}
+
+.score-badge.band-critical { background: #f6ece4; color: #8c3a1d; }
+
+/* ---- the postcard arrives: an envelope opens and the card rises out ----
+   Final state (and the state when motion is reduced): no envelope, the postcard in place. */
+
+.delivery {
+  position: relative;
+  isolation: isolate;
+  padding-top: 4px;
+}
+
+.envelope {
+  position: absolute;
+  left: 50%;
+  top: 104px;
+  width: 300px;
+  height: 196px;
+  margin-left: -150px;
+  pointer-events: none;
+  opacity: 0;
+  animation: env-life 2.6s ease-in-out both;
+}
+
+.env-behind { z-index: 0; }
+.env-ahead { z-index: 2; }
+
+.env-back,
+.env-front,
+.env-flap,
+.env-flap-open {
+  position: absolute;
+  left: 0;
+  right: 0;
+}
+
+.env-back {
+  top: 0;
+  bottom: 0;
+  border-radius: 10px;
+  background: #e4d4b8;
+  box-shadow: 0 22px 34px -20px rgba(30, 42, 74, 0.6);
+}
+
+.env-front {
+  top: 40%;
+  bottom: 0;
+  border-radius: 0 0 10px 10px;
+  background: linear-gradient(165deg, #f7eedf, #ead9bb);
+  clip-path: polygon(0 0, 50% 42%, 100% 0, 100% 100%, 0 100%);
+}
+
+/* The closed flap folds down to its edge (0 → 90°); then the open flap, behind the card, takes over (90 → 180°). */
+.env-flap {
+  top: 0;
+  height: 50%;
+  background: #f2e5ce;
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  transform-origin: top center;
+  animation: flap-close-half 2.6s ease-in both;
+  opacity: 0;
+}
+
+.env-flap-open {
+  top: 0;
+  height: 50%;
+  background: #eadcc3;
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  transform-origin: top center;
+  animation: flap-open-half 2.6s ease-out both;
+  opacity: 0;
+}
+
+.env-seal {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 28px;
+  height: 28px;
+  margin: -14px 0 0 -14px;
+  border-radius: 50%;
+  background: var(--fy-amber);
+  box-shadow: inset 0 0 0 3px #d38f2c;
+  animation: seal-off 2.6s ease-in both;
+  opacity: 0;
+}
+
+@keyframes env-life {
+  0% { opacity: 0; transform: translateY(70px) scale(0.92); }
+  12%, 66% { opacity: 1; transform: none; }
+  92%, 100% { opacity: 0; transform: translateY(170px); }
+}
+
+@keyframes flap-close-half {
+  0%, 22% { opacity: 1; transform: perspective(500px) rotateX(0deg); }
+  31% { opacity: 1; transform: perspective(500px) rotateX(90deg); }
+  31.1%, 100% { opacity: 0; transform: perspective(500px) rotateX(90deg); }
+}
+
+@keyframes flap-open-half {
+  0%, 30.9% { opacity: 0; transform: perspective(500px) rotateX(90deg); }
+  31% { opacity: 1; transform: perspective(500px) rotateX(90deg); }
+  40%, 100% { opacity: 1; transform: perspective(500px) rotateX(180deg); }
+}
+
+@keyframes seal-off {
+  0%, 18% { opacity: 1; transform: scale(1); }
+  24%, 100% { opacity: 0; transform: scale(1.7); }
+}
+
+.delivery .postcard.first {
+  z-index: 1;
+  transform-origin: top center;
+  animation: card-rise 2.6s cubic-bezier(0.3, 0.7, 0.3, 1) both;
+}
+
+/* Scaled to fit inside the envelope (its top at ~36px), it rises out of the opening, then grows into place. */
+@keyframes card-rise {
+  0%, 38% { opacity: 0; transform: translateY(112px) scale(0.36); }
+  40% { opacity: 1; transform: translateY(112px) scale(0.36); }
+  62% { opacity: 1; transform: translateY(14px) scale(0.36) rotate(-2deg); }
+  70% { opacity: 1; transform: translateY(14px) scale(0.4) rotate(-2deg); }
+  100% { opacity: 1; transform: rotate(-1deg); }
+}
+
+.delivery .postcard.later {
+  animation: guide-in 0.5s ease-out 2.4s both;
+}
+
+.delivery-after {
+  animation: guide-in 0.4s ease-out 2.6s both;
+}
+
+/* The postmark over the stamp. */
+.postcard-top {
+  position: relative;
+}
+
+.postmark {
+  position: absolute;
+  right: 74px;
+  top: 52px;
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  border: 2px solid rgba(30, 42, 74, 0.55);
+  display: grid;
+  place-items: center;
+  text-align: center;
+  font-family: var(--heading);
+  font-size: 7.5px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  line-height: 1.25;
+  color: rgba(30, 42, 74, 0.7);
+  transform: rotate(-14deg);
+  pointer-events: none;
+}
+
+.postmark b {
+  display: block;
+  font-family: var(--display);
+  font-size: 14px;
+  letter-spacing: 0;
 }
