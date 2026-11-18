@@ -348,7 +348,7 @@ export function Climb({ step, total }: { step: number; total: number }) {
 
 /** Confetti for the moment someone commits to their first step. */
 export function Confetti() {
-  const colors = ["#E8A33D", "#9FE1CB", "#F0997B", "#7F77DD", "#1E2A4A", "#F3C16E"];
+  const colors = ["#E8A33D", "#9FE1CB", "#F0997B", "#2D4A7C", "#1E2A4A", "#F3C16E"];
   const bits = Array.from({ length: 46 }, (_, i) => ({
     left: (i * 37) % 100,
     delay: (i % 9) * 0.07,

@@ -4,6 +4,8 @@ import { App } from "./App.tsx";
 import { AdvisorScreen } from "./components/Advisor.tsx";
 import { ChartGallery } from "./components/ChartGallery.tsx";
 import { DemoPage } from "./components/Demo.tsx";
+import "@fontsource-variable/fraunces/opsz.css";
+import "@fontsource-variable/fraunces/opsz-italic.css";
 import "./styles.css";
 
 const { pathname, hash } = window.location;
