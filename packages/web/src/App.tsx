@@ -123,6 +123,23 @@ function Kids() {
   );
 }
 
+/** Each family as a mountain: the peak's height follows the plan's score (0 to 100). */
+function CasePeak({ score }: { score: number }) {
+  const s = Math.max(0, Math.min(100, score));
+  const top = 50 - (s / 100) * 42; // y of the summit: 50 (flat) to 8 (tall)
+  const snow = top + Math.min(8, (46 - top) * 0.3);
+  return (
+    <svg className="case-peak" viewBox="0 0 72 56" aria-hidden="true">
+      <rect className="peak-sky" x="0" y="0" width="72" height="56" rx="14" />
+      <path className="peak-back" d="M0 56 L0 40 L14 30 L26 38 L40 26 L58 36 L72 30 L72 56 Z" />
+      <path className="peak-main" d={`M8 56 L36 ${top} L64 56 Z`} />
+      <path className="peak-snow" d={`M36 ${top} L${36 - (snow - top) * 0.82} ${snow} L36 ${snow - 2} L${36 + (snow - top) * 0.82} ${snow} Z`} />
+      <line className="peak-pole" x1="36" y1={top} x2="36" y2={top - 9} />
+      <path className="peak-flag" d={`M36 ${top - 9} L44 ${top - 6.5} L36 ${top - 4} Z`} />
+    </svg>
+  );
+}
+
 function CasePicker({ cases, onPick }: { cases: CaseSummary[] | null; onPick: (c: CaseSummary) => void }) {
   const talking = useGuideSays(HOME_LINE, true);
   return (
@@ -139,13 +156,7 @@ function CasePicker({ cases, onPick }: { cases: CaseSummary[] | null; onPick: (c
         {cases?.map((c, i) => (
           <li key={c.id}>
             <button className={`case family-${i % 4}`} onClick={() => onPick(c)}>
-              <span className="case-faces" aria-hidden="true">
-                {c.members.map((m) => (
-                  <span key={m.id} className="case-initial">
-                    {m.name[0]}
-                  </span>
-                ))}
-              </span>
+              <CasePeak score={c.score} />
               <span className="case-text">
                 <span className="case-name">{c.label}</span>
                 <span className="case-meta">

@@ -177,14 +177,25 @@ export function MeetFutureSelf({ household, member, onDone }: { household: CaseS
           </div>
         </>
       ) : (
-        <>
-          {selves?.map((s) => (
-            <Postcard key={s.memberId} household={household} self={s} note={notes[s.memberId]} />
+        <div className="delivery">
+          {/* The postcard arrives: an envelope opens and the card rises out (static when motion is reduced). */}
+          {/* Two layers so the card can sit between them: the inside of the envelope behind it, the pocket in front. */}
+          <div className="envelope env-behind" aria-hidden="true">
+            <span className="env-back" />
+            <span className="env-flap-open" />
+          </div>
+          <div className="envelope env-ahead" aria-hidden="true">
+            <span className="env-front" />
+            <span className="env-flap" />
+            <span className="env-seal" />
+          </div>
+          {selves?.map((s, i) => (
+            <Postcard key={s.memberId} household={household} self={s} note={notes[s.memberId]} className={i === 0 ? "first" : "later"} />
           ))}
-          <button className="primary wide" onClick={onDone}>
+          <button className="primary wide delivery-after" onClick={onDone}>
             Continue
           </button>
-        </>
+        </div>
       )}
     </section>
   );
@@ -194,16 +205,22 @@ export function MeetFutureSelf({ household, member, onDone }: { household: CaseS
  * A postcard from the future self: the illustrated portrait (still, never animated), their message
  * written as a note, and their recorded voice if you want it. Warm, and something you'd keep.
  */
-function Postcard({ household, self, note }: { household: CaseSummary; self: FutureSelfView; note?: string }) {
+function Postcard({ household, self, note, className = "" }: { household: CaseSummary; self: FutureSelfView; note?: string; className?: string }) {
   const media = useMedia(household.id, self.memberId);
   const audioRef = useRef<HTMLAudioElement>(null);
   const [playing, setPlaying] = useState(false);
   const voice = media?.voice ?? null;
   return (
-    <article className="postcard">
+    <article className={`postcard ${className}`}>
       <div className="postcard-top">
         <p className="postcard-from">A postcard from {self.year}</p>
         {media?.avatar ? <img className="postcard-stamp" src={media.avatar} alt={`${self.name} at ${self.age}`} /> : null}
+        <span className="postmark" aria-hidden="true">
+          <span>
+            FUTURE YOU
+            <b>{self.year}</b>
+          </span>
+        </span>
       </div>
       <p className="postcard-text">{self.introText}</p>
       <p className="postcard-sign">
