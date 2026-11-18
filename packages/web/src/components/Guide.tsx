@@ -290,28 +290,17 @@ export function useGuideSays(text: string | undefined, muted: boolean) {
 
 // ---- the climb: each idea is a step up the mountain ----
 
-/**
- * The trail, in a 360 × 84 box: the ridge itself, peak by peak from the foot (left) to the summit
- * (right), so Summit always stands on the mountain, never in the air. The front range is drawn from
- * the same points.
- */
+/** The trail's turns, in a 360 × 84 box, from the foot (left) to the summit (right). */
 const TRAIL: [number, number][] = [
-  [6, 80],
-  [40, 66],
-  [64, 72],
-  [112, 52],
-  [138, 60],
-  [190, 40],
-  [216, 48],
-  [268, 30],
-  [292, 38],
-  [336, 22],
+  [14, 74],
+  [92, 62],
+  [58, 50],
+  [168, 42],
+  [132, 30],
+  [250, 24],
+  [226, 16],
+  [338, 10],
 ];
-const SUMMIT = TRAIL[TRAIL.length - 1]!;
-const FRONT_RANGE = `M0 84 L0 82 ${TRAIL.map(([x, y]) => `L${x} ${y}`).join(" ")} L360 36 L360 84 Z`;
-const BACK_RANGE = "M0 84 L0 70 L26 58 L58 66 L92 44 L128 54 L166 32 L204 44 L244 22 L282 36 L318 14 L348 26 L360 22 L360 84 Z";
-/** Snow on the two highest peaks. */
-const SNOW = "M268 30 L276 36 L270 35 L266 38 L260 35 Z M336 22 L345 29 L338 28 L334 31 L327 28 Z";
 
 function trailPoint(f: number): [number, number] {
   const segs = TRAIL.slice(1).map((p, i) => {
@@ -339,14 +328,13 @@ export function Climb({ step, total }: { step: number; total: number }) {
   return (
     <div className={`climb ${top ? "top" : ""}`} aria-label={`Idea ${step} of ${total}`}>
       <svg viewBox="0 0 360 84" aria-hidden="true">
-        <path d={BACK_RANGE} fill="#f6eddd" />
-        <path d={FRONT_RANGE} fill="#efe3cf" />
-        <path d={SNOW} fill="#fff" />
-        <polyline points={TRAIL.map((p) => p.join(",")).join(" ")} fill="none" stroke="#c9b28c" strokeWidth="2" strokeDasharray="3 4" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M0 84 L60 46 L104 62 L196 18 L240 34 L300 4 L360 30 L360 84 Z" fill="#efe3cf" />
+        <path d="M196 18 L208 26 L200 25 L194 30 L186 25 Z M300 4 L312 13 L304 12 L298 17 L290 12 Z" fill="#fff" />
+        <polyline points={TRAIL.map((p) => p.join(",")).join(" ")} fill="none" stroke="#c9b28c" strokeWidth="2" strokeDasharray="3 4" strokeLinecap="round" />
         {dots.map(([dx, dy], i) => (
           <circle key={i} cx={dx} cy={dy} r={i < step ? 3.4 : 2.6} fill={i < step ? "#E8A33D" : "#fff"} stroke="#c9b28c" strokeWidth="1.2" />
         ))}
-        <g className="climb-flag" transform={`translate(${SUMMIT[0]} ${SUMMIT[1]})`}>
+        <g className="climb-flag" transform="translate(338 10)">
           <line x1="0" y1="0" x2="0" y2="-14" stroke="#1E2A4A" strokeWidth="2" />
           <path d="M0 -14 L12 -10 L0 -6 Z" fill={top ? "#E8A33D" : "#d8cbb4"} />
         </g>
