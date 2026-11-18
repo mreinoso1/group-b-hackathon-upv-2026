@@ -57,7 +57,12 @@ export function AdvisorScreen({ caseId }: { caseId: string }) {
     <div className="advisor-page">
       <header className="adv-head">
         <div>
-          <p className="adv-kicker">Before your meeting</p>
+          <p className="adv-kicker">
+            <span className="adv-brand">
+              Future You<span className="brand-dot">.</span>
+            </span>{" "}
+            · Before your meeting
+          </p>
           <h1>{brief.household}</h1>
         </div>
         {ROOM ? (

@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 import { advisorApi } from "../api-advisor.ts";
 import type { CaseSummary } from "../api.ts";
 import "./advisor.css";
+import { GuideBot } from "./Guide.tsx";
 
 /**
- * Asked once per person, before their first idea: share how it went with the advisor, or not.
+ * Asked once per person, after Summit says hello and before the first idea: share how it went with the advisor, or not.
  * Reading together, each partner answers for themselves. Already answered: skipped.
  */
 export function ConsentScreen({ household, member, onDone }: { household: CaseSummary; member: string; onDone: () => void }) {
@@ -39,6 +40,10 @@ export function ConsentScreen({ household, member, onDone }: { household: CaseSu
   const couple = household.members.length > 1;
   return (
     <section className="consent">
+      <div className="consent-guide">
+        <GuideBot size={46} />
+        <p>One quick question before we start.</p>
+      </div>
       <h1>Share how this went with your advisor?</h1>
       <p className="lede">Your advisor sees it before you meet, so the meeting starts where you are instead of from the top.</p>
       <div className="consent-lists">
