@@ -1,7 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { App } from "./App.tsx";
-import { AdvisorScreen } from "./components/Advisor.tsx";
+import { AdvisorPicker, AdvisorScreen } from "./components/Advisor.tsx";
 import { ChartGallery } from "./components/ChartGallery.tsx";
 import { DemoPage } from "./components/Demo.tsx";
 import "@fontsource-variable/fraunces/opsz.css";
@@ -14,11 +14,15 @@ const reviewCharts = hash === "#charts";
 const advisorCase = pathname.match(/^\/advisor\/([a-z0-9-]+)\/?$/)?.[1];
 // The demo page: a QR code per person, for Demo Day
 const isDemo = /^\/demo\/?$/.test(pathname);
+// /advisor alone: pick a family
+const isAdvisorList = /^\/advisor\/?$/.test(pathname);
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     {advisorCase ? (
       <AdvisorScreen caseId={advisorCase} />
+    ) : isAdvisorList ? (
+      <AdvisorPicker />
     ) : isDemo ? (
       <DemoPage />
     ) : reviewCharts ? (

@@ -496,3 +496,57 @@
 .adv-score strong {
   font-family: var(--display);
 }
+
+/* /advisor: the list of families */
+
+.adv-all {
+  color: var(--blue);
+  text-decoration: none;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.adv-all:hover {
+  text-decoration: underline;
+}
+
+.adv-families {
+  list-style: none;
+  margin: 20px 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 12px;
+}
+
+.adv-family {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 16px 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: inherit;
+  text-decoration: none;
+  transition: border-color 0.15s ease;
+}
+
+.adv-family:hover {
+  border-color: var(--blue);
+}
+
+.adv-family:focus-visible {
+  outline: 3px solid var(--blue);
+  outline-offset: 2px;
+}
+
+.adv-family-name {
+  font: 600 1.15rem var(--display, var(--heading));
+}
+
+.adv-family-score {
+  color: var(--slate);
+  font-size: 0.9rem;
+}

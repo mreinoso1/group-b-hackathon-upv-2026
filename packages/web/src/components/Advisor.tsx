@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { AgendaItem, CoupleBrief, Evidence, PersonBrief, StuckTopic, Tension } from "@bite/plan-core";
 import { advisorApi, type AdvisorBrief } from "../api-advisor.ts";
+import { api, type CaseSummary } from "../api.ts";
 import { ROOM } from "../room.ts";
 import "./advisor.css";
 
@@ -9,6 +10,59 @@ const POLL_MS = 2000;
 
 const time = (iso: string) => new Date(iso).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 const day = (ymd: string) => new Date(`${ymd}T12:00:00`).toLocaleDateString([], { month: "short", day: "numeric" });
+
+/** The advisor's pages keep the demo room in the address: /advisor[/<caseId>][?room=ABCD]. */
+const advisorHref = (caseId?: string) => `/advisor${caseId ? `/${caseId}` : ""}${ROOM ? `?room=${ROOM}` : ""}`;
+
+/** /advisor: the families this advisor looks after, each opening its brief. */
+export function AdvisorPicker() {
+  const [cases, setCases] = useState<CaseSummary[] | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  useEffect(() => {
+    api.cases().then(
+      (r) => setCases(r.cases),
+      (e: Error) => setError(e.message),
+    );
+  }, []);
+  return (
+    <div className="advisor-page">
+      <header className="adv-head">
+        <div>
+          <p className="adv-kicker">
+            <span className="adv-brand">
+              Future You<span className="brand-dot">.</span>
+            </span>{" "}
+            · For the advisor
+          </p>
+          <h1>Your families</h1>
+        </div>
+        {ROOM ? (
+          <p className="adv-score">
+            Room <strong>{ROOM}</strong>
+          </p>
+        ) : null}
+      </header>
+      {error ? <p className="error">{error}</p> : null}
+      {!cases ? <p className="muted">Loading…</p> : null}
+      <ul className="adv-families">
+        {cases?.map((c) => (
+          <li key={c.id}>
+            <a className="adv-family" href={advisorHref(c.id)}>
+              <span className="adv-family-name">{c.label}</span>
+              <span className="muted">
+                {c.city}, {c.state}
+                {c.children.length ? ` · ${c.children.map((k) => k.name).join(" & ")}` : ""}
+              </span>
+              <span className="adv-family-score">
+                Score <strong>{c.score}</strong> · {c.band}
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
 
 /**
  * The advisor's side, at /advisor/:caseId: what the family understood, got stuck on, asked and
@@ -61,7 +115,10 @@ export function AdvisorScreen({ caseId }: { caseId: string }) {
             <span className="adv-brand">
               Future You<span className="brand-dot">.</span>
             </span>{" "}
-            · Before your meeting
+            · Before your meeting ·{" "}
+            <a className="adv-all" href={advisorHref()}>
+              All families
+            </a>
           </p>
           <h1>{brief.household}</h1>
         </div>
