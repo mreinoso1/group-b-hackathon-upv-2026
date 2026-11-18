@@ -4,10 +4,10 @@ import { joinTarget, ROOM } from "./room.ts";
 import { CapsuleCard, ReactionBar } from "./components/CapsuleCard.tsx";
 import { ConsentScreen } from "./components/Consent.tsx";
 import { Bubble, FutureSelfIntro, MeetFutureSelf, PortraitContext, portraitsFor } from "./components/FutureSelf.tsx";
-import { Climb, GuideBot, GuideStage, useGuideSays } from "./components/Guide.tsx";
+import { CasePeak, Climb, GuideBot, GuideStage, useGuideSays } from "./components/Guide.tsx";
 import { AgreementScreen, AskAdvisor, CheckInScreen, FirstStepScreen } from "./components/Steps.tsx";
 
-type Step = "consent" | "intro" | "feed" | "agree" | "step" | "meet" | "checkin";
+type Step = "intro" | "consent" | "feed" | "agree" | "step" | "meet" | "checkin";
 type Screen = { name: "cases" } | { name: "who"; household: CaseSummary } | { name: Step; household: CaseSummary; member: string };
 
 export function App() {
@@ -27,7 +27,7 @@ export function App() {
         const join = joinTarget(window.location.pathname, window.location.search);
         const household = join && r.cases.find((c) => c.id === join.caseId);
         const member = household && (join.member === "together" ? "together" : household.members.find((m) => m.id === join.member)?.id);
-        if (household && member) setScreen({ name: "consent", household, member });
+        if (household && member) setScreen({ name: "intro", household, member });
       } catch (e) {
         if (cancelled) return;
         if (attempt < 15) {
@@ -44,7 +44,7 @@ export function App() {
   }, []);
 
   const pickCase = (household: CaseSummary) => {
-    if (household.members.length === 1) setScreen({ name: "consent", household, member: household.members[0]!.id });
+    if (household.members.length === 1) setScreen({ name: "intro", household, member: household.members[0]!.id });
     else setScreen({ name: "who", household });
   };
 
@@ -71,10 +71,10 @@ export function App() {
       <main key={screen.name === "cases" ? "cases" : `${screen.name}-${screen.household.id}`} className="screen">
         {error ? <p className="error">{error}</p> : null}
         {screen.name === "cases" ? <CasePicker cases={cases} onPick={pickCase} /> : null}
-        {screen.name === "who" ? <WhoPicker household={screen.household} onPick={(member) => setScreen({ name: "consent", household: screen.household, member })} /> : null}
-        {screen.name === "consent" ? <ConsentScreen household={screen.household} member={screen.member} onDone={() => setScreen({ ...screen, name: "intro" })} /> : null}
+        {screen.name === "who" ? <WhoPicker household={screen.household} onPick={(member) => setScreen({ name: "intro", household: screen.household, member })} /> : null}
+        {screen.name === "consent" ? <ConsentScreen household={screen.household} member={screen.member} onDone={() => setScreen({ ...screen, name: "feed" })} /> : null}
         {screen.name === "intro" ? (
-          <FutureSelfIntro household={screen.household} member={screen.member} onStart={() => setScreen({ ...screen, name: "feed" })} />
+          <FutureSelfIntro household={screen.household} member={screen.member} onStart={() => setScreen({ ...screen, name: "consent" })} />
         ) : null}
         {screen.name === "feed" ? (
           <Feed
@@ -119,23 +119,6 @@ function Kids() {
       <circle cx="8" cy="7" r="3" fill="none" stroke="currentColor" strokeWidth="2.2" />
       <circle cx="17" cy="9" r="2.4" fill="none" stroke="currentColor" strokeWidth="2.2" />
       <path d="M2.5 20c.6-3.6 2.8-5.5 5.5-5.5s4.9 1.9 5.5 5.5M13.5 20c.4-2.6 1.8-4 3.5-4s3.1 1.4 3.5 4" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-/** Each family as a mountain: the peak's height follows the plan's score (0 to 100). */
-function CasePeak({ score }: { score: number }) {
-  const s = Math.max(0, Math.min(100, score));
-  const top = 50 - (s / 100) * 42; // y of the summit: 50 (flat) to 8 (tall)
-  const snow = top + Math.min(8, (46 - top) * 0.3);
-  return (
-    <svg className="case-peak" viewBox="0 0 72 56" aria-hidden="true">
-      <rect className="peak-sky" x="0" y="0" width="72" height="56" rx="14" />
-      <path className="peak-back" d="M0 56 L0 40 L14 30 L26 38 L40 26 L58 36 L72 30 L72 56 Z" />
-      <path className="peak-main" d={`M8 56 L36 ${top} L64 56 Z`} />
-      <path className="peak-snow" d={`M36 ${top} L${36 - (snow - top) * 0.82} ${snow} L36 ${snow - 2} L${36 + (snow - top) * 0.82} ${snow} Z`} />
-      <line className="peak-pole" x1="36" y1={top} x2="36" y2={top - 9} />
-      <path className="peak-flag" d={`M36 ${top - 9} L44 ${top - 6.5} L36 ${top - 4} Z`} />
     </svg>
   );
 }
